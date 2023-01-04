@@ -1,0 +1,47 @@
+{
+  "name": "admin",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "remix build",
+    "dev": "remix dev",
+    "start": "remix-serve build",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.2",
+    "@mui/styled-engine-sc": "^5.11.0",
+    "@remix-run/node": "^1.9.0",
+    "@remix-run/react": "^1.9.0",
+    "@remix-run/serve": "^1.9.0",
+    "@remix-run/vercel": "^1.9.0",
+    "@vercel/node": "^2.6.2",
+    "isbot": "^3.6.5",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remix-auth": "^3.4.0",
+    "styled-components": "^5.3.6",
+    "styled-system": "^5.1.5",
+    "database": "*"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^1.9.0",
+    "@remix-run/eslint-config": "^1.9.0",
+    "@types/react": "^18.0.25",
+    "@types/react-dom": "^18.0.8",
+    "@types/styled-components": "^5.1.26",
+    "@types/styled-system": "^5.1.15",
+    "autoprefixer": "^10.4.13",
+    "concurrently": "^7.6.0",
+    "eslint": "^8.27.0",
+    "postcss": "^8.4.20",
+    "typescript": "^4.8.4"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
