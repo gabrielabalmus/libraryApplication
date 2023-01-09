@@ -1,58 +1,96 @@
-import TextField from "@mui/material/TextField";
-import { useState } from "react";
 import Button from "@/components/Button";
-import { ButtonVariant } from "@/components/Button/Button.type";
+import { ButtonType, ButtonVariant } from "@/components/Button/Button.type";
+import Input from "@/components/Input";
 import { StyledGrid, StyledParagraph, StyledTitle } from "./Login.style";
+import { menuTitle } from "@/components/Menu/Menu.const";
+import { useActionData, useSubmit } from "@remix-run/react";
+import { useCallback, useEffect, useState } from "react";
+import { ErrorState, LoginState, LoginValue } from "./Login.type";
+import { handleLoginErrors } from "./Login.helper";
+import { InputType } from "@/components/Input/Input.type";
+import Alert from "@mui/material/Alert";
 
 const LoginForm: React.FC = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    parola: "",
-  });
+  const submit = useSubmit();
+  const actionData = useActionData();
 
-  const handleInputChange = (value: string, field: string) => {
-    setFormData((form) => ({ ...form, [field]: value }));
-  };
+  const [data, setData] = useState<LoginState>({
+    email: "",
+    password: "",
+  });
+  const [generalError, setGeneralError] = useState<string>("");
+  const [inputErrors, setInputErrors] = useState<ErrorState>({});
+
+  useEffect(() => {
+    if (actionData?.message) setGeneralError(actionData.message);
+  }, [actionData?.message]);
+
+  const handleInputChange = useCallback(
+    (value: string, field: LoginValue) => {
+      setData((oldData) => ({ ...oldData, [field]: value }));
+
+      if (inputErrors[field])
+        setInputErrors((oldErrors) => {
+          delete oldErrors[field];
+          return oldErrors;
+        });
+
+      if (generalError) setGeneralError("");
+    },
+    [data, inputErrors, generalError]
+  );
+
+  const handleOnSubmit = useCallback(() => {
+    const fieldErrors = handleLoginErrors(data);
+
+    if (Object.values(fieldErrors).some(Boolean)) {
+      setInputErrors(fieldErrors);
+      return;
+    }
+
+    const formData = new FormData();
+
+    formData.append(LoginValue.email, data.email);
+    formData.append(LoginValue.password, data.password);
+
+    submit(formData, {
+      method: "post",
+      action: "/login",
+    });
+  }, [data]);
 
   return (
-    <form method="post" onSubmit={() => {}}>
-      <StyledGrid container item>
-        <StyledTitle variant="h5">Biblioteca online!</StyledTitle>
+    <StyledGrid container item>
+      <StyledTitle variant="h5">{menuTitle}</StyledTitle>
 
-        <StyledParagraph>
-          Va rugam sa introduceti datele de logare.
-        </StyledParagraph>
+      <StyledParagraph variant="h1">
+        Please enter your login data.
+      </StyledParagraph>
 
-        <TextField
-          error={false}
-          label="Email*"
-          value={formData.email}
-          variant="outlined"
-          helperText=""
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handleInputChange(e.target.value, "email")
-          }
-          sx={{ mb: 1.5 }}
-        />
-        <TextField
-          error={false}
-          label="Parola*"
-          value={formData.parola}
-          variant="outlined"
-          helperText=""
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handleInputChange(e.target.value, "parola")
-          }
-          sx={{ mb: 4 }}
-        />
-
-        <Button
-          title="Logare"
-          variant={ButtonVariant.contained}
-          handleClick={() => {}}
-        />
-      </StyledGrid>
-    </form>
+      <Input
+        label="Email*"
+        errorMessage={inputErrors.email}
+        defaultValue={data.email}
+        onChange={(value: string) => handleInputChange(value, LoginValue.email)}
+      />
+      <Input
+        label="Password*"
+        type={InputType.password}
+        errorMessage={inputErrors.password}
+        defaultValue={data.password}
+        onChange={(value: string) =>
+          handleInputChange(value, LoginValue.password)
+        }
+      />
+      {generalError && <Alert severity="error">{generalError}</Alert>}
+      <br />
+      <Button
+        type={ButtonType.submit}
+        title="Login"
+        variant={ButtonVariant.contained}
+        onClick={handleOnSubmit}
+      />
+    </StyledGrid>
   );
 };
 

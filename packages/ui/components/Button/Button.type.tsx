@@ -1,10 +1,17 @@
 export interface ButtonProps {
   variant: ButtonVariant;
   title: string;
-  handleClick: () => void;
+  onClick?: () => void;
+  type?: ButtonType;
 }
 
 export enum ButtonVariant {
-  contained,
-  outlined,
+  contained = "contained",
+  outlined = "outlined",
+}
+
+export enum ButtonType {
+  submit = "submit",
+  button = "button",
+  reset = "reset",
 }

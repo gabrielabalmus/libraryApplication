@@ -1,2 +1,2 @@
 export const menuWidth = 240;
-export const menuTitle = "Biblioteca online";
+export const menuTitle = "Online library";

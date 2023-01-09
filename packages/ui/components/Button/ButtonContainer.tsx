@@ -4,18 +4,19 @@ import { ButtonVariant, ButtonProps } from "./Button.type";
 const ButtonContainer: React.FC<ButtonProps> = ({
   title,
   variant,
-  handleClick,
+  onClick,
+  type,
 }) => {
   if (variant === ButtonVariant.contained) {
     return (
-      <ContainedButton disableRipple={true} onClick={handleClick}>
+      <ContainedButton disableRipple={true} onClick={onClick} type={type}>
         {title}
       </ContainedButton>
     );
   }
 
   return (
-    <OutlinedButton disableRipple={true} onClick={handleClick}>
+    <OutlinedButton disableRipple={true} onClick={onClick} type={type}>
       {title}
     </OutlinedButton>
   );

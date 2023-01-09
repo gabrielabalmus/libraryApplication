@@ -1,4 +1,3 @@
-import Typography, { TypographyProps } from "@mui/material/Typography";
 import ComponentStyled from "styled-components";
 import Flex from "@/components/Flex";
 import { styled as MuiStyled } from "@mui/material/styles";
@@ -16,14 +15,6 @@ import { DrawerType } from "./Menu.types";
 export const StyledFlex = ComponentStyled(Flex)`
   min-height: 100vh;
 `;
-
-export const AppBarTitle = MuiStyled(Typography)<TypographyProps>(({ theme }) =>
-  theme.unstable_sx({
-    color: collorPalette.black,
-    fontWeight: 600,
-    fontSize: 23,
-  })
-);
 
 export const StyledAppBar = MuiStyled(AppBar)<AppBarProps>(({ theme }) =>
   theme.unstable_sx({

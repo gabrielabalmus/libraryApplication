@@ -5,7 +5,7 @@ import collorPalette from "@/theme/colorPalette";
 
 export const StyledGrid = MuiStyled(Grid)<GridProps>(({ theme }) =>
   theme.unstable_sx({
-    width: { xs: "100%", sm: "fit-content" },
+    width: { xs: "100%", sm: "380px" },
     border: `10px solid ${collorPalette.primary.lighter}`,
     padding: { xs: 4, sm: 6 },
     flexDirection: "column",
@@ -22,18 +22,14 @@ export const StyledGrid = MuiStyled(Grid)<GridProps>(({ theme }) =>
 
 export const StyledTitle = MuiStyled(Typography)<TypographyProps>(({ theme }) =>
   theme.unstable_sx({
-    fontWeight: 600,
-    fontSize: { xs: 22, sm: 26 },
     marginBottom: 1,
-    color: collorPalette.black,
   })
 );
 
 export const StyledParagraph = MuiStyled(Typography)<TypographyProps>(
   ({ theme }) =>
     theme.unstable_sx({
-      fontSize: { xs: 15, sm: 17 },
-      marginBottom: 2.5,
+      marginBottom: 3,
       color: collorPalette.grey.darker,
     })
 );

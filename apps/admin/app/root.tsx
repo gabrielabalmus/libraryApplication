@@ -6,12 +6,10 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLocation,
 } from "@remix-run/react";
 import GlobalStyle from "@/theme/globalStyle.css";
-import Layout from "./components/Layout";
-import { createTheme } from "@mui/material/styles";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import { theme } from "./const";
 
 export const links: LinksFunction = () => {
   return [
@@ -29,12 +27,6 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
-const theme = createTheme({
-  typography: {
-    fontFamily: ["Georama"].join(","),
-  },
-});
-
 const App: React.FC = () => {
   return (
     <html>
@@ -45,27 +37,13 @@ const App: React.FC = () => {
       </head>
       <body>
         <MuiThemeProvider theme={theme}>
-          {setOutletLayout()}
+          <Outlet />
         </MuiThemeProvider>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
       </body>
     </html>
-  );
-};
-
-const setOutletLayout = () => {
-  const location = useLocation();
-
-  if (location.pathname === "/login") {
-    return <Outlet />;
-  }
-
-  return (
-    <Layout>
-      <Outlet />
-    </Layout>
   );
 };
 

@@ -3,8 +3,8 @@ import Box from "@mui/material/Box";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import { menuItems } from "./Menu.helper";
+import Typography, { TypographyProps } from "@mui/material/Typography";
 import {
-  AppBarTitle,
   StyledAppBar,
   StyledDrawer,
   StyledFlex,
@@ -28,7 +28,7 @@ const Menu: React.FC<{ children: ReactNode }> = ({ children }) => {
             <MenuIcon />
           </StyledIconButton>
 
-          <AppBarTitle variant="h6">{menuTitle}</AppBarTitle>
+          <Typography variant="h5">{menuTitle}</Typography>
         </Toolbar>
       </StyledAppBar>
 
