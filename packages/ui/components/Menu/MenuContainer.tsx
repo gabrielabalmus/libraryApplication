@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import { menuItems } from "./Menu.helper";
-import Typography, { TypographyProps } from "@mui/material/Typography";
+import Typography from "@mui/material/Typography";
 import {
   StyledAppBar,
   StyledDrawer,
@@ -13,7 +13,10 @@ import {
 } from "./Menu.style";
 import { menuTitle, menuWidth } from "./Menu.const";
 
-const Menu: React.FC<{ children: ReactNode }> = ({ children }) => {
+const Menu: React.FC<{ onLogoutClick: () => void; children: ReactNode }> = ({
+  onLogoutClick,
+  children,
+}) => {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
   const handleMenuToggle = useCallback(() => {
@@ -48,7 +51,7 @@ const Menu: React.FC<{ children: ReactNode }> = ({ children }) => {
           }}
           display={{ xs: "block", sm: "none" }}
         >
-          {menuItems()}
+          {menuItems(onLogoutClick)}
         </StyledDrawer>
 
         <StyledDrawer
@@ -56,7 +59,7 @@ const Menu: React.FC<{ children: ReactNode }> = ({ children }) => {
           display={{ xs: "none", sm: "block" }}
           open
         >
-          {menuItems()}
+          {menuItems(onLogoutClick)}
         </StyledDrawer>
       </Box>
 

@@ -3,8 +3,8 @@
   "display": "React Library",
   "extends": "./base.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "module": "ES2022",
+    "jsx": "preserve",
+    "noEmit": true,
     "target": "es6"
   }
 }

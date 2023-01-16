@@ -10,6 +10,7 @@ import AppBar, { AppBarProps } from "@mui/material/AppBar";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import Box, { BoxProps } from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
+import Divider, { DividerProps } from "@mui/material/Divider";
 import { DrawerType } from "./Menu.types";
 
 export const StyledFlex = ComponentStyled(Flex)`
@@ -48,9 +49,22 @@ export const StyledMainBox = MuiStyled(Box)<BoxProps>(({ theme }) =>
 export const StyledItemButton = MuiStyled(ListItemButton)<ListItemButtonProps>(
   ({ theme }) =>
     theme.unstable_sx({
-      color: collorPalette.white,
       "& .MuiListItemIcon-root": {
         color: collorPalette.white,
+        paddingLeft: "10px",
+      },
+      "& .MuiListItemText-root .MuiTypography-root": {
+        color: collorPalette.white,
+        fontSize: { xs: 14, sm: 16 },
+      },
+      "&.Mui-selected": {
+        backgroundColor: collorPalette.primary.light,
+      },
+      "&.Mui-selected:hover": {
+        backgroundColor: collorPalette.primary.light,
+      },
+      "&:hover": {
+        backgroundColor: "transparent",
       },
     })
 );
@@ -63,6 +77,22 @@ export const StyledDrawer = MuiStyled(Drawer)<DrawerType>(
         boxSizing: "border-box",
         width: menuWidth,
         backgroundColor: collorPalette.primary.base,
+        border: "none",
       },
     })
+);
+
+export const StyledMenuList = MuiStyled("div")(({ theme }) =>
+  theme.unstable_sx({
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+  })
+);
+
+export const StyledDivider = MuiStyled(Divider)<DividerProps>(({ theme }) =>
+  theme.unstable_sx({
+    marginTop: "auto",
+    borderColor: collorPalette.white,
+  })
 );

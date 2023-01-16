@@ -3,7 +3,7 @@ import { Outlet, useTransition } from "@remix-run/react";
 import { getUserId } from "~/server/user.server";
 import Spinner from "@/components/Spinner";
 
-export async function loader({ request }: LoaderArgs) {
+export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
 
   if (userId) {
@@ -11,7 +11,7 @@ export async function loader({ request }: LoaderArgs) {
   }
 
   return json({});
-}
+};
 
 const AuthLayout: React.FC = () => {
   const transition = useTransition();

@@ -23,7 +23,7 @@ const LoginForm: React.FC = () => {
 
   useEffect(() => {
     if (actionData?.message) setGeneralError(actionData.message);
-  }, [actionData?.message]);
+  }, [actionData]);
 
   const handleInputChange = useCallback(
     (value: string, field: LoginValue) => {
@@ -48,15 +48,16 @@ const LoginForm: React.FC = () => {
       return;
     }
 
-    const formData = new FormData();
-
-    formData.append(LoginValue.email, data.email);
-    formData.append(LoginValue.password, data.password);
-
-    submit(formData, {
-      method: "post",
-      action: "/login",
-    });
+    submit(
+      {
+        ...data,
+        intent: "login",
+      },
+      {
+        method: "post",
+        action: "/login",
+      }
+    );
   }, [data]);
 
   return (
@@ -82,7 +83,9 @@ const LoginForm: React.FC = () => {
           handleInputChange(value, LoginValue.password)
         }
       />
+
       {generalError && <Alert severity="error">{generalError}</Alert>}
+
       <br />
       <Button
         type={ButtonType.submit}

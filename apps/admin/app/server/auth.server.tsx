@@ -13,14 +13,14 @@ export const login = async ({ email, password }: LoginState) => {
       },
     });
 
-    if (!user) return new Error(wrongLoginData);
+    if (!user) throw new Error(wrongLoginData);
 
     const isCorrectPassword = await bcrypt.compare(password, user.password);
 
-    if (!isCorrectPassword) return new Error(wrongLoginData);
+    if (!isCorrectPassword) throw new Error(wrongLoginData);
 
     return { id: user.id };
   } catch (err) {
-    return new Error(errorSubmit);
+    throw new Error(errorSubmit);
   }
 };

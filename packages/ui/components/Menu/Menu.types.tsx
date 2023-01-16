@@ -9,3 +9,8 @@ export interface MenuListType {
 export interface DrawerType extends DrawerProps {
   display: any;
 }
+
+export interface MenuProps {
+  url: string;
+  index: number;
+}
