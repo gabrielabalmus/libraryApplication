@@ -1,4 +1,5 @@
 import { DrawerProps } from "@mui/material/Drawer";
+import { ReactNode } from "react";
 
 export interface MenuListType {
   label: string;
@@ -8,6 +9,11 @@ export interface MenuListType {
 
 export interface DrawerType extends DrawerProps {
   display: any;
+}
+
+export interface MenuContainerProps {
+  onLogoutClick: () => void;
+  children: ReactNode;
 }
 
 export interface MenuProps {

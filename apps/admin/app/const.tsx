@@ -1,10 +1,10 @@
 import collorPalette from "@/theme/colorPalette";
-import { createTheme } from "@mui/material/styles";
+import { createTheme, Theme } from "@mui/material/styles";
 import { createBreakpoints } from "@mui/system";
 
 export const requiredField = "This field is required!";
 export const errorSubmit = "There was a problem in submitting your form.";
-export const errorMessage = "There was an error.";
+export const errorMessage = "An error occured.";
 export const wrongLoginData = "Email or password is wrong.";
 
 const breakpoints = createBreakpoints({});
@@ -13,14 +13,12 @@ export const theme = createTheme({
   components: {
     MuiAlert: {
       styleOverrides: {
-        root: {
-          padding: "0 10px",
-        },
         message: ({ theme }) =>
           theme.unstable_sx({
             textAlign: "left",
             lineHeight: "20px",
-            fontSize: { xs: 12, sm: 13 },
+            fontSize: { xs: 12, sm: 14 },
+            color: collorPalette.black,
           }),
       },
     },
@@ -57,6 +55,16 @@ export const theme = createTheme({
         fontSize: 25,
       },
     },
+    h4: {
+      color: collorPalette.black,
+      fontWeight: 600,
+      [breakpoints.up("xs")]: {
+        fontSize: 20,
+      },
+      [breakpoints.up("sm")]: {
+        fontSize: 22,
+      },
+    },
   },
   palette: {
     primary: {
@@ -67,3 +75,20 @@ export const theme = createTheme({
     },
   },
 });
+
+export const appTheme = (theme: Theme) =>
+  createTheme({
+    ...theme,
+    components: {
+      ...theme.components,
+      MuiPaper: {
+        styleOverrides: {
+          root: ({ theme }) =>
+            theme.unstable_sx({
+              boxShadow: "none",
+              padding: { xs: "15px", sm: "30px" },
+            }),
+        },
+      },
+    },
+  });

@@ -11,6 +11,10 @@ import Spinner from "@/components/Spinner";
 import { useCallback, useEffect, useState } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { AlertDataState } from "~/types/Session.type";
+import isBoolean from "lodash/isBoolean";
+import { appTheme, theme } from "~/const";
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -27,10 +31,11 @@ const AppLayout: React.FC = () => {
   const submit = useSubmit();
   const actionData = useActionData();
 
-  const [alertMessage, setAlertMessage] = useState<string>("");
+  const [alertData, setAlertData] = useState<AlertDataState>({});
 
   useEffect(() => {
-    if (actionData?.message) setAlertMessage(actionData.message);
+    if (actionData && actionData.message && isBoolean(actionData.success))
+      setAlertData(actionData);
   }, [actionData]);
 
   const handleLogout = useCallback(() => {
@@ -44,27 +49,34 @@ const AppLayout: React.FC = () => {
   }, []);
 
   const handleAlertClose = useCallback(() => {
-    setAlertMessage("");
-  }, [alertMessage]);
+    setAlertData({});
+  }, [alertData]);
 
   return (
-    <Menu onLogoutClick={handleLogout}>
-      <Outlet />
+    <MuiThemeProvider theme={theme}>
+      <Menu onLogoutClick={handleLogout}>
+        <MuiThemeProvider theme={appTheme}>
+          <Outlet />
+        </MuiThemeProvider>
 
-      {(transition.state === "submitting" ||
-        transition.state === "loading") && <Spinner />}
+        {(transition.state === "submitting" ||
+          transition.state === "loading") && <Spinner />}
 
-      <Snackbar
-        open={!!alertMessage}
-        autoHideDuration={6000}
-        onClose={handleAlertClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert onClose={handleAlertClose} severity="error">
-          {alertMessage}
-        </Alert>
-      </Snackbar>
-    </Menu>
+        <Snackbar
+          open={Object.keys(alertData).length > 0}
+          autoHideDuration={5000}
+          onClose={handleAlertClose}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <Alert
+            onClose={handleAlertClose}
+            severity={alertData.success ? "success" : "error"}
+          >
+            {alertData.message}
+          </Alert>
+        </Snackbar>
+      </Menu>
+    </MuiThemeProvider>
   );
 };
 

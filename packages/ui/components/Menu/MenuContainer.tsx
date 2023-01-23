@@ -7,16 +7,14 @@ import Typography from "@mui/material/Typography";
 import {
   StyledAppBar,
   StyledDrawer,
-  StyledFlex,
   StyledIconButton,
   StyledMainBox,
 } from "./Menu.style";
 import { menuTitle, menuWidth } from "./Menu.const";
+import Flex from "@/components/Flex";
+import { MenuContainerProps } from "./Menu.types";
 
-const Menu: React.FC<{ onLogoutClick: () => void; children: ReactNode }> = ({
-  onLogoutClick,
-  children,
-}) => {
+const Menu: React.FC<MenuContainerProps> = ({ onLogoutClick, children }) => {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
   const handleMenuToggle = useCallback(() => {
@@ -24,7 +22,7 @@ const Menu: React.FC<{ onLogoutClick: () => void; children: ReactNode }> = ({
   }, [mobileOpen]);
 
   return (
-    <StyledFlex>
+    <Flex>
       <StyledAppBar position="fixed">
         <Toolbar>
           <StyledIconButton disableRipple={true} onClick={handleMenuToggle}>
@@ -67,7 +65,7 @@ const Menu: React.FC<{ onLogoutClick: () => void; children: ReactNode }> = ({
         <Toolbar />
         {children}
       </StyledMainBox>
-    </StyledFlex>
+    </Flex>
   );
 };
 

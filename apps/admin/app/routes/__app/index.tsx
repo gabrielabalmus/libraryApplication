@@ -11,7 +11,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     if (typeof intent !== "string") {
       return badRequest({
         message: errorMessage,
-        error: true,
+        success: false,
       });
     }
 
@@ -20,7 +20,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
   } catch (error: any) {
     return badRequest({
       message: error.message || errorMessage,
-      error: true,
+      success: false,
     });
   }
 };

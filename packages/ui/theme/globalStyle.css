@@ -3,3 +3,11 @@
   font-family: "Georama";
   line-height: 23px;
 }
+
+body {
+  background-color: #f2f2f2;
+}
+
+main {
+  width: 100%;
+}

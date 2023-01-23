@@ -1,5 +1,3 @@
-import ComponentStyled from "styled-components";
-import Flex from "@/components/Flex";
 import { styled as MuiStyled } from "@mui/material/styles";
 import collorPalette from "@/theme/colorPalette";
 import ListItemButton, {
@@ -12,10 +10,6 @@ import Box, { BoxProps } from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Divider, { DividerProps } from "@mui/material/Divider";
 import { DrawerType } from "./Menu.types";
-
-export const StyledFlex = ComponentStyled(Flex)`
-  min-height: 100vh;
-`;
 
 export const StyledAppBar = MuiStyled(AppBar)<AppBarProps>(({ theme }) =>
   theme.unstable_sx({

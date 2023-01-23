@@ -1,14 +1,18 @@
 import Button from "@/components/Button";
 import { ButtonType, ButtonVariant } from "@/components/Button/Button.type";
 import Input from "@/components/Input";
-import { StyledGrid, StyledParagraph, StyledTitle } from "./Login.style";
+import {
+  StyledAlert,
+  StyledGrid,
+  StyledParagraph,
+  StyledTitle,
+} from "./Login.style";
 import { menuTitle } from "@/components/Menu/Menu.const";
 import { useActionData, useSubmit } from "@remix-run/react";
 import { useCallback, useEffect, useState } from "react";
 import { ErrorState, LoginState, LoginValue } from "./Login.type";
 import { handleLoginErrors } from "./Login.helper";
 import { InputType } from "@/components/Input/Input.type";
-import Alert from "@mui/material/Alert";
 
 const LoginForm: React.FC = () => {
   const submit = useSubmit();
@@ -22,7 +26,8 @@ const LoginForm: React.FC = () => {
   const [inputErrors, setInputErrors] = useState<ErrorState>({});
 
   useEffect(() => {
-    if (actionData?.message) setGeneralError(actionData.message);
+    if (actionData && actionData.message && actionData.success === false)
+      setGeneralError(actionData.message);
   }, [actionData]);
 
   const handleInputChange = useCallback(
@@ -61,7 +66,7 @@ const LoginForm: React.FC = () => {
   }, [data]);
 
   return (
-    <StyledGrid container item>
+    <StyledGrid container>
       <StyledTitle variant="h5">{menuTitle}</StyledTitle>
 
       <StyledParagraph variant="h1">
@@ -84,7 +89,9 @@ const LoginForm: React.FC = () => {
         }
       />
 
-      {generalError && <Alert severity="error">{generalError}</Alert>}
+      {generalError && (
+        <StyledAlert severity="error">{generalError}</StyledAlert>
+      )}
 
       <br />
       <Button

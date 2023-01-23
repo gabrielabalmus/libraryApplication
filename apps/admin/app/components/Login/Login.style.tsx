@@ -2,6 +2,7 @@ import Grid, { GridProps } from "@mui/material/Grid";
 import { styled as MuiStyled } from "@mui/material/styles";
 import Typography, { TypographyProps } from "@mui/material/Typography";
 import collorPalette from "@/theme/colorPalette";
+import Alert, { AlertProps } from "@mui/material/Alert";
 
 export const StyledGrid = MuiStyled(Grid)<GridProps>(({ theme }) =>
   theme.unstable_sx({
@@ -17,6 +18,7 @@ export const StyledGrid = MuiStyled(Grid)<GridProps>(({ theme }) =>
     left: 0,
     right: 0,
     margin: "0 auto",
+    backgroundColor: collorPalette.white,
   })
 );
 
@@ -32,4 +34,10 @@ export const StyledParagraph = MuiStyled(Typography)<TypographyProps>(
       marginBottom: 3,
       color: collorPalette.grey.darker,
     })
+);
+
+export const StyledAlert = MuiStyled(Alert)<AlertProps>(({ theme }) =>
+  theme.unstable_sx({
+    padding: "3px 10px",
+  })
 );

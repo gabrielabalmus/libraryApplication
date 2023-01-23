@@ -1,32 +1,22 @@
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import DensitySmallIcon from "@mui/icons-material/DensitySmall";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import Toolbar from "@mui/material/Toolbar";
 import { useCallback, useState } from "react";
-import { MenuListType, MenuProps } from "./Menu.types";
+import { MenuProps } from "./Menu.types";
 import { StyledDivider, StyledItemButton, StyledMenuList } from "./Menu.style";
-import { useNavigate } from "@remix-run/react";
+import { useNavigate, useLocation } from "@remix-run/react";
 import LogoutIcon from "@mui/icons-material/Logout";
-
-const MenuList: MenuListType[] = [
-  {
-    label: "Dashboard",
-    icon: <DashboardIcon />,
-    url: "/",
-  },
-  { label: "Books", icon: <LibraryBooksIcon />, url: "/books" },
-  { label: "Reservations", icon: <DensitySmallIcon />, url: "/reservations" },
-  { label: "Customers", icon: <PeopleAltIcon />, url: "/customers" },
-];
+import { MenuList } from "./Menu.const";
 
 export const menuItems = (onLogoutClick: () => void) => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  let location = useLocation();
+  const pathName = location.pathname;
 
+  const initialIndex = MenuList.findIndex((item) => item.url === pathName);
+
+  const [selectedIndex, setSelectedIndex] = useState<number>(initialIndex);
   const navigate = useNavigate();
 
   const handleListItemClick = useCallback(({ url, index }: MenuProps) => {
@@ -37,6 +27,7 @@ export const menuItems = (onLogoutClick: () => void) => {
   return (
     <StyledMenuList>
       <Toolbar />
+
       <List>
         {MenuList.map((item, index) => (
           <ListItem key={index} disablePadding>
