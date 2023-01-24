@@ -1,8 +1,11 @@
-import TextField, { TextFieldProps } from "@mui/material/TextField";
+import TextField from "@mui/material/TextField";
 import { styled as MuiStyled } from "@mui/material/styles";
+import { InputFieldProps } from "./Input.type";
 
-export const StandardInput = MuiStyled(TextField)<TextFieldProps>(({ theme }) =>
-  theme.unstable_sx({
-    mb: 1.5,
-  })
+export const StandardInput = MuiStyled(TextField)<InputFieldProps>(
+  ({ width, theme }) =>
+    theme.unstable_sx({
+      marginBottom: "12px",
+      maxWidth: { md: width, xs: "100%" },
+    })
 );

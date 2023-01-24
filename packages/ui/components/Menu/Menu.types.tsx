@@ -15,8 +15,3 @@ export interface MenuContainerProps {
   onLogoutClick: () => void;
   children: ReactNode;
 }
-
-export interface MenuProps {
-  url: string;
-  index: number;
-}

@@ -8,6 +8,8 @@ const InputContainer: React.FC<InputProps> = ({
   type = InputType.text,
   errorMessage,
   onChange,
+  width = "inherit",
+  multiline = false,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -28,6 +30,9 @@ const InputContainer: React.FC<InputProps> = ({
       variant="standard"
       helperText={errorMessage}
       onChange={handleOnChange}
+      width={width}
+      multiline={multiline}
+      rows={multiline ? 3 : undefined}
     />
   );
 };

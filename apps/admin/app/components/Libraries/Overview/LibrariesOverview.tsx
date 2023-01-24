@@ -8,13 +8,14 @@ const columns = [
 ];
 
 const rows = [
-  { test1: "ceva1", test2: "ceva2", test3: "ceva3" },
-  { test1: "altceva1", test2: "altceva2", test3: "altceva3" },
+  { id: '123', test1: "ceva1", test2: "ceva2", test3: "ceva3" },
+  { id: '345', test1: "altceva1", test2: "altceva2", test3: "altceva3" },
+  { id: '564', test1: "altceva1", test2: "altceva2", test3: "altceva3" },
 ];
 
 const LibrariesOverview: React.FC = () => {
   return (
-    <Paper>
+    <Paper className="overview-paper">
       <TableContainer columns={columns} rows={rows} />
     </Paper>
   );

@@ -1,4 +1,4 @@
-import { useState, ReactNode, useCallback } from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
@@ -17,15 +17,15 @@ import { MenuContainerProps } from "./Menu.types";
 const Menu: React.FC<MenuContainerProps> = ({ onLogoutClick, children }) => {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
-  const handleMenuToggle = useCallback(() => {
+  const handleMenuToggle = () => {
     setMobileOpen(!mobileOpen);
-  }, [mobileOpen]);
+  };
 
   return (
     <Flex>
       <StyledAppBar position="fixed">
         <Toolbar>
-          <StyledIconButton disableRipple={true} onClick={handleMenuToggle}>
+          <StyledIconButton disableRipple onClick={handleMenuToggle}>
             <MenuIcon />
           </StyledIconButton>
 

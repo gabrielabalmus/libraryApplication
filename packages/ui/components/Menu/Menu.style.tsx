@@ -49,7 +49,7 @@ export const StyledItemButton = MuiStyled(ListItemButton)<ListItemButtonProps>(
       },
       "& .MuiListItemText-root .MuiTypography-root": {
         color: collorPalette.white,
-        fontSize: { xs: 14, sm: 16 },
+        fontSize: { xs: 16, sm: 17 },
       },
       "&.Mui-selected": {
         backgroundColor: collorPalette.primary.light,

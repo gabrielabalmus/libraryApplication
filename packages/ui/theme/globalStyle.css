@@ -11,3 +11,19 @@ body {
 main {
   width: 100%;
 }
+
+.MuiPaper-root.overview-paper {
+  box-shadow: none;
+}
+
+@media (min-width: 0px) {
+  .MuiPaper-root.overview-paper {
+    padding: 20px;
+  }
+}
+
+@media (min-width: 600px) {
+  .MuiPaper-root.overview-paper {
+    padding: 30px;
+  }
+}

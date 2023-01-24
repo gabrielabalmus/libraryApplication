@@ -3,26 +3,22 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
-import { useCallback, useState } from "react";
-import { MenuProps } from "./Menu.types";
 import { StyledDivider, StyledItemButton, StyledMenuList } from "./Menu.style";
 import { useNavigate, useLocation } from "@remix-run/react";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { MenuList } from "./Menu.const";
 
+export const handleMenuIndex = (pathName: string) => {
+  return MenuList.findIndex(
+    (item) => item.url.split("/")[1] === pathName.split("/")[1]
+  );
+};
+
 export const menuItems = (onLogoutClick: () => void) => {
-  let location = useLocation();
-  const pathName = location.pathname;
-
-  const initialIndex = MenuList.findIndex((item) => item.url === pathName);
-
-  const [selectedIndex, setSelectedIndex] = useState<number>(initialIndex);
   const navigate = useNavigate();
 
-  const handleListItemClick = useCallback(({ url, index }: MenuProps) => {
-    setSelectedIndex(index);
-    navigate(url);
-  }, []);
+  const location = useLocation();
+  const pathName = location.pathname;
 
   return (
     <StyledMenuList>
@@ -32,9 +28,9 @@ export const menuItems = (onLogoutClick: () => void) => {
         {MenuList.map((item, index) => (
           <ListItem key={index} disablePadding>
             <StyledItemButton
-              disableRipple={true}
-              selected={selectedIndex === index}
-              onClick={() => handleListItemClick({ url: item.url, index })}
+              disableRipple
+              selected={item.url.split("/")[1] === pathName.split("/")[1]}
+              onClick={() => navigate(item.url)}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
 
@@ -47,7 +43,7 @@ export const menuItems = (onLogoutClick: () => void) => {
       <StyledDivider />
 
       <ListItem disablePadding>
-        <StyledItemButton disableRipple={true} onClick={() => onLogoutClick()}>
+        <StyledItemButton disableRipple onClick={() => onLogoutClick()}>
           <ListItemIcon>
             <LogoutIcon />
           </ListItemIcon>

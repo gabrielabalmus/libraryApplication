@@ -6,7 +6,7 @@ export const handleLoginErrors = (formData: LoginState) => {
   const errors: ErrorState = {};
 
   if (isEmpty(formData.email)) errors.email = requiredField;
-
+  
   if (isEmpty(formData.password)) errors.password = requiredField;
 
   return errors;

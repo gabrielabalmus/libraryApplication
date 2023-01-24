@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 import {
   flexbox,
   space,
@@ -6,7 +6,7 @@ import {
   FlexboxProps,
   SpaceProps,
   LayoutProps,
-} from 'styled-system';
+} from "styled-system";
 
 export interface FlexProps extends FlexboxProps, SpaceProps, LayoutProps {
   gap?: string;
@@ -18,8 +18,8 @@ const Flex = styled.div<FlexProps>`
   ${flexbox}
   ${space}
   ${layout}
-  gap: ${(props) => props.gap || '0px'};
-  position: ${(props) => props.position || 'static'};
+  gap: ${(props) => props.gap || "0px"};
+  position: ${(props) => props.position || "static"};
 `;
 
 const ColumnFlex = styled(Flex)`
@@ -34,7 +34,11 @@ const SpaceBetweenFlex = styled(Flex)`
   justify-content: space-between;
 `;
 
-const CenteredALignedFlex = styled(CenteredFlex)`
+const AlignedFlex = styled(Flex)`
+  align-items: center;
+`;
+
+const CenteredAlignedFlex = styled(CenteredFlex)`
   align-items: center;
 `;
 
@@ -46,7 +50,7 @@ const StretchRelativeCenteredFlex = styled(RelativeCenteredFlex)`
   align-items: stretch;
 `;
 
-const RelativeCenteredALignedFlex = styled(CenteredALignedFlex)`
+const RelativeCenteredAlignedFlex = styled(CenteredAlignedFlex)`
   position: relative;
 `;
 
@@ -92,11 +96,12 @@ export {
   ColumnFlex,
   CenteredFlex,
   SpaceBetweenFlex,
-  CenteredALignedFlex,
+  AlignedFlex,
+  CenteredAlignedFlex,
   SpaceBetweenCenterFlex,
   RelativeCenteredFlex,
   StretchRelativeCenteredFlex,
-  RelativeCenteredALignedFlex,
+  RelativeCenteredAlignedFlex,
   SpaceBetweenStretchlex,
   FlexStartSpaceBetweenFlex,
   FlexEndSpaceBetweenFlex,

@@ -1,16 +1,24 @@
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
 import { useState } from "react";
 import TableHead from "@mui/material/TableHead";
 import { TableProps } from "./Table.types";
 import TableContainer from "@mui/material/TableContainer";
-import { StyledTable, StyledTableRow } from "./Table.style";
+import {
+  StyledTable,
+  StyledTableCell,
+  StyledBodyRow,
+  StyledHeaderRow,
+} from "./Table.style";
 import { ColumnFlex } from "@/components/Flex";
+import TableActions from "./components/TableActions";
+import { useLocation, useNavigate } from "@remix-run/react";
 
 const PaginatedTableContainer: React.FC<TableProps> = ({ columns, rows }) => {
   const [page, setPage] = useState(0);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -19,28 +27,45 @@ const PaginatedTableContainer: React.FC<TableProps> = ({ columns, rows }) => {
     setPage(newPage);
   };
 
+  const handleEditRow = (rowId: string) => {
+    navigate(`${location.pathname}/${rowId}`);
+  };
+
   return (
     <ColumnFlex>
       <TableContainer>
         <StyledTable>
           <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell>{column.value}</TableCell>
+            <StyledHeaderRow>
+              {columns.map((column, index) => (
+                <StyledTableCell key={index}>{column.value}</StyledTableCell>
               ))}
-            </TableRow>
+
+              <StyledTableCell align="right">Actions</StyledTableCell>
+            </StyledHeaderRow>
           </TableHead>
+
           <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.name}>
-                {columns.map((column) => (
-                  <TableCell>{row[column.name]}</TableCell>
+            {rows.map((row, rowIndex) => (
+              <StyledBodyRow
+                key={rowIndex}
+                onClick={() => handleEditRow(row.id)}
+              >
+                {columns.map((column, columnIndex) => (
+                  <TableCell key={columnIndex}>
+                    {row[column.name] || "-"}
+                  </TableCell>
                 ))}
-              </StyledTableRow>
+
+                <TableCell align="right">
+                  <TableActions />
+                </TableCell>
+              </StyledBodyRow>
             ))}
           </TableBody>
         </StyledTable>
       </TableContainer>
+
       <TablePagination
         rowsPerPageOptions={[]}
         component="div"

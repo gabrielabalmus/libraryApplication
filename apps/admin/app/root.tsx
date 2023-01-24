@@ -8,6 +8,8 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import GlobalStyle from "@/theme/globalStyle.css";
+import { theme } from "~/const";
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 
 export const links: LinksFunction = () => {
   return [
@@ -34,7 +36,9 @@ const App: React.FC = () => {
         {typeof document === "undefined" ? "__STYLES__" : null}
       </head>
       <body>
-        <Outlet />
+        <MuiThemeProvider theme={theme}>
+          <Outlet />
+        </MuiThemeProvider>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

@@ -1,5 +1,5 @@
 import collorPalette from "@/theme/colorPalette";
-import { createTheme, Theme } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 import { createBreakpoints } from "@mui/system";
 
 export const requiredField = "This field is required!";
@@ -39,6 +39,15 @@ export const theme = createTheme({
     h1: {
       color: collorPalette.black,
       [breakpoints.up("xs")]: {
+        fontSize: 13  ,
+      },
+      [breakpoints.up("sm")]: {
+        fontSize: 14,
+      },
+    },
+    h2: {
+      color: collorPalette.black,
+      [breakpoints.up("xs")]: {
         fontSize: 15,
       },
       [breakpoints.up("sm")]: {
@@ -65,6 +74,16 @@ export const theme = createTheme({
         fontSize: 22,
       },
     },
+    h3: {
+      color: collorPalette.black,
+      fontWeight: 600,
+      [breakpoints.up("xs")]: {
+        fontSize: 16,
+      },
+      [breakpoints.up("sm")]: {
+        fontSize: 18,
+      },
+    },
   },
   palette: {
     primary: {
@@ -75,20 +94,3 @@ export const theme = createTheme({
     },
   },
 });
-
-export const appTheme = (theme: Theme) =>
-  createTheme({
-    ...theme,
-    components: {
-      ...theme.components,
-      MuiPaper: {
-        styleOverrides: {
-          root: ({ theme }) =>
-            theme.unstable_sx({
-              boxShadow: "none",
-              padding: { xs: "15px", sm: "30px" },
-            }),
-        },
-      },
-    },
-  });

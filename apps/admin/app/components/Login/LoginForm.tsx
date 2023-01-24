@@ -9,7 +9,7 @@ import {
 } from "./Login.style";
 import { menuTitle } from "@/components/Menu/Menu.const";
 import { useActionData, useSubmit } from "@remix-run/react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ErrorState, LoginState, LoginValue } from "./Login.type";
 import { handleLoginErrors } from "./Login.helper";
 import { InputType } from "@/components/Input/Input.type";
@@ -30,22 +30,19 @@ const LoginForm: React.FC = () => {
       setGeneralError(actionData.message);
   }, [actionData]);
 
-  const handleInputChange = useCallback(
-    (value: string, field: LoginValue) => {
-      setData((oldData) => ({ ...oldData, [field]: value }));
+  const handleInputChange = (value: string, field: LoginValue) => {
+    setData((oldData) => ({ ...oldData, [field]: value }));
 
-      if (inputErrors[field])
-        setInputErrors((oldErrors) => {
-          delete oldErrors[field];
-          return oldErrors;
-        });
+    if (inputErrors[field])
+      setInputErrors((oldErrors) => {
+        delete oldErrors[field];
+        return oldErrors;
+      });
 
-      if (generalError) setGeneralError("");
-    },
-    [data, inputErrors, generalError]
-  );
+    if (generalError) setGeneralError("");
+  };
 
-  const handleOnSubmit = useCallback(() => {
+  const handleOnSubmit = () => {
     const fieldErrors = handleLoginErrors(data);
 
     if (Object.values(fieldErrors).some(Boolean)) {
@@ -63,13 +60,13 @@ const LoginForm: React.FC = () => {
         action: "/login",
       }
     );
-  }, [data]);
+  };
 
   return (
     <StyledGrid container>
       <StyledTitle variant="h5">{menuTitle}</StyledTitle>
 
-      <StyledParagraph variant="h1">
+      <StyledParagraph variant="h2">
         Please enter your login data.
       </StyledParagraph>
 
