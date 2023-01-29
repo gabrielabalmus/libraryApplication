@@ -1,6 +1,6 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import { CreateSession, RemoveSession } from "~/types/Session.type";
-import { getUserSession } from "./user.server";
+import { getUserSession } from "./users.server";
 
 const { getSession, commitSession, destroySession } =
   createCookieSessionStorage({

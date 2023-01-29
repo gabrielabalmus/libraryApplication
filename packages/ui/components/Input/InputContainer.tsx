@@ -32,7 +32,6 @@ const InputContainer: React.FC<InputProps> = ({
       onChange={handleOnChange}
       width={width}
       multiline={multiline}
-      rows={multiline ? 3 : undefined}
     />
   );
 };

@@ -4,10 +4,11 @@ import { ErrorState, LoginState } from "./Login.type";
 
 export const handleLoginErrors = (formData: LoginState) => {
   const errors: ErrorState = {};
+  const { email, password } = formData;
 
-  if (isEmpty(formData.email)) errors.email = requiredField;
-  
-  if (isEmpty(formData.password)) errors.password = requiredField;
+  if (isEmpty(email)) errors.email = requiredField;
+
+  if (isEmpty(password)) errors.password = requiredField;
 
   return errors;
 };

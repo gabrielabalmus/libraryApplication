@@ -8,15 +8,14 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     const formData = await request.formData();
     const intent = formData.get("intent");
 
-    if (typeof intent !== "string") {
-      return badRequest({
-        message: errorMessage,
-        success: false,
-      });
+    if (intent === "logout") {
+      return removeUserSession({ request, redirectTo: "/login" });
     }
 
-    if (intent === "logout")
-      return removeUserSession({ request, redirectTo: "/login" });
+    return badRequest({
+      message: errorMessage,
+      success: false,
+    });
   } catch (error: any) {
     return badRequest({
       message: error.message || errorMessage,

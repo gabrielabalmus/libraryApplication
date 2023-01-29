@@ -41,7 +41,7 @@ const PaginatedTableContainer: React.FC<TableProps> = ({ columns, rows }) => {
                 <StyledTableCell key={index}>{column.value}</StyledTableCell>
               ))}
 
-              <StyledTableCell align="right">Actions</StyledTableCell>
+              <StyledTableCell align="right">Delete</StyledTableCell>
             </StyledHeaderRow>
           </TableHead>
 

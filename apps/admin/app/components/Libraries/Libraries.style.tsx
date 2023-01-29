@@ -12,7 +12,7 @@ export const StyledTitle = MuiStyled(Typography)<TypographyProps>(({ theme }) =>
 export const StyledTypography = MuiStyled(Typography)<TypographyProps>(
   ({ theme }) =>
     theme.unstable_sx({
-      minWidth: "120px",
+      minWidth: { xs: "120px", sm: "135px" },
       fontWeight: "600",
     })
 );

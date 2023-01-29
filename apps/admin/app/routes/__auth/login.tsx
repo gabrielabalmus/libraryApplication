@@ -5,6 +5,9 @@ import { errorMessage, errorSubmit } from "~/const";
 import { badRequest } from "~/server/request.server";
 import { createUserSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
+import { isString } from "lodash";
+import { useSubmit } from "@remix-run/react";
+import { LoginSubmitProps } from "~/components/Login/Login.type";
 
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
   try {
@@ -14,15 +17,8 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    if (typeof intent !== "string") {
-      return badRequest({
-        message: errorMessage,
-        success: false,
-      });
-    }
-
     if (intent === "login") {
-      if (typeof email !== "string" || typeof password !== "string") {
+      if (!isString(email) || !isString(password)) {
         return badRequest({
           message: errorSubmit,
           success: false,
@@ -44,6 +40,11 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
       return createUserSession({ request, userId: user.id, redirectTo: "/" });
     }
+
+    return badRequest({
+      message: errorMessage,
+      success: false,
+    });
   } catch (error: any) {
     return badRequest({
       message: error.message || errorMessage,
@@ -53,7 +54,28 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 };
 
 const Login: React.FC = () => {
-  return <LoginForm />;
+  const submit = useSubmit();
+
+  const handleOnSubmit = ({ data, callback }: LoginSubmitProps) => {
+    const fieldErrors = handleLoginErrors(data);
+
+    if (Object.values(fieldErrors).some(Boolean)) {
+      callback(fieldErrors);
+      return;
+    }
+
+    submit(
+      {
+        ...data,
+        intent: "login",
+      },
+      {
+        method: "post",
+        action: "/login",
+      }
+    );
+  };
+  return <LoginForm onSubmit={handleOnSubmit} />;
 };
 
 export default Login;

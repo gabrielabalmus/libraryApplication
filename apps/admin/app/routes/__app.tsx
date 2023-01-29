@@ -6,7 +6,7 @@ import {
 } from "@remix-run/react";
 import Menu from "@/components/Menu";
 import { json, LoaderArgs, redirect } from "@remix-run/node";
-import { getUserId } from "~/server/user.server";
+import { getUserId } from "~/server/users.server";
 import Spinner from "@/components/Spinner";
 import { useEffect, useState } from "react";
 import Snackbar from "@mui/material/Snackbar";

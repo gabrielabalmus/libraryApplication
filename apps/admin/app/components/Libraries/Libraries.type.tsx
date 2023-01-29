@@ -4,7 +4,7 @@ export interface WeekTimes {
 }
 
 export interface LibrarySchedule {
-  modayFriday: WeekTimes;
+  mondayFriday: WeekTimes;
   saturday: WeekTimes;
 }
 
@@ -44,4 +44,13 @@ export enum LibraryValue {
   city = "city",
   address = "address",
   phone = "phone",
+}
+
+export interface LibrariesFormProps {
+  onSubmit: ({ data, callback }: LibrariesSubmitProps) => void;
+}
+
+export interface LibrariesSubmitProps {
+  data: LibraryState;
+  callback: (fieldErrors: ErrorState) => void;
 }

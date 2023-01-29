@@ -8,14 +8,12 @@ import {
   StyledTitle,
 } from "./Login.style";
 import { menuTitle } from "@/components/Menu/Menu.const";
-import { useActionData, useSubmit } from "@remix-run/react";
+import { useActionData } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { ErrorState, LoginState, LoginValue } from "./Login.type";
-import { handleLoginErrors } from "./Login.helper";
+import { ErrorState, LoginFormProps, LoginState, LoginValue } from "./Login.type";
 import { InputType } from "@/components/Input/Input.type";
 
-const LoginForm: React.FC = () => {
-  const submit = useSubmit();
+const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
   const actionData = useActionData();
 
   const [data, setData] = useState<LoginState>({
@@ -43,23 +41,7 @@ const LoginForm: React.FC = () => {
   };
 
   const handleOnSubmit = () => {
-    const fieldErrors = handleLoginErrors(data);
-
-    if (Object.values(fieldErrors).some(Boolean)) {
-      setInputErrors(fieldErrors);
-      return;
-    }
-
-    submit(
-      {
-        ...data,
-        intent: "login",
-      },
-      {
-        method: "post",
-        action: "/login",
-      }
-    );
+    onSubmit({ data, callback: (fieldErrors) => setInputErrors(fieldErrors) });
   };
 
   return (

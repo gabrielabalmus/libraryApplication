@@ -1,14 +1,15 @@
 import Paper from "@mui/material/Paper";
 import Input from "@/components/Input";
 import { useState } from "react";
-import { useNavigate, useSubmit } from "@remix-run/react";
+import { useNavigate } from "@remix-run/react";
 import {
   ErrorState,
+  LibrariesFormProps,
   LibraryState,
   LibraryValue,
   ScheduleTimeValue,
 } from "../Libraries.type";
-import { checkIdValidDate, handleLibraryErrors } from "../Libraries.helper";
+import { checkIfValidDate } from "../Libraries.helper";
 import Button from "@/components/Button";
 import { ButtonType, ButtonVariant } from "@/components/Button/Button.type";
 import Grid from "@mui/material/Grid";
@@ -23,8 +24,7 @@ import {
 } from "../Libraries.style";
 import { AlignedFlex } from "@/components/Flex/Flex";
 
-const LibrariesForm: React.FC = () => {
-  const submit = useSubmit();
+const LibrariesForm: React.FC<LibrariesFormProps> = ({ onSubmit }) => {
   const navigate = useNavigate();
 
   const [data, setData] = useState<LibraryState>({
@@ -33,7 +33,7 @@ const LibrariesForm: React.FC = () => {
     address: "",
     phone: "",
     schedule: {
-      modayFriday: { from: "", to: "" },
+      mondayFriday: { from: "", to: "" },
       saturday: { from: "", to: "" },
     },
   });
@@ -54,13 +54,13 @@ const LibrariesForm: React.FC = () => {
     value: Dayjs | null,
     field: ScheduleTimeValue
   ) => {
-    const newTime = checkIdValidDate(value);
+    const newTime = checkIfValidDate(value);
 
     setData((oldData) => ({
       ...oldData,
       schedule: {
         ...oldData.schedule,
-        modayFriday: { ...oldData.schedule.modayFriday, [field]: newTime },
+        mondayFriday: { ...oldData.schedule.mondayFriday, [field]: newTime },
       },
     }));
 
@@ -74,7 +74,7 @@ const LibrariesForm: React.FC = () => {
   };
 
   const handleSaturday = (value: Dayjs | null, field: ScheduleTimeValue) => {
-    const newTime = checkIdValidDate(value);
+    const newTime = checkIfValidDate(value);
 
     setData((oldData) => ({
       ...oldData,
@@ -94,12 +94,10 @@ const LibrariesForm: React.FC = () => {
   };
 
   const handleOnSubmit = () => {
-    const fieldErrors = handleLibraryErrors(data);
-
-    if (Object.values(fieldErrors).some(Boolean)) {
-      setInputErrors(fieldErrors);
-      return;
-    }
+    onSubmit({
+      data,
+      callback: (fieldErrors: ErrorState) => setInputErrors(fieldErrors),
+    });
   };
 
   return (
@@ -138,6 +136,15 @@ const LibrariesForm: React.FC = () => {
               width="350px"
               multiline
             />
+            <Input
+              label="Phone*"
+              errorMessage={inputErrors.phone}
+              defaultValue={data.phone}
+              onChange={(value: string) =>
+                handleInputChange(value, LibraryValue.phone)
+              }
+              width="350px"
+            />
           </ColumnFlex>
         </Grid>
 
@@ -153,7 +160,7 @@ const LibrariesForm: React.FC = () => {
                 <TimePicker
                   label="From"
                   errorMessage={inputErrors.schedule?.mondayFriday?.from}
-                  value={data.schedule.modayFriday.from}
+                  value={data.schedule.mondayFriday.from}
                   onChange={(value) =>
                     handleMondayFriday(value, ScheduleTimeValue.from)
                   }
@@ -161,7 +168,7 @@ const LibrariesForm: React.FC = () => {
                 <TimePicker
                   label="To"
                   errorMessage={inputErrors.schedule?.mondayFriday?.to}
-                  value={data.schedule.modayFriday.to}
+                  value={data.schedule.mondayFriday.to}
                   onChange={(value) =>
                     handleMondayFriday(value, ScheduleTimeValue.to)
                   }
@@ -203,7 +210,7 @@ const LibrariesForm: React.FC = () => {
         />
         <Button
           type={ButtonType.submit}
-          title="Login"
+          title="Create"
           variant={ButtonVariant.contained}
           onClick={handleOnSubmit}
         />

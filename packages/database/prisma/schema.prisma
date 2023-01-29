@@ -8,10 +8,31 @@ datasource db {
 }
 
 model Users {
-  id        String   @id @default(uuid()) @map("_id") @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
   password  String
   type      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+type LibrarySchedule {
+  mondayFriday TimeSchedule
+  saturday     TimeSchedule
+}
+
+type TimeSchedule {
+  from String
+  to   String
+}
+
+model Libraries {
+  id        String          @id @default(auto()) @map("_id") @db.ObjectId
+  name      String          @unique
+  city      String
+  address   String
+  phone     Int
+  schedule  LibrarySchedule
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
 }

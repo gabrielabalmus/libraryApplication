@@ -2,7 +2,8 @@ import collorPalette from "@/theme/colorPalette";
 import { createTheme } from "@mui/material/styles";
 import { createBreakpoints } from "@mui/system";
 
-export const requiredField = "This field is required!";
+export const requiredField = "This field is required";
+export const invalidField = "Invalid field value";
 export const errorSubmit = "There was a problem in submitting your form.";
 export const errorMessage = "An error occured.";
 export const wrongLoginData = "Email or password is wrong.";
