@@ -1,13 +1,14 @@
 import { StandardTextFieldProps } from "@mui/material/TextField";
 
 export interface InputProps {
-  label: string;
+  label?: string;
   onChange: (value: string) => void;
-  defaultValue?: string;
+  value: string;
   type?: InputType;
   errorMessage?: string;
   width?: string;
   multiline?: boolean;
+  placeholder?: string;
 }
 
 export enum InputType {

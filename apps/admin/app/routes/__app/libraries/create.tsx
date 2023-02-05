@@ -2,17 +2,21 @@ import { ColumnFlex } from "@/components/Flex";
 import { ActionArgs, ActionFunction } from "@remix-run/node";
 import { useActionData, useNavigate, useSubmit } from "@remix-run/react";
 import { isString } from "lodash";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import LayoutTitle from "~/components/LayoutTitle";
 import LibrariesForm from "~/components/Libraries/Form/LibrariesForm";
 import {
-  createNewLibrary,
-  errorCreate,
-  successCreate,
+  CreateLibraryTitle,
+  ErrorCreate,
+  initialLibrary,
+  SuccessCreate,
 } from "~/components/Libraries/Libraries.const";
 import { handleLibraryErrors } from "~/components/Libraries/Libraries.helper";
-import { LibrariesSubmitProps } from "~/components/Libraries/Libraries.type";
-import { errorMessage } from "~/const";
+import {
+  LibrariesSubmitProps,
+  LibraryState,
+} from "~/components/Libraries/Libraries.type";
+import { ErrorMessage } from "~/const";
 import { createLibrary } from "~/server/libraries.server";
 import { badRequest, goodRequest } from "~/server/request.server";
 
@@ -21,13 +25,14 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     const formData = await request.formData();
 
     const intent = formData.get("intent");
-    const name = formData.get("name");
-    const city = formData.get("city");
-    const address = formData.get("address");
-    const phone = formData.get("phone");
-    const schedule = formData.get("schedule");
 
     if (intent === "create") {
+      const name = formData.get("name");
+      const city = formData.get("city");
+      const address = formData.get("address");
+      const phone = formData.get("phone");
+      const schedule = formData.get("schedule");
+
       if (
         !isString(name) ||
         !isString(city) ||
@@ -36,7 +41,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         !isString(schedule)
       ) {
         return badRequest({
-          message: errorCreate,
+          message: ErrorCreate,
           success: false,
         });
       }
@@ -49,7 +54,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
       if (Object.values(fieldErrors).some(Boolean)) {
         return badRequest({
-          message: errorCreate,
+          message: ErrorCreate,
           success: false,
         });
       }
@@ -57,18 +62,18 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
       await createLibrary(fields);
 
       return goodRequest({
-        message: successCreate,
+        message: SuccessCreate,
         success: true,
       });
     }
 
     return badRequest({
-      message: errorMessage,
+      message: ErrorMessage,
       success: false,
     });
   } catch (error: any) {
     return badRequest({
-      message: error.message || errorMessage,
+      message: error.message || ErrorMessage,
       success: false,
     });
   }
@@ -79,23 +84,25 @@ const CreateLibrary: React.FC = () => {
   const actionData = useActionData();
   const navigate = useNavigate();
 
+  const [library, setLibrary] = useState<LibraryState>(initialLibrary);
+
   useEffect(() => {
-    if (actionData && actionData.success === true) navigate("/libraries");
+    if (actionData && actionData.success === true) navigate(-1);
   }, [actionData]);
 
-  const handleOnSubmit = ({ data, callback }: LibrariesSubmitProps) => {
-    const fieldErrors = handleLibraryErrors(data);
+  const handleOnSubmit = ({ callback }: LibrariesSubmitProps) => {
+    const fieldErrors = handleLibraryErrors(library);
 
     if (Object.values(fieldErrors).some(Boolean)) {
       callback(fieldErrors);
       return;
     }
 
-    const stringSchedule = JSON.stringify(data.schedule);
+    const stringSchedule = JSON.stringify(library.schedule);
 
     submit(
       {
-        ...data,
+        ...library,
         schedule: stringSchedule,
         intent: "create",
       },
@@ -108,8 +115,12 @@ const CreateLibrary: React.FC = () => {
 
   return (
     <ColumnFlex>
-      <LayoutTitle title={createNewLibrary} backUrl={"/libraries"} />
-      <LibrariesForm onSubmit={handleOnSubmit} />
+      <LayoutTitle title={CreateLibraryTitle} backIcon={true} />
+      <LibrariesForm
+        onSubmit={handleOnSubmit}
+        setLibrary={setLibrary}
+        library={library}
+      />
     </ColumnFlex>
   );
 };

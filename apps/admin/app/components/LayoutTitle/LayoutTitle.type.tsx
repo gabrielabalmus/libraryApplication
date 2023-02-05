@@ -1,5 +1,5 @@
 export interface LayoutTitleProps {
   title: string;
-  backUrl?: string;
+  backIcon?: boolean;
   children?: React.ReactNode;
 }

@@ -1,7 +1,6 @@
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TablePagination from "@mui/material/TablePagination";
-import { useState } from "react";
 import TableHead from "@mui/material/TableHead";
 import { TableProps } from "./Table.types";
 import TableContainer from "@mui/material/TableContainer";
@@ -10,13 +9,20 @@ import {
   StyledTableCell,
   StyledBodyRow,
   StyledHeaderRow,
+  EmptyBodyRow,
 } from "./Table.style";
-import { ColumnFlex } from "@/components/Flex";
+import Flex, { ColumnFlex } from "@/components/Flex";
 import TableActions from "./components/TableActions";
 import { useLocation, useNavigate } from "@remix-run/react";
 
-const PaginatedTableContainer: React.FC<TableProps> = ({ columns, rows }) => {
-  const [page, setPage] = useState(0);
+const PaginatedTableContainer: React.FC<TableProps> = ({
+  columns,
+  rows,
+  count,
+  page,
+  onPageChange,
+  onDelete,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -24,7 +30,7 @@ const PaginatedTableContainer: React.FC<TableProps> = ({ columns, rows }) => {
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
-    setPage(newPage);
+    onPageChange(newPage + 1);
   };
 
   const handleEditRow = (rowId: string) => {
@@ -58,20 +64,28 @@ const PaginatedTableContainer: React.FC<TableProps> = ({ columns, rows }) => {
                 ))}
 
                 <TableCell align="right">
-                  <TableActions />
+                  <TableActions onDelete={() => onDelete(row.id)} />
                 </TableCell>
               </StyledBodyRow>
             ))}
           </TableBody>
+
+          {rows.length === 0 && (
+            <EmptyBodyRow>
+              <TableCell colSpan={12} align="center">
+                No data
+              </TableCell>
+            </EmptyBodyRow>
+          )}
         </StyledTable>
       </TableContainer>
 
       <TablePagination
         rowsPerPageOptions={[]}
         component="div"
-        count={rows.length}
-        rowsPerPage={10}
-        page={page}
+        count={count}
+        rowsPerPage={5}
+        page={page - 1}
         onPageChange={handleChangePage}
       />
     </ColumnFlex>

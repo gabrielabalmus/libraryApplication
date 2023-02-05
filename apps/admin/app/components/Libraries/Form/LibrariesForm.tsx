@@ -1,11 +1,10 @@
 import Paper from "@mui/material/Paper";
 import Input from "@/components/Input";
 import { useState } from "react";
-import { useNavigate } from "@remix-run/react";
+import { useNavigate, useParams } from "@remix-run/react";
 import {
   ErrorState,
   LibrariesFormProps,
-  LibraryState,
   LibraryValue,
   ScheduleTimeValue,
 } from "../Libraries.type";
@@ -16,7 +15,7 @@ import Grid from "@mui/material/Grid";
 import { ColumnFlex } from "@/components/Flex";
 import TimePicker from "@/components/TimePicker";
 import { Dayjs } from "dayjs";
-import { details, scheduleTitle } from "../Libraries.const";
+import { Details, ScheduleTitle } from "../Libraries.const";
 import {
   StyledFlexButton,
   StyledTitle,
@@ -24,24 +23,18 @@ import {
 } from "../Libraries.style";
 import { AlignedFlex } from "@/components/Flex/Flex";
 
-const LibrariesForm: React.FC<LibrariesFormProps> = ({ onSubmit }) => {
+const LibrariesForm: React.FC<LibrariesFormProps> = ({
+  onSubmit,
+  setLibrary,
+  library,
+}) => {
   const navigate = useNavigate();
-
-  const [data, setData] = useState<LibraryState>({
-    name: "",
-    city: "",
-    address: "",
-    phone: "",
-    schedule: {
-      mondayFriday: { from: "", to: "" },
-      saturday: { from: "", to: "" },
-    },
-  });
+  const urlParams = useParams();
 
   const [inputErrors, setInputErrors] = useState<ErrorState>({});
 
   const handleInputChange = (value: string, field: LibraryValue) => {
-    setData((oldData) => ({ ...oldData, [field]: value }));
+    setLibrary((oldLibrary) => ({ ...oldLibrary, [field]: value }));
 
     if (inputErrors[field])
       setInputErrors((oldErrors) => {
@@ -56,11 +49,11 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({ onSubmit }) => {
   ) => {
     const newTime = checkIfValidDate(value);
 
-    setData((oldData) => ({
-      ...oldData,
+    setLibrary((oldLibrary) => ({
+      ...oldLibrary,
       schedule: {
-        ...oldData.schedule,
-        mondayFriday: { ...oldData.schedule.mondayFriday, [field]: newTime },
+        ...oldLibrary.schedule,
+        mondayFriday: { ...oldLibrary.schedule.mondayFriday, [field]: newTime },
       },
     }));
 
@@ -76,11 +69,11 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({ onSubmit }) => {
   const handleSaturday = (value: Dayjs | null, field: ScheduleTimeValue) => {
     const newTime = checkIfValidDate(value);
 
-    setData((oldData) => ({
-      ...oldData,
+    setLibrary((oldLibrary) => ({
+      ...oldLibrary,
       schedule: {
-        ...oldData.schedule,
-        saturday: { ...oldData.schedule.saturday, [field]: newTime },
+        ...oldLibrary.schedule,
+        saturday: { ...oldLibrary.schedule.saturday, [field]: newTime },
       },
     }));
 
@@ -95,7 +88,6 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({ onSubmit }) => {
 
   const handleOnSubmit = () => {
     onSubmit({
-      data,
       callback: (fieldErrors: ErrorState) => setInputErrors(fieldErrors),
     });
   };
@@ -104,14 +96,13 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({ onSubmit }) => {
     <Paper className="overview-paper">
       <Grid container spacing={5}>
         <Grid item xs={12} md={5}>
-          <ColumnFlex>
-            <StyledTitle variant="h3">{details}</StyledTitle>
-            <br />
+          <ColumnFlex gap="12px">
+            <StyledTitle variant="h3">{Details}</StyledTitle>
 
             <Input
               label="Name*"
               errorMessage={inputErrors.name}
-              defaultValue={data.name}
+              value={library.name}
               onChange={(value: string) =>
                 handleInputChange(value, LibraryValue.name)
               }
@@ -120,7 +111,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({ onSubmit }) => {
             <Input
               label="City*"
               errorMessage={inputErrors.city}
-              defaultValue={data.city}
+              value={library.city}
               onChange={(value: string) =>
                 handleInputChange(value, LibraryValue.city)
               }
@@ -129,7 +120,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({ onSubmit }) => {
             <Input
               label="Address*"
               errorMessage={inputErrors.address}
-              defaultValue={data.address}
+              value={library.address}
               onChange={(value: string) =>
                 handleInputChange(value, LibraryValue.address)
               }
@@ -139,7 +130,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({ onSubmit }) => {
             <Input
               label="Phone*"
               errorMessage={inputErrors.phone}
-              defaultValue={data.phone}
+              value={library.phone}
               onChange={(value: string) =>
                 handleInputChange(value, LibraryValue.phone)
               }
@@ -149,26 +140,25 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({ onSubmit }) => {
         </Grid>
 
         <Grid item xs={12} md={7}>
-          <ColumnFlex>
-            <StyledTitle variant="h3">{scheduleTitle}</StyledTitle>
-            <br />
+          <ColumnFlex gap="12px">
+            <StyledTitle variant="h3">{ScheduleTitle}</StyledTitle>
 
             <AlignedFlex>
               <StyledTypography variant="h1">Monday-Friday:</StyledTypography>
 
-              <ColumnFlex>
+              <ColumnFlex gap="12px">
                 <TimePicker
-                  label="From"
+                  label="From*"
                   errorMessage={inputErrors.schedule?.mondayFriday?.from}
-                  value={data.schedule.mondayFriday.from}
+                  value={library.schedule.mondayFriday.from}
                   onChange={(value) =>
                     handleMondayFriday(value, ScheduleTimeValue.from)
                   }
                 />
                 <TimePicker
-                  label="To"
+                  label="To*"
                   errorMessage={inputErrors.schedule?.mondayFriday?.to}
-                  value={data.schedule.mondayFriday.to}
+                  value={library.schedule.mondayFriday.to}
                   onChange={(value) =>
                     handleMondayFriday(value, ScheduleTimeValue.to)
                   }
@@ -179,18 +169,18 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({ onSubmit }) => {
             <AlignedFlex>
               <StyledTypography variant="h1">Saturday:</StyledTypography>
 
-              <ColumnFlex>
+              <ColumnFlex gap="12px">
                 <TimePicker
-                  label="From"
-                  value={data.schedule.saturday.from}
+                  label="From*"
+                  value={library.schedule.saturday.from}
                   errorMessage={inputErrors.schedule?.saturday?.from}
                   onChange={(value) =>
                     handleSaturday(value, ScheduleTimeValue.from)
                   }
                 />
                 <TimePicker
-                  label="To"
-                  value={data.schedule.saturday.to}
+                  label="To*"
+                  value={library.schedule.saturday.to}
                   errorMessage={inputErrors.schedule?.saturday?.to}
                   onChange={(value) =>
                     handleSaturday(value, ScheduleTimeValue.to)
@@ -206,11 +196,11 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({ onSubmit }) => {
         <Button
           title="Cancel"
           variant={ButtonVariant.outlined}
-          onClick={() => navigate("/libraries")}
+          onClick={() => navigate(-1)}
         />
         <Button
           type={ButtonType.submit}
-          title="Create"
+          title={urlParams.libraryId ? "Update" : "Create"}
           variant={ButtonVariant.contained}
           onClick={handleOnSubmit}
         />

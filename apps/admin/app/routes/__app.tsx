@@ -13,15 +13,20 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { AlertDataState } from "~/types/Session.type";
 import isBoolean from "lodash/isBoolean";
+import { removeUserSession } from "~/server/session.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const userId = await getUserId(request);
+  try {
+    const userId = await getUserId(request);
 
-  if (!userId) {
-    return redirect("/login");
+    if (!userId) {
+      return redirect("/login");
+    }
+
+    return json({});
+  } catch (error: any) {
+    return removeUserSession({ request, redirectTo: "/login" });
   }
-
-  return json({});
 };
 
 const AppLayout: React.FC = () => {

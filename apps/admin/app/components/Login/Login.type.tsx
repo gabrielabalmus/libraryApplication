@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface LoginState {
   email: string;
   password: string;
@@ -14,10 +16,13 @@ export enum LoginValue {
 }
 
 export interface LoginFormProps {
-  onSubmit: ({ data, callback }: LoginSubmitProps) => void;
+  data: LoginState;
+  setData: Dispatch<SetStateAction<LoginState>>;
+  generalError: string;
+  setGeneralError: Dispatch<SetStateAction<string>>;
+  onSubmit: ({ callback }: LoginSubmitProps) => void;
 }
 
 export interface LoginSubmitProps {
-  data: LoginState;
   callback: (fieldErrors: ErrorState) => void;
 }

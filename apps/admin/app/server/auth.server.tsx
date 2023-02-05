@@ -1,11 +1,11 @@
 import { LoginState } from "~/components/Login/Login.type";
 import bcrypt from "bcryptjs";
-import { db } from "./db.server";
-import { errorSubmit, wrongLoginData } from "~/const";
+import { prisma } from "./prisma.server";
+import { ErrorSubmit, WrongLoginData } from "~/const";
 
 export const login = async ({ email, password }: LoginState) => {
   try {
-    const user = await db.users.findFirst({
+    const user = await prisma.users.findFirst({
       where: { email, type: "admin" },
       select: {
         id: true,
@@ -13,14 +13,14 @@ export const login = async ({ email, password }: LoginState) => {
       },
     });
 
-    if (!user) throw new Error(wrongLoginData);
+    if (!user) throw new Error(WrongLoginData);
 
     const isCorrectPassword = await bcrypt.compare(password, user.password);
 
-    if (!isCorrectPassword) throw new Error(wrongLoginData);
+    if (!isCorrectPassword) throw new Error(WrongLoginData);
 
     return { id: user.id };
   } catch (err) {
-    throw new Error(errorSubmit);
+    throw new Error(ErrorSubmit);
   }
 };

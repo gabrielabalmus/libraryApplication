@@ -8,25 +8,19 @@ import {
   StyledTitle,
 } from "./Login.style";
 import { menuTitle } from "@/components/Menu/Menu.const";
-import { useActionData } from "@remix-run/react";
-import { useEffect, useState } from "react";
-import { ErrorState, LoginFormProps, LoginState, LoginValue } from "./Login.type";
+import { useState } from "react";
+import { ErrorState, LoginFormProps, LoginValue } from "./Login.type";
 import { InputType } from "@/components/Input/Input.type";
+import { ColumnFlex } from "@/components/Flex";
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
-  const actionData = useActionData();
-
-  const [data, setData] = useState<LoginState>({
-    email: "",
-    password: "",
-  });
-  const [generalError, setGeneralError] = useState<string>("");
+const LoginForm: React.FC<LoginFormProps> = ({
+  onSubmit,
+  data,
+  setData,
+  generalError,
+  setGeneralError,
+}) => {
   const [inputErrors, setInputErrors] = useState<ErrorState>({});
-
-  useEffect(() => {
-    if (actionData && actionData.message && actionData.success === false)
-      setGeneralError(actionData.message);
-  }, [actionData]);
 
   const handleInputChange = (value: string, field: LoginValue) => {
     setData((oldData) => ({ ...oldData, [field]: value }));
@@ -41,7 +35,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
   };
 
   const handleOnSubmit = () => {
-    onSubmit({ data, callback: (fieldErrors) => setInputErrors(fieldErrors) });
+    onSubmit({ callback: (fieldErrors) => setInputErrors(fieldErrors) });
   };
 
   return (
@@ -52,25 +46,29 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
         Please enter your login data.
       </StyledParagraph>
 
-      <Input
-        label="Email*"
-        errorMessage={inputErrors.email}
-        defaultValue={data.email}
-        onChange={(value: string) => handleInputChange(value, LoginValue.email)}
-      />
-      <Input
-        label="Password*"
-        type={InputType.password}
-        errorMessage={inputErrors.password}
-        defaultValue={data.password}
-        onChange={(value: string) =>
-          handleInputChange(value, LoginValue.password)
-        }
-      />
+      <ColumnFlex gap="12px">
+        <Input
+          label="Email*"
+          errorMessage={inputErrors.email}
+          value={data.email}
+          onChange={(value: string) =>
+            handleInputChange(value, LoginValue.email)
+          }
+        />
+        <Input
+          label="Password*"
+          type={InputType.password}
+          errorMessage={inputErrors.password}
+          value={data.password}
+          onChange={(value: string) =>
+            handleInputChange(value, LoginValue.password)
+          }
+        />
 
-      {generalError && (
-        <StyledAlert severity="error">{generalError}</StyledAlert>
-      )}
+        {generalError && (
+          <StyledAlert severity="error">{generalError}</StyledAlert>
+        )}
+      </ColumnFlex>
 
       <br />
       <Button

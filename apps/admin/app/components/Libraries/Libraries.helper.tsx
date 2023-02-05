@@ -1,6 +1,6 @@
 import dayjs, { Dayjs } from "dayjs";
 import { isEmpty } from "lodash";
-import { invalidField, requiredField } from "~/const";
+import { InvalidField, RequiredField } from "~/const";
 import { ErrorState, LibraryState } from "./Libraries.type";
 
 export const handleLibraryErrors = (formData: LibraryState) => {
@@ -16,16 +16,16 @@ export const handleLibraryErrors = (formData: LibraryState) => {
     },
   } = formData;
 
-  if (isEmpty(name)) errors.name = requiredField;
+  if (isEmpty(name)) errors.name = RequiredField;
 
-  if (isEmpty(city)) errors.city = requiredField;
+  if (isEmpty(city)) errors.city = RequiredField;
 
-  if (isEmpty(address)) errors.address = requiredField;
+  if (isEmpty(address)) errors.address = RequiredField;
 
   if (isEmpty(phone)) {
-    errors.phone = requiredField;
+    errors.phone = RequiredField;
   } else if (!checkIfNumber(phone) || phone.length !== 10) {
-    errors.phone = invalidField;
+    errors.phone = InvalidField;
   }
 
   if (isEmpty(mondayFridayFrom))
@@ -35,7 +35,7 @@ export const handleLibraryErrors = (formData: LibraryState) => {
         ...errors.schedule,
         mondayFriday: {
           ...errors.schedule?.mondayFriday,
-          from: requiredField,
+          from: RequiredField,
         },
       },
     };
@@ -47,7 +47,7 @@ export const handleLibraryErrors = (formData: LibraryState) => {
         ...errors.schedule,
         mondayFriday: {
           ...errors.schedule?.mondayFriday,
-          to: requiredField,
+          to: RequiredField,
         },
       },
     };
@@ -59,7 +59,7 @@ export const handleLibraryErrors = (formData: LibraryState) => {
         ...errors.schedule,
         saturday: {
           ...errors.schedule?.saturday,
-          from: requiredField,
+          from: RequiredField,
         },
       },
     };
@@ -71,7 +71,7 @@ export const handleLibraryErrors = (formData: LibraryState) => {
         ...errors.schedule,
         saturday: {
           ...errors.schedule?.saturday,
-          to: requiredField,
+          to: RequiredField,
         },
       },
     };
@@ -88,3 +88,9 @@ export const checkIfValidDate = (value: Dayjs | null) => {
 export const checkIfNumber = (value: any) => {
   return /^\d+$/.test(value);
 };
+
+export const librariesColumns = [
+  { name: "name", value: "Name" },
+  { name: "city", value: "City" },
+  { name: "phone", value: "Phone" },
+];

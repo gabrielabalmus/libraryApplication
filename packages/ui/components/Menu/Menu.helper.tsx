@@ -28,7 +28,6 @@ export const menuItems = (onLogoutClick: () => void) => {
         {MenuList.map((item, index) => (
           <ListItem key={index} disablePadding>
             <StyledItemButton
-              disableRipple
               selected={item.url.split("/")[1] === pathName.split("/")[1]}
               onClick={() => navigate(item.url)}
             >
@@ -43,7 +42,7 @@ export const menuItems = (onLogoutClick: () => void) => {
       <StyledDivider />
 
       <ListItem disablePadding>
-        <StyledItemButton disableRipple onClick={() => onLogoutClick()}>
+        <StyledItemButton onClick={() => onLogoutClick()}>
           <ListItemIcon>
             <LogoutIcon />
           </ListItemIcon>

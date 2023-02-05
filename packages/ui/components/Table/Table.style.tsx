@@ -24,6 +24,15 @@ export const StyledBodyRow = MuiStyled(TableRow)<TableRowProps>(({ theme }) =>
   })
 );
 
+export const EmptyBodyRow = MuiStyled(TableRow)<TableRowProps>(({ theme }) =>
+  theme.unstable_sx({
+    "td, th": { border: 0 },
+    borderTop: `1px solid ${collorPalette.grey.lighter}`,
+    borderRight: `1px solid transparent`,
+    borderLeft: `1px solid transparent`,
+  })
+);
+
 export const StyledTable = MuiStyled(Table)<TableProps>(({ theme }) =>
   theme.unstable_sx({
     minWidth: 450,

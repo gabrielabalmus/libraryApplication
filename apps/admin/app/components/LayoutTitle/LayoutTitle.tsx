@@ -10,20 +10,16 @@ import { AlignedFlex } from "@/components/Flex/Flex";
 
 const LayoutTitle: React.FC<LayoutTitleProps> = ({
   title,
-  backUrl,
+  backIcon,
   children,
 }) => {
   const navigate = useNavigate();
 
-  const handleOnClick = () => {
-    if (backUrl) navigate(backUrl);
-  };
-
   return (
     <StyledHeaderFlex>
       <AlignedFlex>
-        {backUrl && (
-          <StyledIconButton disableRipple onClick={handleOnClick}>
+        {backIcon && (
+          <StyledIconButton onClick={() => navigate(-1)}>
             <StyledArrowIcon />
           </StyledIconButton>
         )}

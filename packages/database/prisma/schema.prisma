@@ -31,7 +31,8 @@ model Libraries {
   name      String          @unique
   city      String
   address   String
-  phone     Int
+  phone     String
+  deleted   Boolean
   schedule  LibrarySchedule
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt

@@ -1,5 +1,5 @@
 import { ActionArgs, ActionFunction } from "@remix-run/node";
-import { errorMessage } from "~/const";
+import { ErrorMessage } from "~/const";
 import { badRequest } from "~/server/request.server";
 import { removeUserSession } from "~/server/session.server";
 
@@ -13,12 +13,12 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     }
 
     return badRequest({
-      message: errorMessage,
+      message: ErrorMessage,
       success: false,
     });
   } catch (error: any) {
     return badRequest({
-      message: error.message || errorMessage,
+      message: error.message || ErrorMessage,
       success: false,
     });
   }

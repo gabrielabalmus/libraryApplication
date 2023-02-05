@@ -5,7 +5,7 @@ import Flex from "@/components/Flex";
 
 export const StyledTitle = MuiStyled(Typography)<TypographyProps>(({ theme }) =>
   theme.unstable_sx({
-    marginBottom: "10px",
+    marginBottom: "20px",
   })
 );
 

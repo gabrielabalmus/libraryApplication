@@ -1,13 +1,15 @@
 import IconButton from "@mui/material/IconButton";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { ActionsProps } from "../Table.types";
 
-const TableActions: React.FC = () => {
+const TableActions: React.FC<ActionsProps> = ({onDelete}) => {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    event.stopPropagation()
+    event.stopPropagation();
+    onDelete()
   };
 
   return (
-    <IconButton disableRipple onClick={handleClick}>
+    <IconButton onClick={handleClick}>
       <DeleteOutlineIcon />
     </IconButton>
   );

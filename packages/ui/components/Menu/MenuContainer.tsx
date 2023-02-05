@@ -25,7 +25,7 @@ const Menu: React.FC<MenuContainerProps> = ({ onLogoutClick, children }) => {
     <Flex>
       <StyledAppBar position="fixed">
         <Toolbar>
-          <StyledIconButton disableRipple onClick={handleMenuToggle}>
+          <StyledIconButton onClick={handleMenuToggle}>
             <MenuIcon />
           </StyledIconButton>
 

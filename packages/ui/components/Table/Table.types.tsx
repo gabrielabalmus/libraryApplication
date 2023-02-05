@@ -3,11 +3,15 @@ export interface TableColumns {
   value: string;
 }
 
-export interface TableRows {
-  [key: string]: string;
-}
-
 export interface TableProps {
   columns: TableColumns[];
-  rows: TableRows[];
+  rows: any[];
+  count: number;
+  page: number;
+  onPageChange: (page: number) => void;
+  onDelete: (id: string) => void;
+}
+
+export interface ActionsProps {
+  onDelete: () => void;
 }

@@ -1,26 +1,28 @@
 import { ActionArgs, ActionFunction } from "@remix-run/node";
 import { handleLoginErrors } from "~/components/Login/Login.helper";
 import LoginForm from "~/components/Login/LoginForm";
-import { errorMessage, errorSubmit } from "~/const";
+import { ErrorMessage, ErrorSubmit } from "~/const";
 import { badRequest } from "~/server/request.server";
 import { createUserSession } from "~/server/session.server";
 import { login } from "~/server/auth.server";
 import { isString } from "lodash";
-import { useSubmit } from "@remix-run/react";
-import { LoginSubmitProps } from "~/components/Login/Login.type";
+import { useActionData, useSubmit } from "@remix-run/react";
+import { LoginState, LoginSubmitProps } from "~/components/Login/Login.type";
+import { useEffect, useState } from "react";
 
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
   try {
     const formData = await request.formData();
 
     const intent = formData.get("intent");
-    const email = formData.get("email");
-    const password = formData.get("password");
 
     if (intent === "login") {
+      const email = formData.get("email");
+      const password = formData.get("password");
+
       if (!isString(email) || !isString(password)) {
         return badRequest({
-          message: errorSubmit,
+          message: ErrorSubmit,
           success: false,
         });
       }
@@ -31,7 +33,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
       if (Object.values(fieldErrors).some(Boolean)) {
         return badRequest({
-          message: errorSubmit,
+          message: ErrorSubmit,
           success: false,
         });
       }
@@ -42,12 +44,12 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     }
 
     return badRequest({
-      message: errorMessage,
+      message: ErrorMessage,
       success: false,
     });
   } catch (error: any) {
     return badRequest({
-      message: error.message || errorMessage,
+      message: error.message || ErrorMessage,
       success: false,
     });
   }
@@ -55,8 +57,20 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
 const Login: React.FC = () => {
   const submit = useSubmit();
+  const actionData = useActionData();
 
-  const handleOnSubmit = ({ data, callback }: LoginSubmitProps) => {
+  const [data, setData] = useState<LoginState>({
+    email: "",
+    password: "",
+  });
+  const [generalError, setGeneralError] = useState<string>("");
+
+  useEffect(() => {
+    if (actionData && actionData.message && actionData.success === false)
+      setGeneralError(actionData.message);
+  }, [actionData]);
+
+  const handleOnSubmit = ({ callback }: LoginSubmitProps) => {
     const fieldErrors = handleLoginErrors(data);
 
     if (Object.values(fieldErrors).some(Boolean)) {
@@ -75,7 +89,15 @@ const Login: React.FC = () => {
       }
     );
   };
-  return <LoginForm onSubmit={handleOnSubmit} />;
+  return (
+    <LoginForm
+      onSubmit={handleOnSubmit}
+      data={data}
+      setData={setData}
+      generalError={generalError}
+      setGeneralError={setGeneralError}
+    />
+  );
 };
 
 export default Login;
