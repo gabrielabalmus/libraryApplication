@@ -1,5 +1,5 @@
 import { ColumnFlex } from "@/components/Flex";
-import { ActionArgs, ActionFunction } from "@remix-run/node";
+import { ActionArgs, ActionFunction, redirect } from "@remix-run/node";
 import { useActionData, useNavigate, useSubmit } from "@remix-run/react";
 import { isString } from "lodash";
 import { useEffect, useState } from "react";
@@ -19,8 +19,15 @@ import {
 import { ErrorMessage } from "~/const";
 import { createLibrary } from "~/server/libraries.server";
 import { badRequest, goodRequest } from "~/server/request.server";
+import { getUserId } from "~/server/users.server";
 
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
+  const userId = await getUserId(request);
+
+  if (!userId) {
+    return redirect("/login");
+  }
+
   try {
     const formData = await request.formData();
 

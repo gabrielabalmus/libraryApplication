@@ -9,6 +9,7 @@ import { isString } from "lodash";
 import { useActionData, useSubmit } from "@remix-run/react";
 import { LoginState, LoginSubmitProps } from "~/components/Login/Login.type";
 import { useEffect, useState } from "react";
+import { initialLogin } from "~/components/Login/Login.const";
 
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
   try {
@@ -59,10 +60,7 @@ const Login: React.FC = () => {
   const submit = useSubmit();
   const actionData = useActionData();
 
-  const [data, setData] = useState<LoginState>({
-    email: "",
-    password: "",
-  });
+  const [data, setData] = useState<LoginState>(initialLogin);
   const [generalError, setGeneralError] = useState<string>("");
 
   useEffect(() => {
@@ -89,6 +87,7 @@ const Login: React.FC = () => {
       }
     );
   };
+
   return (
     <LoginForm
       onSubmit={handleOnSubmit}

@@ -4,17 +4,13 @@ import { getUserId } from "~/server/users.server";
 import Spinner from "@/components/Spinner";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  try {
-    const userId = await getUserId(request);
+  const userId = await getUserId(request);
 
-    if (userId) {
-      return redirect("/");
-    }
-
-    return json({});
-  } catch (error: any) {
-    return json({});
+  if (userId) {
+    return redirect("/");
   }
+
+  return json({});
 };
 
 const AuthLayout: React.FC = () => {

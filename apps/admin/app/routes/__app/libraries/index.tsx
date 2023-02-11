@@ -23,15 +23,26 @@ import {
 import { badRequest, goodRequest } from "~/server/request.server";
 import { ErrorMessage } from "~/const";
 import { useCallback, useState } from "react";
-import {
-  PaginatedLibraries,
-} from "~/components/Libraries/Libraries.type";
+import { PaginatedLibraries } from "~/components/Libraries/Libraries.type";
 import { debounce, isString } from "lodash";
-import { ActionArgs, ActionFunction, LoaderArgs } from "@remix-run/node";
+import {
+  ActionArgs,
+  ActionFunction,
+  LoaderArgs,
+  redirect,
+} from "@remix-run/node";
 import { checkIfNumber } from "~/components/Libraries/Libraries.helper";
 import { useSearchParams, URLSearchParamsInit } from "react-router-dom";
+import ErrorInterface from "~/components/ErrorInterface";
+import { getUserId } from "~/server/users.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const userId = await getUserId(request);
+
+  if (!userId) {
+    return redirect("/login");
+  }
+
   try {
     const url = new URL(request.url);
     const page = url.searchParams.get("page");
@@ -47,14 +58,21 @@ export const loader = async ({ request }: LoaderArgs) => {
 
     return goodRequest({ libraries });
   } catch (error: any) {
-    return badRequest({
-      message: error.message || ErrorMessage,
-      success: false,
-    });
+    throw new Error(error.message || ErrorMessage);
   }
 };
 
+export const ErrorBoundary = () => {
+  return <ErrorInterface />;
+};
+
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
+  const userId = await getUserId(request);
+
+  if (!userId) {
+    return redirect("/login");
+  }
+
   try {
     const formData = await request.formData();
 

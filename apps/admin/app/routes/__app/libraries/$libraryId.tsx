@@ -1,5 +1,10 @@
 import { ColumnFlex } from "@/components/Flex";
-import { ActionArgs, ActionFunction, LoaderArgs } from "@remix-run/node";
+import {
+  ActionArgs,
+  ActionFunction,
+  LoaderArgs,
+  redirect,
+} from "@remix-run/node";
 import {
   useActionData,
   useLoaderData,
@@ -9,6 +14,7 @@ import {
 } from "@remix-run/react";
 import { isString } from "lodash";
 import { useEffect, useState } from "react";
+import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
 import LibrariesForm from "~/components/Libraries/Form/LibrariesForm";
 import {
@@ -26,8 +32,15 @@ import {
 import { ErrorMessage } from "~/const";
 import { getSingleLibrary, updateLibrary } from "~/server/libraries.server";
 import { badRequest, goodRequest } from "~/server/request.server";
+import { getUserId } from "~/server/users.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const userId = await getUserId(request);
+
+  if (!userId) {
+    return redirect("/login");
+  }
+
   try {
     const url = new URL(request.url);
     const libraryId = url.pathname.split("/").pop();
@@ -45,14 +58,21 @@ export const loader = async ({ request }: LoaderArgs) => {
 
     return goodRequest({ library });
   } catch (error: any) {
-    return badRequest({
-      message: error.message || ErrorMessage,
-      success: false,
-    });
+    throw new Error(error.message || ErrorMessage);
   }
 };
 
+export const ErrorBoundary = () => {
+  return <ErrorInterface />;
+};
+
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
+  const userId = await getUserId(request);
+
+  if (!userId) {
+    return redirect("/login");
+  }
+
   try {
     const formData = await request.formData();
 

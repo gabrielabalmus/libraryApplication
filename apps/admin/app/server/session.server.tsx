@@ -1,5 +1,5 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
-import { CreateSession, RemoveSession } from "~/types/Session.type";
+import { CreateSession } from "~/types/Session.type";
 import { getUserSession } from "./users.server";
 
 const { getSession, commitSession, destroySession } =
@@ -31,13 +31,10 @@ export const createUserSession = async ({
   });
 };
 
-export const removeUserSession = async ({
-  request,
-  redirectTo,
-}: RemoveSession) => {
+export const removeUserSession = async (request: Request) => {
   const session = await getUserSession(request);
 
-  return redirect(redirectTo, {
+  return redirect("/login", {
     headers: {
       "Set-Cookie": await destroySession(session),
     },
