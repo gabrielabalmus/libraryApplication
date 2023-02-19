@@ -2,11 +2,11 @@ import { ColumnFlex } from "@/components/Flex";
 import Input from "@/components/Input";
 import TableContainer from "@/components/Table";
 import Paper from "@mui/material/Paper";
-import { SearchPlaceholder, librariesColumns } from "../Libraries.const";
-import { LibrariesOverviewProps } from "../Libraries.type";
+import { SearchPlaceholder, booksColumns } from "../Books.const";
+import { BooksOverviewProps } from "../Books.type";
 
-const LibrariesOverview: React.FC<LibrariesOverviewProps> = ({
-  libraries,
+const BooksOverview: React.FC<BooksOverviewProps> = ({
+  books,
   page,
   search,
   onPageChange,
@@ -23,9 +23,9 @@ const LibrariesOverview: React.FC<LibrariesOverviewProps> = ({
           value={search}
         />
         <TableContainer
-          columns={librariesColumns}
-          rows={libraries.data}
-          count={libraries.count}
+          columns={booksColumns}
+          rows={books.data}
+          count={books.count}
           page={page}
           onPageChange={onPageChange}
           onDelete={onDelete}
@@ -35,4 +35,4 @@ const LibrariesOverview: React.FC<LibrariesOverviewProps> = ({
   );
 };
 
-export default LibrariesOverview;
+export default BooksOverview;

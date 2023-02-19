@@ -34,3 +34,9 @@ export const initialLibrary = {
     saturday: { from: "", to: "" },
   },
 };
+
+export const librariesColumns = [
+  { name: "name", value: "Name" },
+  { name: "city", value: "City" },
+  { name: "phone", value: "Phone" },
+];

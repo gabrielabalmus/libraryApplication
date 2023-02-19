@@ -11,7 +11,7 @@ import {
   StyledHeaderRow,
   EmptyBodyRow,
 } from "./Table.style";
-import Flex, { ColumnFlex } from "@/components/Flex";
+import { ColumnFlex } from "@/components/Flex";
 import TableActions from "./components/TableActions";
 import { useLocation, useNavigate } from "@remix-run/react";
 
@@ -47,7 +47,9 @@ const PaginatedTableContainer: React.FC<TableProps> = ({
                 <StyledTableCell key={index}>{column.value}</StyledTableCell>
               ))}
 
-              <StyledTableCell align="right">Delete</StyledTableCell>
+              <StyledTableCell align="right" width="50px">
+                Delete
+              </StyledTableCell>
             </StyledHeaderRow>
           </TableHead>
 
@@ -63,7 +65,7 @@ const PaginatedTableContainer: React.FC<TableProps> = ({
                   </TableCell>
                 ))}
 
-                <TableCell align="right">
+                <TableCell align="right" width="50px">
                   <TableActions onDelete={() => onDelete(row.id)} />
                 </TableCell>
               </StyledBodyRow>

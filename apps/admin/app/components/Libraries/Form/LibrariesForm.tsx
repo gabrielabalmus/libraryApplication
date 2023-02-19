@@ -96,7 +96,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
     <Paper className="overview-paper">
       <Grid container spacing={5}>
         <Grid item xs={12} md={5}>
-          <ColumnFlex gap="12px">
+          <ColumnFlex gap="20px">
             <StyledTitle variant="h3">{Details}</StyledTitle>
 
             <Input
@@ -140,13 +140,13 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
         </Grid>
 
         <Grid item xs={12} md={7}>
-          <ColumnFlex gap="12px">
+          <ColumnFlex gap="20px">
             <StyledTitle variant="h3">{ScheduleTitle}</StyledTitle>
 
             <AlignedFlex>
               <StyledTypography variant="h1">Monday-Friday:</StyledTypography>
 
-              <ColumnFlex gap="12px">
+              <ColumnFlex gap="20px">
                 <TimePicker
                   label="From*"
                   errorMessage={inputErrors.schedule?.mondayFriday?.from}
@@ -169,7 +169,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
             <AlignedFlex>
               <StyledTypography variant="h1">Saturday:</StyledTypography>
 
-              <ColumnFlex gap="12px">
+              <ColumnFlex gap="20px">
                 <TimePicker
                   label="From*"
                   value={library.schedule.saturday.from}

@@ -1,13 +1,13 @@
 import { ColumnFlex } from "@/components/Flex";
 import LayoutTitle from "~/components/LayoutTitle";
-import LibrariesOverview from "~/components/Libraries/Overview";
+import BooksOverview from "~/components/Books/Overview";
 import {
   ErrorDelete,
-  initialLibraries,
-  Libraries,
-  NewLibrary,
+  initialBooks,
+  Books,
+  NewBook,
   SuccessDelete,
-} from "~/components/Libraries/Libraries.const";
+} from "~/components/Books/Books.const";
 import Button from "@/components/Button";
 import { ButtonVariant } from "@/components/Button/Button.type";
 import {
@@ -16,10 +16,7 @@ import {
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
-import {
-  getPaginatedLibraries,
-  deleteLibrary,
-} from "~/server/libraries.server";
+import { getPaginatedBooks, deleteBook } from "~/server/books.server";
 import { badRequest, goodRequest } from "~/server/request.server";
 import { ErrorMessage } from "~/const";
 import { useCallback, useState } from "react";
@@ -50,12 +47,12 @@ export const loader = async ({ request }: LoaderArgs) => {
     let pageNumber = 1;
     if (page && checkIfNumber(page)) pageNumber = parseInt(page);
 
-    const libraries = await getPaginatedLibraries({
+    const books = await getPaginatedBooks({
       page: pageNumber,
       search,
     });
 
-    return goodRequest({ libraries });
+    return goodRequest({ books });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -78,16 +75,16 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     const intent = formData.get("intent");
 
     if (intent === "delete") {
-      const libraryId = formData.get("libraryId");
+      const bookId = formData.get("bookId");
 
-      if (!isString(libraryId)) {
+      if (!isString(bookId)) {
         return badRequest({
           message: ErrorDelete,
           success: false,
         });
       }
 
-      await deleteLibrary({ libraryId });
+      await deleteBook({ bookId });
 
       return goodRequest({
         message: SuccessDelete,
@@ -107,7 +104,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
   }
 };
 
-const PaginatedLibraries: React.FC = () => {
+const PaginatedBooks: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const data = useLoaderData();
@@ -121,11 +118,11 @@ const PaginatedLibraries: React.FC = () => {
   let pageNumber = 1;
   if (page && checkIfNumber(page)) pageNumber = parseInt(page);
 
-  const libraries = (data && data.libraries) || initialLibraries;
+  const books = (data && data.books) || initialBooks;
 
   const [searchValue, setSearchValue] = useState<string>(search);
 
-  const handleCreateLibrary = () => {
+  const handleCreateBook = () => {
     navigate(`${location.pathname}/create`);
   };
 
@@ -149,28 +146,28 @@ const PaginatedLibraries: React.FC = () => {
   const handleDelete = (id: string) => {
     submit(
       {
-        libraryId: id,
+        bookId: id,
         intent: "delete",
       },
       {
         method: "delete",
-        action: `/libraries${location.search}`,
+        action: `/books${location.search}`,
       }
     );
   };
 
   return (
     <ColumnFlex>
-      <LayoutTitle title={Libraries}>
+      <LayoutTitle title={Books}>
         <Button
-          title={NewLibrary}
+          title={NewBook}
           variant={ButtonVariant.contained}
-          onClick={handleCreateLibrary}
+          onClick={handleCreateBook}
         />
       </LayoutTitle>
 
-      <LibrariesOverview
-        libraries={libraries}
+      <BooksOverview
+        books={books}
         page={pageNumber}
         onPageChange={handleChangePage}
         search={searchValue}
@@ -181,4 +178,4 @@ const PaginatedLibraries: React.FC = () => {
   );
 };
 
-export default PaginatedLibraries;
+export default PaginatedBooks;

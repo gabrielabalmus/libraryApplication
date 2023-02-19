@@ -10,10 +10,6 @@ import {
   LibraryState,
   LibraryIdProps,
 } from "~/components/Libraries/Libraries.type";
-import {
-  fromPaginatedLibraries,
-  fromSingleLibrary,
-} from "~/transformers/libraries.transformers";
 import { prisma } from "./prisma.server";
 
 export const getPaginatedLibraries = async ({
@@ -56,11 +52,17 @@ export const getPaginatedLibraries = async ({
             { phone: { contains: search } },
           ],
         },
+        select: {
+          id: true,
+          name: true,
+          city: true,
+          phone: true,
+        },
       });
 
       if (!data) throw new Error(ErrorGetPaginated);
 
-      return { count, data: fromPaginatedLibraries(data) };
+      return { count, data };
     });
 
     return libraries;
@@ -76,11 +78,18 @@ export const getSingleLibrary = async ({ libraryId }: LibraryIdProps) => {
         id: libraryId,
         deleted: false,
       },
+      select: {
+        name: true,
+        city: true,
+        address: true,
+        phone: true,
+        schedule: true,
+      },
     });
 
     if (!library) throw new Error(ErrorGetSingle);
 
-    return fromSingleLibrary(library);
+    return library;
   } catch (err) {
     throw new Error(ErrorGetSingle);
   }
@@ -146,13 +155,30 @@ export const updateLibrary = async ({
 
 export const deleteLibrary = async ({ libraryId }: LibraryIdProps) => {
   try {
-    const library = await prisma.libraries.update({
-      where: {
-        id: libraryId,
-      },
-      data: {
-        deleted: true,
-      },
+    const library = await prisma.$transaction(async (db) => {
+      const libraryBook = await db.librariesBooks.updateMany({
+        where: {
+          libraryId,
+        },
+        data: {
+          deleted: true,
+        },
+      });
+
+      if (!libraryBook) throw new Error(ErrorGetPaginated);
+
+      const library = await db.libraries.update({
+        where: {
+          id: libraryId,
+        },
+        data: {
+          deleted: true,
+        },
+      });
+
+      if (!library) throw new Error(ErrorGetPaginated);
+
+      return library;
     });
 
     if (!library) throw new Error(ErrorDelete);

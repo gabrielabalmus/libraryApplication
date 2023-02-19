@@ -46,7 +46,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         Please enter your login data.
       </StyledParagraph>
 
-      <ColumnFlex gap="12px">
+      <ColumnFlex gap="20px">
         <Input
           label="Email*"
           errorMessage={inputErrors.email}

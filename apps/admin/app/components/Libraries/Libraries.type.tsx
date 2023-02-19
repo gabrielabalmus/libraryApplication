@@ -63,18 +63,6 @@ export interface PaginatedLibrariesProps {
   search: string;
 }
 
-export interface LibraryResponse {
-  id: string;
-  name: string;
-  city: string;
-  address: string;
-  phone: string;
-  schedule: LibrarySchedule;
-  deleted: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 export interface PaginatedLibraries {
   id: string;
   name: string;
@@ -87,7 +75,7 @@ export interface CountPaginatedLibraries {
   count: number;
 }
 
-export interface LibrariedOverviewProps {
+export interface LibrariesOverviewProps {
   libraries: CountPaginatedLibraries;
   page: number;
   search: string;

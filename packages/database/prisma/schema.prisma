@@ -27,13 +27,53 @@ type TimeSchedule {
 }
 
 model Libraries {
-  id        String          @id @default(auto()) @map("_id") @db.ObjectId
-  name      String          @unique
-  city      String
-  address   String
-  phone     String
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  name           String           @unique
+  city           String
+  address        String
+  phone          String
+  librariesBooks LibrariesBooks[]
+  deleted        Boolean
+  schedule       LibrarySchedule
+}
+
+model Books {
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  name           String           @unique
+  author         String
+  categoryId     String           @db.ObjectId
+  category       Categories       @relation(fields: [categoryId], references: [id])
+  publishHouseId String           @db.ObjectId
+  publishHouse   PublishHouses    @relation(fields: [publishHouseId], references: [id])
+  releaseYear    Int
+  pageNumber     Int
+  language       String
+  librariesBooks LibrariesBooks[]
+  deleted        Boolean
+}
+
+model Categories {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique
+  value     String   @unique
+  books     Books[]
+}
+
+model PublishHouses {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique
+  value     String   @unique
+  books     Books[]
+}
+
+model LibrariesBooks {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  bookId    String    @db.ObjectId
+  book      Books     @relation(fields: [bookId], references: [id])
+  libraryId String    @db.ObjectId
+  library   Libraries @relation(fields: [libraryId], references: [id])
+  SKU       String    @unique
+  stock     Int
+  place     String
   deleted   Boolean
-  schedule  LibrarySchedule
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
 }

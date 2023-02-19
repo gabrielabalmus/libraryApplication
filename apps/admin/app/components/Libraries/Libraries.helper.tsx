@@ -88,9 +88,3 @@ export const checkIfValidDate = (value: Dayjs | null) => {
 export const checkIfNumber = (value: any) => {
   return /^\d+$/.test(value);
 };
-
-export const librariesColumns = [
-  { name: "name", value: "Name" },
-  { name: "city", value: "City" },
-  { name: "phone", value: "Phone" },
-];
