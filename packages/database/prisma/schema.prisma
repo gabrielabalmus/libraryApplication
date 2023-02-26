@@ -29,12 +29,15 @@ type TimeSchedule {
 model Libraries {
   id             String           @id @default(auto()) @map("_id") @db.ObjectId
   name           String           @unique
-  city           String
   address        String
   phone          String
   librariesBooks LibrariesBooks[]
+  cityId         String           @db.ObjectId
+  city           Cities           @relation(fields: [cityId], references: [id])
   deleted        Boolean
   schedule       LibrarySchedule
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 }
 
 model Books {
@@ -46,24 +49,26 @@ model Books {
   publishHouseId String           @db.ObjectId
   publishHouse   PublishHouses    @relation(fields: [publishHouseId], references: [id])
   releaseYear    Int
-  pageNumber     Int
+  pagesNumber    Int
   language       String
   librariesBooks LibrariesBooks[]
   deleted        Boolean
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 }
 
 model Categories {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String   @unique
-  value     String   @unique
-  books     Books[]
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  name  String  @unique
+  value String  @unique
+  books Books[]
 }
 
 model PublishHouses {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String   @unique
-  value     String   @unique
-  books     Books[]
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  name  String  @unique
+  value String  @unique
+  books Books[]
 }
 
 model LibrariesBooks {
@@ -76,4 +81,11 @@ model LibrariesBooks {
   stock     Int
   place     String
   deleted   Boolean
+}
+
+model Cities {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  name      String      @unique
+  value     String      @unique
+  Libraries Libraries[]
 }

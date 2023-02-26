@@ -1,4 +1,20 @@
+import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
 import { Dispatch, SetStateAction } from "react";
+
+export interface LibrariesResponse {
+  id: string;
+  name: string;
+  phone: string;
+  city: { name: string };
+}
+
+export interface LibraryResponse {
+  name: string;
+  city: { id: string };
+  address: string;
+  phone: string;
+  schedule: LibrarySchedule;
+}
 
 export interface WeekTimes {
   from: string;
@@ -52,6 +68,7 @@ export interface LibrariesFormProps {
   library: LibraryState;
   setLibrary: Dispatch<SetStateAction<LibraryState>>;
   onSubmit: ({ callback }: LibrariesSubmitProps) => void;
+  cities: AutocompleteOptions[];
 }
 
 export interface LibrariesSubmitProps {
@@ -61,6 +78,7 @@ export interface LibrariesSubmitProps {
 export interface PaginatedLibrariesProps {
   page: number;
   search: string;
+  city: string;
 }
 
 export interface PaginatedLibraries {
@@ -78,12 +96,19 @@ export interface CountPaginatedLibraries {
 export interface LibrariesOverviewProps {
   libraries: CountPaginatedLibraries;
   page: number;
-  search: string;
+  filter: FilterState;
   onPageChange: (page: number) => void;
   onSearchChange: (value: string) => void;
+  onCityChange: (value: AutocompleteOptions | null) => void;
   onDelete: (id: string) => void;
+  cities: AutocompleteOptions[];
 }
 
 export interface LibraryIdProps {
   libraryId: string;
+}
+
+export interface FilterState {
+  search: string;
+  city: string;
 }

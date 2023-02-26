@@ -1,5 +1,6 @@
 import { InputProps, InputType } from "./Input.type";
 import { StandardInput } from "./Input.style";
+import { ChangeEvent } from "react";
 
 const InputContainer: React.FC<InputProps> = ({
   label,
@@ -11,7 +12,7 @@ const InputContainer: React.FC<InputProps> = ({
   multiline = false,
   placeholder = "",
 }) => {
-  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value);
   };
 
@@ -22,11 +23,12 @@ const InputContainer: React.FC<InputProps> = ({
       placeholder={placeholder}
       type={type}
       value={value}
+      InputProps={{ inputProps: { min: 0 } }}
       variant="standard"
       helperText={errorMessage}
       onChange={handleOnChange}
       width={width}
-      multiline={multiline}
+      multiline={type !==InputType.number && multiline}
     />
   );
 };

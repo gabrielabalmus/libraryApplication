@@ -4,6 +4,7 @@ export const CreateLibraryTitle = "Create library";
 export const UpdateLibraryTitle = "Update library";
 export const ScheduleTitle = "Opening hours";
 export const Details = "Address details";
+export const Cities = "Cities";
 
 export const ErrorCreate = "There was a problem in creating the library";
 export const SuccessCreate = "Library created successfully";
@@ -17,12 +18,7 @@ export const SuccessDelete = "Library deleted successfuly";
 export const ErrorUpdate = "There was a problem in updating the library";
 export const SuccessUpdate = "Library updated successfully";
 
-export const SearchPlaceholder = "Search for name, phone or city";
-
-export const initialLibraries = {
-  count: 0,
-  data: [],
-};
+export const SearchPlaceholder = "Search for name or phone";
 
 export const initialLibrary = {
   name: "",

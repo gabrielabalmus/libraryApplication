@@ -1,6 +1,7 @@
 export const Books = "Books";
 export const NewBook = "New book";
 export const CreateBookTitle = "Create book";
+export const UpdateBookTitle = "Update book";
 
 export const ErrorCreate = "There was a problem in creating the book";
 export const SuccessCreate = "Book created successfully";
@@ -16,9 +17,17 @@ export const SuccessUpdate = "Book updated successfully";
 
 export const SearchPlaceholder = "Search for name or author";
 
-export const initialBooks = {
-  count: 0,
-  data: [],
+export const Categories = "Categories";
+export const Details = "Book details";
+
+export const initialBook = {
+  name: "",
+  author: "",
+  pagesNumber: "",
+  category: "",
+  publishHouse: "",
+  releaseYear: "",
+  language: "",
 };
 
 export const booksColumns = [

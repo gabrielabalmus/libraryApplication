@@ -15,23 +15,21 @@ import { isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
-import LibrariesForm from "~/components/Libraries/Form/LibrariesForm";
+import BooksForm from "~/components/Books/Form";
 import {
-  CreateLibraryTitle,
+  CreateBookTitle,
   ErrorCreate,
-  initialLibrary,
+  initialBook,
   SuccessCreate,
-} from "~/components/Libraries/Libraries.const";
-import { handleLibraryErrors } from "~/components/Libraries/Libraries.helper";
-import {
-  LibrariesSubmitProps,
-  LibraryState,
-} from "~/components/Libraries/Libraries.type";
+} from "~/components/Books/Books.const";
+import { handleBookErrors } from "~/components/Books/Books.helper";
+import { BooksSubmitProps, BookState } from "~/components/Books/Books.type";
 import { ErrorMessage } from "~/const";
-import { getCities } from "~/server/cities.server";
-import { createLibrary } from "~/server/libraries.server";
+import { getCategories } from "~/server/categories.server";
 import { badRequest, goodRequest } from "~/server/request.server";
 import { getUserId } from "~/server/users.server";
+import { getPublishHouses } from "~/server/publishHouses.server";
+import { createBook } from "~/server/books.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -41,9 +39,10 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 
   try {
-    const cities = await getCities();
+    const categories = await getCategories();
+    const publishHouses = await getPublishHouses();
 
-    return goodRequest({ cities });
+    return goodRequest({ categories, publishHouses });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -63,17 +62,21 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
     if (intent === "create") {
       const name = formData.get("name");
-      const city = formData.get("city");
-      const address = formData.get("address");
-      const phone = formData.get("phone");
-      const schedule = formData.get("schedule");
+      const author = formData.get("author");
+      const category = formData.get("category");
+      const publishHouse = formData.get("publishHouse");
+      const releaseYear = formData.get("releaseYear");
+      const pagesNumber = formData.get("pagesNumber");
+      const language = formData.get("language");
 
       if (
         !isString(name) ||
-        !isString(city) ||
-        !isString(address) ||
-        !isString(phone) ||
-        !isString(schedule)
+        !isString(author) ||
+        !isString(category) ||
+        !isString(publishHouse) ||
+        !isString(releaseYear) ||
+        !isString(pagesNumber) ||
+        !isString(language)
       ) {
         return badRequest({
           message: ErrorCreate,
@@ -81,11 +84,17 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         });
       }
 
-      const objectSchedule = JSON.parse(schedule);
+      const fields = {
+        name,
+        author,
+        category,
+        publishHouse,
+        releaseYear,
+        pagesNumber,
+        language,
+      };
 
-      const fields = { name, city, address, phone, schedule: objectSchedule };
-
-      const fieldErrors = handleLibraryErrors(fields);
+      const fieldErrors = handleBookErrors(fields);
 
       if (Object.values(fieldErrors).some(Boolean)) {
         return badRequest({
@@ -94,7 +103,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         });
       }
 
-      await createLibrary(fields);
+      await createBook(fields);
 
       return goodRequest({
         message: SuccessCreate,
@@ -118,53 +127,52 @@ export const ErrorBoundary = () => {
   return <ErrorInterface />;
 };
 
-const CreateLibrary: React.FC = () => {
+const CreateBook: React.FC = () => {
   const submit = useSubmit();
   const actionData = useActionData();
   const navigate = useNavigate();
   const data = useLoaderData();
 
-  const [library, setLibrary] = useState<LibraryState>(initialLibrary);
-  const cities = data.cities;
+  const [book, setBook] = useState<BookState>(initialBook);
+  const categories = data.categories;
+  const publishHouses = data.publishHouses;
 
   useEffect(() => {
-    if (actionData && actionData.success === true) navigate("/libraries");
+    if (actionData && actionData.success === true) navigate(`/books`);
   }, [actionData]);
 
-  const handleOnSubmit = ({ callback }: LibrariesSubmitProps) => {
-    const fieldErrors = handleLibraryErrors(library);
+  const handleOnSubmit = ({ callback }: BooksSubmitProps) => {
+    const fieldErrors = handleBookErrors(book);
 
     if (Object.values(fieldErrors).some(Boolean)) {
       callback(fieldErrors);
       return;
     }
 
-    const stringSchedule = JSON.stringify(library.schedule);
-
     submit(
       {
-        ...library,
-        schedule: stringSchedule,
+        ...book,
         intent: "create",
       },
       {
         method: "post",
-        action: "/libraries/create",
+        action: "/books/create",
       }
     );
   };
 
   return (
     <ColumnFlex>
-      <LayoutTitle title={CreateLibraryTitle} backUrl="/libraries" />
-      <LibrariesForm
+      <LayoutTitle title={CreateBookTitle} backUrl="/books" />
+      <BooksForm
         onSubmit={handleOnSubmit}
-        setLibrary={setLibrary}
-        library={library}
-        cities={cities}
+        setBook={setBook}
+        book={book}
+        categories={categories}
+        publishHouses={publishHouses}
       />
     </ColumnFlex>
   );
 };
 
-export default CreateLibrary;
+export default CreateBook;

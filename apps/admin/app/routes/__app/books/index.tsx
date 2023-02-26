@@ -3,7 +3,6 @@ import LayoutTitle from "~/components/LayoutTitle";
 import BooksOverview from "~/components/Books/Overview";
 import {
   ErrorDelete,
-  initialBooks,
   Books,
   NewBook,
   SuccessDelete,
@@ -31,6 +30,9 @@ import { checkIfNumber } from "~/components/Libraries/Libraries.helper";
 import { useSearchParams, URLSearchParamsInit } from "react-router-dom";
 import ErrorInterface from "~/components/ErrorInterface";
 import { getUserId } from "~/server/users.server";
+import { getCategories } from "~/server/categories.server";
+import { FilterState } from "~/components/Books/Books.type";
+import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -43,16 +45,21 @@ export const loader = async ({ request }: LoaderArgs) => {
     const url = new URL(request.url);
     const page = url.searchParams.get("page");
     const search = url.searchParams.get("search") || "";
+    const category = url.searchParams.get("category") || "";
 
     let pageNumber = 1;
     if (page && checkIfNumber(page)) pageNumber = parseInt(page);
 
-    const books = await getPaginatedBooks({
-      page: pageNumber,
-      search,
-    });
+    const [books, categories] = await Promise.all([
+      getPaginatedBooks({
+        page: pageNumber,
+        search,
+        category,
+      }),
+      getCategories(),
+    ]);
 
-    return goodRequest({ books });
+    return goodRequest({ books, categories });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -114,13 +121,22 @@ const PaginatedBooks: React.FC = () => {
 
   const page = searchParams.get("page");
   const search = searchParams.get("search") || "";
+  const category = searchParams.get("category") || "";
 
   let pageNumber = 1;
   if (page && checkIfNumber(page)) pageNumber = parseInt(page);
 
-  const books = (data && data.books) || initialBooks;
+  const books = data.books;
+  const categories = data.categories;
 
-  const [searchValue, setSearchValue] = useState<string>(search);
+  const filterCategory = categories.find(
+    (item: AutocompleteOptions) => item.name === category
+  );
+
+  const [filter, setFilter] = useState<FilterState>({
+    search,
+    category: filterCategory?.id || "",
+  });
 
   const handleCreateBook = () => {
     navigate(`${location.pathname}/create`);
@@ -132,15 +148,33 @@ const PaginatedBooks: React.FC = () => {
 
   const debounceSearchChange = useCallback(
     debounce((value: string) => {
-      const params: URLSearchParamsInit = value && { search: value };
+      let params: URLSearchParamsInit = {};
+
+      if (value) params = { ...params, search: value };
+      if (category) params = { ...params, category };
+
       setSearchParams(params);
     }, 500),
-    []
+    [category]
   );
 
   const handleSearchChange = (value: string) => {
-    setSearchValue(value);
+    setFilter((oldValue: FilterState) => ({ ...oldValue, search: value }));
     debounceSearchChange(value);
+  };
+
+  const handleCategoryChange = (value: AutocompleteOptions | null) => {
+    setFilter((oldValue: FilterState) => ({
+      ...oldValue,
+      category: value?.id || "",
+    }));
+
+    let params: URLSearchParamsInit = {};
+
+    if (search) params = { ...params, search };
+    if (value) params = { ...params, category: value?.name || "" };
+
+    setSearchParams(params);
   };
 
   const handleDelete = (id: string) => {
@@ -170,9 +204,11 @@ const PaginatedBooks: React.FC = () => {
         books={books}
         page={pageNumber}
         onPageChange={handleChangePage}
-        search={searchValue}
+        filter={filter}
         onSearchChange={handleSearchChange}
+        onCategoryChange={handleCategoryChange}
         onDelete={handleDelete}
+        categories={categories}
       />
     </ColumnFlex>
   );

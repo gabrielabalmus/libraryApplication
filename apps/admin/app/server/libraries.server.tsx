@@ -10,11 +10,16 @@ import {
   LibraryState,
   LibraryIdProps,
 } from "~/components/Libraries/Libraries.type";
+import {
+  fromPaginatedLibrariesResponse,
+  fromSingleLibraryResponse,
+} from "~/transformers/libraries.transformer";
 import { prisma } from "./prisma.server";
 
 export const getPaginatedLibraries = async ({
   page,
   search,
+  city,
 }: PaginatedLibrariesProps) => {
   try {
     const skip = (page > 1 && (page - 1) * 5) || undefined;
@@ -30,9 +35,17 @@ export const getPaginatedLibraries = async ({
                 mode: "insensitive",
               },
             },
-            { city: { contains: search, mode: "insensitive" } },
             { phone: { contains: search } },
           ],
+          city: {
+            name: {
+              contains: city,
+              mode: "insensitive",
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       });
 
@@ -48,21 +61,33 @@ export const getPaginatedLibraries = async ({
                 mode: "insensitive",
               },
             },
-            { city: { contains: search, mode: "insensitive" } },
             { phone: { contains: search } },
           ],
+          city: {
+            name: {
+              contains: city,
+              mode: "insensitive",
+            },
+          },
         },
         select: {
           id: true,
           name: true,
-          city: true,
+          city: {
+            select: {
+              name: true,
+            },
+          },
           phone: true,
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       });
 
       if (!data) throw new Error(ErrorGetPaginated);
 
-      return { count, data };
+      return { count, data: fromPaginatedLibrariesResponse(data) };
     });
 
     return libraries;
@@ -80,7 +105,11 @@ export const getSingleLibrary = async ({ libraryId }: LibraryIdProps) => {
       },
       select: {
         name: true,
-        city: true,
+        city: {
+          select: {
+            id: true,
+          },
+        },
         address: true,
         phone: true,
         schedule: true,
@@ -89,7 +118,7 @@ export const getSingleLibrary = async ({ libraryId }: LibraryIdProps) => {
 
     if (!library) throw new Error(ErrorGetSingle);
 
-    return library;
+    return fromSingleLibraryResponse(library);
   } catch (err) {
     throw new Error(ErrorGetSingle);
   }
@@ -106,7 +135,7 @@ export const createLibrary = async ({
     const library = await prisma.libraries.create({
       data: {
         name,
-        city,
+        cityId: city,
         address,
         phone,
         schedule,
@@ -138,7 +167,7 @@ export const updateLibrary = async ({
       },
       data: {
         name,
-        city,
+        cityId: city,
         address,
         phone,
         schedule,

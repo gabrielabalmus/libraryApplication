@@ -5,24 +5,12 @@ import {
   useTransition,
 } from "@remix-run/react";
 import Menu from "@/components/Menu";
-import { json, LoaderArgs, redirect } from "@remix-run/node";
-import { getUserId } from "~/server/users.server";
 import Spinner from "@/components/Spinner";
 import { useEffect, useState } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { AlertDataState } from "~/types/Session.type";
 import isBoolean from "lodash/isBoolean";
-
-export const loader = async ({ request }: LoaderArgs) => {
-  const userId = await getUserId(request);
-
-  if (!userId) {
-    return redirect("/login");
-  }
-
-  return json({});
-};
 
 const AppLayout: React.FC = () => {
   const transition = useTransition();

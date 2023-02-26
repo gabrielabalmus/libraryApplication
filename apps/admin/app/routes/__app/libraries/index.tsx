@@ -3,7 +3,6 @@ import LayoutTitle from "~/components/LayoutTitle";
 import LibrariesOverview from "~/components/Libraries/Overview";
 import {
   ErrorDelete,
-  initialLibraries,
   Libraries,
   NewLibrary,
   SuccessDelete,
@@ -34,6 +33,9 @@ import { checkIfNumber } from "~/components/Libraries/Libraries.helper";
 import { useSearchParams, URLSearchParamsInit } from "react-router-dom";
 import ErrorInterface from "~/components/ErrorInterface";
 import { getUserId } from "~/server/users.server";
+import { getCities } from "~/server/cities.server";
+import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
+import { FilterState } from "~/components/Libraries/Libraries.type";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -46,16 +48,21 @@ export const loader = async ({ request }: LoaderArgs) => {
     const url = new URL(request.url);
     const page = url.searchParams.get("page");
     const search = url.searchParams.get("search") || "";
+    const city = url.searchParams.get("city") || "";
 
     let pageNumber = 1;
     if (page && checkIfNumber(page)) pageNumber = parseInt(page);
 
-    const libraries = await getPaginatedLibraries({
-      page: pageNumber,
-      search,
-    });
+    const [libraries, cities] = await Promise.all([
+      getPaginatedLibraries({
+        page: pageNumber,
+        search,
+        city,
+      }),
+      getCities(),
+    ]);
 
-    return goodRequest({ libraries });
+    return goodRequest({ libraries, cities });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -117,13 +124,22 @@ const PaginatedLibraries: React.FC = () => {
 
   const page = searchParams.get("page");
   const search = searchParams.get("search") || "";
+  const city = searchParams.get("city") || "";
 
   let pageNumber = 1;
   if (page && checkIfNumber(page)) pageNumber = parseInt(page);
 
-  const libraries = (data && data.libraries) || initialLibraries;
+  const libraries = data.libraries;
+  const cities = data.cities;
 
-  const [searchValue, setSearchValue] = useState<string>(search);
+  const filterCities = cities.find(
+    (item: AutocompleteOptions) => item.name === city
+  );
+
+  const [filter, setFilter] = useState<FilterState>({
+    search,
+    city: filterCities?.id || "",
+  });
 
   const handleCreateLibrary = () => {
     navigate(`${location.pathname}/create`);
@@ -135,15 +151,33 @@ const PaginatedLibraries: React.FC = () => {
 
   const debounceSearchChange = useCallback(
     debounce((value: string) => {
-      const params: URLSearchParamsInit = value && { search: value };
+      let params: URLSearchParamsInit = {};
+
+      if (value) params = { ...params, search: value };
+      if (city) params = { ...params, city };
+
       setSearchParams(params);
     }, 500),
-    []
+    [city]
   );
 
   const handleSearchChange = (value: string) => {
-    setSearchValue(value);
+    setFilter((oldValue: FilterState) => ({ ...oldValue, search: value }));
     debounceSearchChange(value);
+  };
+
+  const handleCityChange = (value: AutocompleteOptions | null) => {
+    setFilter((oldValue: FilterState) => ({
+      ...oldValue,
+      city: value?.id || "",
+    }));
+
+    let params: URLSearchParamsInit = {};
+
+    if (search) params = { ...params, search };
+    if (value) params = { ...params, city: value?.name || "" };
+
+    setSearchParams(params);
   };
 
   const handleDelete = (id: string) => {
@@ -173,9 +207,11 @@ const PaginatedLibraries: React.FC = () => {
         libraries={libraries}
         page={pageNumber}
         onPageChange={handleChangePage}
-        search={searchValue}
+        filter={filter}
         onSearchChange={handleSearchChange}
+        onCityChange={handleCityChange}
         onDelete={handleDelete}
+        cities={cities}
       />
     </ColumnFlex>
   );

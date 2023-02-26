@@ -1,28 +1,42 @@
 import { ColumnFlex } from "@/components/Flex";
 import Input from "@/components/Input";
-import TableContainer from "@/components/Table";
+import Table from "@/components/Table";
+import Autocomplete from "@/components/Autocomplete";
 import Paper from "@mui/material/Paper";
-import { SearchPlaceholder, booksColumns } from "../Books.const";
+import { SearchPlaceholder, booksColumns, Categories } from "../Books.const";
 import { BooksOverviewProps } from "../Books.type";
+import { StyledFilters } from "../Books.style";
 
 const BooksOverview: React.FC<BooksOverviewProps> = ({
   books,
   page,
-  search,
+  filter,
   onPageChange,
   onSearchChange,
+  onCategoryChange,
   onDelete,
+  categories,
 }) => {
   return (
     <Paper className="overview-paper">
-      <ColumnFlex gap="20px">
-        <Input
-          placeholder={SearchPlaceholder}
-          onChange={onSearchChange}
-          width="300px"
-          value={search}
-        />
-        <TableContainer
+      <ColumnFlex gap="30px">
+        <StyledFilters>
+          <Input
+            placeholder={SearchPlaceholder}
+            onChange={onSearchChange}
+            width="300px"
+            value={filter.search}
+          />
+          <Autocomplete
+            onChange={onCategoryChange}
+            options={categories}
+            value={filter.category}
+            placeholder={Categories}
+            width="200px"
+          />
+        </StyledFilters>
+
+        <Table
           columns={booksColumns}
           rows={books.data}
           count={books.count}

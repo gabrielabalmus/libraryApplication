@@ -4,7 +4,7 @@ import LoginForm from "~/components/Login/LoginForm";
 import { ErrorMessage, ErrorSubmit } from "~/const";
 import { badRequest } from "~/server/request.server";
 import { createUserSession } from "~/server/session.server";
-import { login } from "~/server/auth.server";
+import { login } from "~/server/users.server";
 import { isString } from "lodash";
 import { useActionData, useSubmit } from "@remix-run/react";
 import { LoginState, LoginSubmitProps } from "~/components/Login/Login.type";
