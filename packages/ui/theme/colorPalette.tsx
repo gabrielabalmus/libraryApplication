@@ -35,7 +35,7 @@ const collorPalette = {
     base: "#8C8C8C",
     light: "#CCCCCC",
     lighter: "#F2F2F2",
-    lightest: "#FFFFFF",
+    lightest: "#F9F9F9",
   },
   platform: {
     red: "#C42C21",

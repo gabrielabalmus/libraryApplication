@@ -9,7 +9,8 @@ import {
   PaginatedLibrariesProps,
   LibraryState,
   LibraryIdProps,
-} from "~/components/Libraries/Libraries.type";
+} from "~/types/Libraries.type";
+import { ErrorMessage } from "~/const";
 import {
   fromPaginatedLibrariesResponse,
   fromSingleLibraryResponse,
@@ -184,30 +185,24 @@ export const updateLibrary = async ({
 
 export const deleteLibrary = async ({ libraryId }: LibraryIdProps) => {
   try {
-    const library = await prisma.$transaction(async (db) => {
-      const libraryBook = await db.librariesBooks.updateMany({
-        where: {
-          libraryId,
-        },
-        data: {
-          deleted: true,
-        },
-      });
+    const libraryBook = await prisma.bookLibraries.updateMany({
+      where: {
+        libraryId,
+      },
+      data: {
+        deleted: true,
+      },
+    });
 
-      if (!libraryBook) throw new Error(ErrorGetPaginated);
+    if (!libraryBook) throw new Error(ErrorDelete);
 
-      const library = await db.libraries.update({
-        where: {
-          id: libraryId,
-        },
-        data: {
-          deleted: true,
-        },
-      });
-
-      if (!library) throw new Error(ErrorGetPaginated);
-
-      return library;
+    const library = await prisma.libraries.update({
+      where: {
+        id: libraryId,
+      },
+      data: {
+        deleted: true,
+      },
     });
 
     if (!library) throw new Error(ErrorDelete);
@@ -215,5 +210,22 @@ export const deleteLibrary = async ({ libraryId }: LibraryIdProps) => {
     return library;
   } catch (err) {
     throw new Error(ErrorDelete);
+  }
+};
+
+export const getLibraries = async () => {
+  try {
+    const libraries = await prisma.libraries.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    if (!libraries) throw new Error(ErrorMessage);
+
+    return libraries;
+  } catch (err) {
+    throw new Error(ErrorMessage);
   }
 };

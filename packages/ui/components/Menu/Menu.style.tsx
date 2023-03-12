@@ -16,6 +16,7 @@ export const StyledAppBar = MuiStyled(AppBar)<AppBarProps>(({ theme }) =>
     width: { sm: `calc(100% - ${menuWidth}px)` },
     boxShadow: "none",
     backgroundColor: collorPalette.white,
+    borderBottom: "3px solid #F2F2F2",
     ml: { sm: `${menuWidth}px` },
   })
 );

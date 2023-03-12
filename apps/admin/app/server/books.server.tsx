@@ -9,7 +9,8 @@ import {
   PaginatedBooksProps,
   BookIdProps,
   BookState,
-} from "~/components/Books/Books.type";
+  BookLibrariesState,
+} from "~/types/Books.type";
 import {
   fromPaginatedBooksResponse,
   fromSingleBookResponse,
@@ -98,6 +99,17 @@ export const getPaginatedBooks = async ({
 
 export const deleteBook = async ({ bookId }: BookIdProps) => {
   try {
+    const bookLibraries = await prisma.bookLibraries.updateMany({
+      where: {
+        bookId,
+      },
+      data: {
+        deleted: true,
+      },
+    });
+
+    if (!bookLibraries) throw new Error(ErrorDelete);
+
     const book = await prisma.books.update({
       where: {
         id: bookId,
@@ -123,6 +135,7 @@ export const createBook = async ({
   publishHouse,
   releaseYear,
   language,
+  bookLibraries,
 }: BookState) => {
   try {
     const book = await prisma.books.create({
@@ -140,6 +153,26 @@ export const createBook = async ({
 
     if (!book) throw new Error(ErrorCreate);
 
+    bookLibraries.map((item) => {
+      try {
+        const librariesBook = prisma.bookLibraries.create({
+          data: {
+            bookId: book.id,
+            libraryId: item.library,
+            SKU: item.sku,
+            place: item.place,
+            deleted: false,
+          },
+        });
+
+        if (!librariesBook) throw new Error(ErrorCreate);
+
+        return;
+      } catch (err) {
+        throw new Error(ErrorCreate);
+      }
+    });
+
     return book;
   } catch (err) {
     throw new Error(ErrorCreate);
@@ -148,31 +181,47 @@ export const createBook = async ({
 
 export const getSingleBook = async ({ bookId }: BookIdProps) => {
   try {
-    const book = await prisma.books.findFirst({
-      where: {
-        id: bookId,
-        deleted: false,
-      },
-      select: {
-        name: true,
-        author: true,
-        category: {
-          select: {
-            id: true,
-          },
+    const book = await prisma.$transaction(async (db) => {
+      const book = await db.books.findFirst({
+        where: {
+          id: bookId,
+          deleted: false,
         },
-        publishHouse: {
-          select: {
-            id: true,
+        select: {
+          name: true,
+          author: true,
+          category: {
+            select: {
+              id: true,
+            },
           },
+          publishHouse: {
+            select: {
+              id: true,
+            },
+          },
+          releaseYear: true,
+          pagesNumber: true,
+          language: true,
         },
-        releaseYear: true,
-        pagesNumber: true,
-        language: true,
-      },
-    });
+      });
 
-    if (!book) throw new Error(ErrorGetSingle);
+      if (!book) throw new Error(ErrorGetSingle);
+
+      const bookLibraries = await db.bookLibraries.findMany({
+        where: { bookId, deleted: false },
+        select: {
+          id: true,
+          libraryId: true,
+          SKU: true,
+          place: true,
+        },
+      });
+
+      if (!bookLibraries) throw new Error(ErrorGetSingle);
+
+      return { ...book, bookLibraries };
+    });
 
     return fromSingleBookResponse(book);
   } catch (err) {
@@ -189,6 +238,7 @@ export const updateBook = async ({
   publishHouse,
   releaseYear,
   language,
+  bookLibraries,
 }: BookState & { bookId: string }) => {
   try {
     const book = await prisma.books.updateMany({
@@ -208,6 +258,43 @@ export const updateBook = async ({
     });
 
     if (!book) throw new Error(ErrorUpdate);
+
+    bookLibraries.map(async (item: BookLibrariesState) => {
+      try {
+        if (item.id) {
+          const updatedBookLibrary = await prisma.bookLibraries.updateMany({
+            where: {
+              id: item.id,
+              deleted: false,
+            },
+            data: {
+              bookId,
+              libraryId: item.library,
+              SKU: item.sku,
+              place: item.place,
+            },
+          });
+
+          if (!updatedBookLibrary) throw new Error(ErrorUpdate);
+
+          return;
+        }
+
+        const createdBookLibrary = await prisma.bookLibraries.create({
+          data: {
+            bookId,
+            libraryId: item.library,
+            SKU: item.sku,
+            place: item.place,
+            deleted: false,
+          },
+        });
+
+        if (!createdBookLibrary) throw new Error(ErrorUpdate);
+      } catch (err) {
+        throw new Error(ErrorUpdate);
+      }
+    });
 
     return book;
   } catch (err) {

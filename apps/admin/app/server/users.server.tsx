@@ -1,5 +1,5 @@
 import { getSession } from "./session.server";
-import { LoginState } from "~/components/Login/Login.type";
+import { LoginState } from "~/types/Login.type";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma.server";
 import { ErrorSubmit, WrongLoginData } from "~/const";

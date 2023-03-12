@@ -19,6 +19,7 @@ export const SearchPlaceholder = "Search for name or author";
 
 export const Categories = "Categories";
 export const Details = "Book details";
+export const Units = "Book units";
 
 export const initialBook = {
   name: "",
@@ -28,6 +29,13 @@ export const initialBook = {
   publishHouse: "",
   releaseYear: "",
   language: "",
+  bookLibraries: [],
+};
+
+export const initialBookLibrary = {
+  library: "",
+  sku: "",
+  place: "",
 };
 
 export const booksColumns = [

@@ -1,7 +1,8 @@
 import Flex, { ColumnFlex } from "@/components/Flex";
 import styled from "styled-components";
-import Typography, { TypographyProps } from "@mui/material/Typography";
+import collorPalette from "@/theme/colorPalette";
 import { styled as MuiStyled } from "@mui/material/styles";
+import Fab, { FabProps } from "@mui/material/Fab";
 
 export const StyledFilters = styled(Flex)`
   justify-content: space-between;
@@ -10,12 +11,6 @@ export const StyledFilters = styled(Flex)`
     flex-direction: column;
   }
 `;
-
-export const StyledTitle = MuiStyled(Typography)<TypographyProps>(({ theme }) =>
-  theme.unstable_sx({
-    marginBottom: "40px",
-  })
-);
 
 export const StyledColumnFlex = styled(ColumnFlex)`
   gap: 20px;
@@ -29,10 +24,30 @@ export const StyledColumnFlex = styled(ColumnFlex)`
 `;
 
 export const StyleFlex = styled(Flex)`
-  gap: 7%;
-  flex-direction: row;
+  gap: 50px;
   @media (max-width: 900px) {
     gap: 20px;
     flex-direction: column;
   }
 `;
+
+export const UnitsFlex = styled(Flex)`
+  gap: 20px;
+  max-width: 710px;
+  background-color: ${collorPalette.grey.lightest};
+  padding: 20px;
+  border-radius: 10px;
+  @media (max-width: 900px) {
+    gap: 20px;
+    flex-direction: column;
+  }
+`;
+
+export const StyledFab = MuiStyled(Fab)<FabProps>(({ theme }) =>
+  theme.unstable_sx({
+    width: "35px",
+    height: "35px",
+    minHeight: "35px",
+    boxShadow: "none",
+  })
+);

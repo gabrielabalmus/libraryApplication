@@ -1,8 +1,9 @@
-export { default } from './Flex';
+export { default } from "./Flex";
 
 export {
   ColumnFlex,
   CenteredFlex,
+  AlignedFlex,
   SpaceBetweenFlex,
   CenteredAlignedFlex,
   SpaceBetweenCenterFlex,
@@ -17,4 +18,4 @@ export {
   SpaceBetweenColumnFlex,
   FlexStartSpaceBetweenColumnFlex,
   FlexEndSpaceBetweenColumnFlex,
-} from './Flex';
+} from "./Flex";

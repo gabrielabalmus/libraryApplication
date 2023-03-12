@@ -53,6 +53,13 @@ export interface FilterState {
   category: string;
 }
 
+export interface BookLibrariesResponse {
+  id: string;
+  libraryId: string;
+  SKU: string;
+  place: string;
+}
+
 export interface BookResponse {
   name: string;
   author: string;
@@ -61,6 +68,13 @@ export interface BookResponse {
   publishHouse: { id: string };
   releaseYear: number;
   language: string;
+  bookLibraries: BookLibrariesResponse[];
+}
+
+export enum BookLibrariesValues {
+  library = "library",
+  sku = "sku",
+  place = "place",
 }
 
 export enum BookValue {
@@ -73,6 +87,16 @@ export enum BookValue {
   language = "language",
 }
 
+export interface BookLibrariesError {
+  library?: string;
+  sku?: string;
+  place?: string;
+}
+
+export interface BookLibrariesErrorObject {
+  [key: number]: BookLibrariesError;
+}
+
 export interface ErrorState {
   name?: string;
   author?: string;
@@ -81,6 +105,14 @@ export interface ErrorState {
   publishHouse?: string;
   releaseYear?: string;
   language?: string;
+  bookLibraries?: BookLibrariesErrorObject;
+}
+
+export interface BookLibrariesState {
+  id?: string;
+  library: string;
+  sku: string;
+  place: string;
 }
 
 export interface BookState {
@@ -91,6 +123,7 @@ export interface BookState {
   publishHouse: string;
   releaseYear: string;
   language: string;
+  bookLibraries: BookLibrariesState[];
 }
 
 export interface BooksFormProps {
@@ -99,8 +132,16 @@ export interface BooksFormProps {
   onSubmit: ({ callback }: BooksSubmitProps) => void;
   categories: AutocompleteOptions[];
   publishHouses: AutocompleteOptions[];
+  libraries: AutocompleteOptions[];
 }
 
 export interface BooksSubmitProps {
   callback: (fieldErrors: ErrorState) => void;
+}
+
+export interface BooksLibrariesProps {
+  bookLibrary: BookLibrariesState;
+  onChange: (value: string, field: BookLibrariesValues) => void;
+  libraries: AutocompleteOptions[];
+  error: BookLibrariesError;
 }

@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from "dayjs";
 import { isEmpty } from "lodash";
 import { InvalidField, RequiredField } from "~/const";
-import { ErrorState, LibraryState } from "./Libraries.type";
+import { ErrorState, LibraryState } from "~/types/Libraries.type";
 
 export const handleLibraryErrors = (formData: LibraryState) => {
   let errors: ErrorState = {};

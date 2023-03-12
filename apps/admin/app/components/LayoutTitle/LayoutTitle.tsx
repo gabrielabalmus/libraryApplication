@@ -4,7 +4,7 @@ import {
   StyledHeaderFlex,
   StyledIconButton,
 } from "./LayoutTitle.style";
-import { LayoutTitleProps } from "./LayoutTitle.type";
+import { LayoutTitleProps } from "~/types/LayoutTitle.type";
 import { useNavigate } from "@remix-run/react";
 import { AlignedFlex } from "@/components/Flex/Flex";
 

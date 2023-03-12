@@ -1,13 +1,13 @@
 import { ActionArgs, ActionFunction } from "@remix-run/node";
 import { handleLoginErrors } from "~/components/Login/Login.helper";
-import LoginForm from "~/components/Login/LoginForm";
+import LoginForm from "~/components/Login/Form";
 import { ErrorMessage, ErrorSubmit } from "~/const";
 import { badRequest } from "~/server/request.server";
 import { createUserSession } from "~/server/session.server";
 import { login } from "~/server/users.server";
 import { isString } from "lodash";
 import { useActionData, useSubmit } from "@remix-run/react";
-import { LoginState, LoginSubmitProps } from "~/components/Login/Login.type";
+import { LoginState, LoginSubmitProps } from "~/types/Login.type";
 import { useEffect, useState } from "react";
 import { initialLogin } from "~/components/Login/Login.const";
 

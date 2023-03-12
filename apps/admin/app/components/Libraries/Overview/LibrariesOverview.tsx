@@ -5,7 +5,7 @@ import Table from "@/components/Table";
 import Paper from "@mui/material/Paper";
 import { StyledFilters } from "~/components/Books/Books.style";
 import { SearchPlaceholder, librariesColumns, Cities } from "../Libraries.const";
-import { LibrariesOverviewProps } from "../Libraries.type";
+import { LibrariesOverviewProps } from "~/types/Libraries.type";
 
 const LibrariesOverview: React.FC<LibrariesOverviewProps> = ({
   libraries,

@@ -31,7 +31,7 @@ import { useSearchParams, URLSearchParamsInit } from "react-router-dom";
 import ErrorInterface from "~/components/ErrorInterface";
 import { getUserId } from "~/server/users.server";
 import { getCategories } from "~/server/categories.server";
-import { FilterState } from "~/components/Books/Books.type";
+import { FilterState } from "~/types/Books.type";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
 
 export const loader = async ({ request }: LoaderArgs) => {

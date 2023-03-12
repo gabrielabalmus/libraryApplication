@@ -4,7 +4,7 @@ import Table from "@/components/Table";
 import Autocomplete from "@/components/Autocomplete";
 import Paper from "@mui/material/Paper";
 import { SearchPlaceholder, booksColumns, Categories } from "../Books.const";
-import { BooksOverviewProps } from "../Books.type";
+import { BooksOverviewProps } from "~/types/Books.type";
 import { StyledFilters } from "../Books.style";
 
 const BooksOverview: React.FC<BooksOverviewProps> = ({

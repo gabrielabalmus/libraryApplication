@@ -3,7 +3,7 @@ import {
   LibraryResponse,
   LibraryState,
   PaginatedLibraries,
-} from "~/components/Libraries/Libraries.type";
+} from "~/types/Libraries.type";
 
 export const fromPaginatedLibrariesResponse = (
   libraries: LibrariesResponse[]

@@ -1,7 +1,7 @@
 import { isEmpty } from "lodash";
 import { InvalidField, RequiredField } from "~/const";
-import { checkIfNumber } from "../Libraries/Libraries.helper";
-import { ErrorState, BookState } from "./Books.type";
+import { checkIfNumber } from "~/components/Libraries/Libraries.helper";
+import { ErrorState, BookState, BookLibrariesError } from "~/types/Books.type";
 
 export const handleBookErrors = (formData: BookState) => {
   let errors: ErrorState = {};
@@ -13,6 +13,7 @@ export const handleBookErrors = (formData: BookState) => {
     publishHouse,
     releaseYear,
     language,
+    bookLibraries,
   } = formData;
 
   if (isEmpty(name)) errors.name = RequiredField;
@@ -37,5 +38,36 @@ export const handleBookErrors = (formData: BookState) => {
 
   if (isEmpty(language)) errors.language = RequiredField;
 
+  if (!isEmpty(bookLibraries))
+    bookLibraries.map((item, index) => {
+      let bookLibrariesErrors: BookLibrariesError = {};
+
+      if (isEmpty(item.library))
+        bookLibrariesErrors = {
+          ...bookLibrariesErrors,
+          library: RequiredField,
+        };
+
+      if (isEmpty(item.sku))
+        bookLibrariesErrors = {
+          ...bookLibrariesErrors,
+          sku: RequiredField,
+        };
+
+      if (isEmpty(item.place))
+        bookLibrariesErrors = {
+          ...bookLibrariesErrors,
+          place: RequiredField,
+        };
+
+      if (!isEmpty(bookLibrariesErrors))
+        errors = {
+          ...errors,
+          bookLibraries: {
+            ...errors.bookLibraries,
+            [index]: bookLibrariesErrors,
+          },
+        };
+    });
   return errors;
 };

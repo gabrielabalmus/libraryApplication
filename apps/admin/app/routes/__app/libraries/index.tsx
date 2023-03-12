@@ -35,7 +35,7 @@ import ErrorInterface from "~/components/ErrorInterface";
 import { getUserId } from "~/server/users.server";
 import { getCities } from "~/server/cities.server";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
-import { FilterState } from "~/components/Libraries/Libraries.type";
+import { FilterState } from "~/types/Libraries.type";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);

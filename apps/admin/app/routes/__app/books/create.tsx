@@ -23,13 +23,14 @@ import {
   SuccessCreate,
 } from "~/components/Books/Books.const";
 import { handleBookErrors } from "~/components/Books/Books.helper";
-import { BooksSubmitProps, BookState } from "~/components/Books/Books.type";
+import { BooksSubmitProps, BookState } from "~/types/Books.type";
 import { ErrorMessage } from "~/const";
 import { getCategories } from "~/server/categories.server";
 import { badRequest, goodRequest } from "~/server/request.server";
 import { getUserId } from "~/server/users.server";
 import { getPublishHouses } from "~/server/publishHouses.server";
 import { createBook } from "~/server/books.server";
+import { getLibraries } from "~/server/libraries.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -39,10 +40,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 
   try {
-    const categories = await getCategories();
-    const publishHouses = await getPublishHouses();
+    const [categories, publishHouses, libraries] = await Promise.all([
+      getCategories(),
+      getPublishHouses(),
+      getLibraries(),
+    ]);
 
-    return goodRequest({ categories, publishHouses });
+    return goodRequest({ categories, publishHouses, libraries });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -68,6 +72,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
       const releaseYear = formData.get("releaseYear");
       const pagesNumber = formData.get("pagesNumber");
       const language = formData.get("language");
+      const bookLibraries = formData.get("bookLibraries");
 
       if (
         !isString(name) ||
@@ -76,13 +81,16 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         !isString(publishHouse) ||
         !isString(releaseYear) ||
         !isString(pagesNumber) ||
-        !isString(language)
+        !isString(language) ||
+        !isString(bookLibraries)
       ) {
         return badRequest({
           message: ErrorCreate,
           success: false,
         });
       }
+
+      const objectBookLibraries = JSON.parse(bookLibraries);
 
       const fields = {
         name,
@@ -92,6 +100,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         releaseYear,
         pagesNumber,
         language,
+        bookLibraries: objectBookLibraries,
       };
 
       const fieldErrors = handleBookErrors(fields);
@@ -134,8 +143,10 @@ const CreateBook: React.FC = () => {
   const data = useLoaderData();
 
   const [book, setBook] = useState<BookState>(initialBook);
+  
   const categories = data.categories;
   const publishHouses = data.publishHouses;
+  const libraries = data.libraries;
 
   useEffect(() => {
     if (actionData && actionData.success === true) navigate(`/books`);
@@ -149,9 +160,12 @@ const CreateBook: React.FC = () => {
       return;
     }
 
+    const stringBookLibraries = JSON.stringify(book.bookLibraries);
+
     submit(
       {
         ...book,
+        bookLibraries: stringBookLibraries,
         intent: "create",
       },
       {
@@ -170,6 +184,7 @@ const CreateBook: React.FC = () => {
         book={book}
         categories={categories}
         publishHouses={publishHouses}
+        libraries={libraries}
       />
     </ColumnFlex>
   );

@@ -26,7 +26,7 @@ import { handleLibraryErrors } from "~/components/Libraries/Libraries.helper";
 import {
   LibrariesSubmitProps,
   LibraryState,
-} from "~/components/Libraries/Libraries.type";
+} from "~/types/Libraries.type";
 import { ErrorMessage } from "~/const";
 import { getCities } from "~/server/cities.server";
 import { createLibrary } from "~/server/libraries.server";
@@ -125,6 +125,7 @@ const CreateLibrary: React.FC = () => {
   const data = useLoaderData();
 
   const [library, setLibrary] = useState<LibraryState>(initialLibrary);
+
   const cities = data.cities;
 
   useEffect(() => {

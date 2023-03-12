@@ -7,7 +7,7 @@ import {
   LibrariesFormProps,
   LibraryValue,
   ScheduleTimeValue,
-} from "../Libraries.type";
+} from "~/types/Libraries.type";
 import { checkIfValidDate } from "../Libraries.helper";
 import Button from "@/components/Button";
 import { ButtonType, ButtonVariant } from "@/components/Button/Button.type";

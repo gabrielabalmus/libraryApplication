@@ -1,6 +1,6 @@
 import { isEmpty } from "lodash";
 import { RequiredField } from "~/const";
-import { ErrorState, LoginState } from "./Login.type";
+import { ErrorState, LoginState } from "~/types/Login.type";
 
 export const handleLoginErrors = (formData: LoginState) => {
   const errors: ErrorState = {};

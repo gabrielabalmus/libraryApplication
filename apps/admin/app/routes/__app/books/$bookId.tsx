@@ -15,7 +15,7 @@ import {
 import { isString } from "lodash";
 import { useEffect, useState } from "react";
 import { handleBookErrors } from "~/components/Books/Books.helper";
-import { BooksSubmitProps, BookState } from "~/components/Books/Books.type";
+import { BooksSubmitProps, BookState } from "~/types/Books.type";
 import BooksForm from "~/components/Books/Form";
 import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
@@ -31,6 +31,7 @@ import { getUserId } from "~/server/users.server";
 import { getCategories } from "~/server/categories.server";
 import { getPublishHouses } from "~/server/publishHouses.server";
 import { getSingleBook, updateBook } from "~/server/books.server";
+import { getLibraries } from "~/server/libraries.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -50,15 +51,16 @@ export const loader = async ({ request }: LoaderArgs) => {
       });
     }
 
-    const [book, categories, publishHouses] = await Promise.all([
+    const [book, categories, publishHouses, libraries] = await Promise.all([
       getSingleBook({
         bookId,
       }),
       getCategories(),
       getPublishHouses(),
+      getLibraries(),
     ]);
 
-    return goodRequest({ book, categories, publishHouses });
+    return goodRequest({ book, categories, publishHouses, libraries });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -88,6 +90,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
       const releaseYear = formData.get("releaseYear");
       const pagesNumber = formData.get("pagesNumber");
       const language = formData.get("language");
+      const bookLibraries = formData.get("bookLibraries");
 
       const url = new URL(request.url);
       const bookId = url.pathname.split("/").pop();
@@ -100,13 +103,16 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         !isString(publishHouse) ||
         !isString(releaseYear) ||
         !isString(pagesNumber) ||
-        !isString(language)
+        !isString(language) ||
+        !isString(bookLibraries)
       ) {
         return badRequest({
           message: ErrorUpdate,
           success: false,
         });
       }
+
+      const objectBookLibraries = JSON.parse(bookLibraries);
 
       const fields = {
         name,
@@ -116,6 +122,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         releaseYear,
         pagesNumber,
         language,
+        bookLibraries: objectBookLibraries,
       };
 
       const fieldErrors = handleBookErrors(fields);
@@ -155,8 +162,10 @@ const UpdateBook: React.FC = () => {
   const urlParams = useParams();
 
   const [book, setBook] = useState<BookState>(data.book);
+
   const categories = data.categories;
   const publishHouses = data.publishHouses;
+  const libraries = data.libraries;
 
   useEffect(() => {
     if (actionData && actionData.success === true) navigate("/books");
@@ -170,9 +179,12 @@ const UpdateBook: React.FC = () => {
       return;
     }
 
+    const stringBookLibraries = JSON.stringify(book.bookLibraries);
+
     submit(
       {
         ...book,
+        bookLibraries: stringBookLibraries,
         intent: "update",
       },
       {
@@ -190,6 +202,7 @@ const UpdateBook: React.FC = () => {
         setBook={setBook}
         book={book}
         categories={categories}
+        libraries={libraries}
         publishHouses={publishHouses}
       />
     </ColumnFlex>
