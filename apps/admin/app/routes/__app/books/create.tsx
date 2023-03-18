@@ -31,6 +31,7 @@ import { getUserId } from "~/server/users.server";
 import { getPublishHouses } from "~/server/publishHouses.server";
 import { createBook } from "~/server/books.server";
 import { getLibraries } from "~/server/libraries.server";
+import { uploadImage } from "~/server/media.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -68,6 +69,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
       const name = formData.get("name");
       const author = formData.get("author");
       const category = formData.get("category");
+      const image = formData.get("image");
       const publishHouse = formData.get("publishHouse");
       const releaseYear = formData.get("releaseYear");
       const pagesNumber = formData.get("pagesNumber");
@@ -78,6 +80,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         !isString(name) ||
         !isString(author) ||
         !isString(category) ||
+        !isString(image) ||
         !isString(publishHouse) ||
         !isString(releaseYear) ||
         !isString(pagesNumber) ||
@@ -96,6 +99,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         name,
         author,
         category,
+        image,
         publishHouse,
         releaseYear,
         pagesNumber,
@@ -112,7 +116,8 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         });
       }
 
-      await createBook(fields);
+      const { imageId } = await uploadImage(image);
+      await createBook({ ...fields, image: imageId });
 
       return goodRequest({
         message: SuccessCreate,
@@ -143,7 +148,7 @@ const CreateBook: React.FC = () => {
   const data = useLoaderData();
 
   const [book, setBook] = useState<BookState>(initialBook);
-  
+
   const categories = data.categories;
   const publishHouses = data.publishHouses;
   const libraries = data.libraries;

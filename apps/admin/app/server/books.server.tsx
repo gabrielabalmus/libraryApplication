@@ -130,6 +130,7 @@ export const deleteBook = async ({ bookId }: BookIdProps) => {
 export const createBook = async ({
   name,
   author,
+  image,
   pagesNumber,
   category,
   publishHouse,
@@ -142,6 +143,7 @@ export const createBook = async ({
       data: {
         name,
         author,
+        image,
         pagesNumber: parseInt(pagesNumber),
         categoryId: category,
         publishHouseId: publishHouse,
@@ -155,7 +157,7 @@ export const createBook = async ({
 
     bookLibraries.map((item) => {
       try {
-        const librariesBook = prisma.bookLibraries.create({
+        const createdBookLibrary = prisma.bookLibraries.create({
           data: {
             bookId: book.id,
             libraryId: item.library,
@@ -165,7 +167,7 @@ export const createBook = async ({
           },
         });
 
-        if (!librariesBook) throw new Error(ErrorCreate);
+        if (!createdBookLibrary) throw new Error(ErrorCreate);
 
         return;
       } catch (err) {
@@ -190,6 +192,7 @@ export const getSingleBook = async ({ bookId }: BookIdProps) => {
         select: {
           name: true,
           author: true,
+          image: true,
           category: {
             select: {
               id: true,
@@ -233,6 +236,7 @@ export const updateBook = async ({
   bookId,
   name,
   author,
+  image,
   pagesNumber,
   category,
   publishHouse,
@@ -249,6 +253,7 @@ export const updateBook = async ({
       data: {
         name,
         author,
+        image,
         pagesNumber: parseInt(pagesNumber),
         categoryId: category,
         publishHouseId: publishHouse,

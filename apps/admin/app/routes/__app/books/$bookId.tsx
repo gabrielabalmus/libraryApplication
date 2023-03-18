@@ -32,6 +32,7 @@ import { getCategories } from "~/server/categories.server";
 import { getPublishHouses } from "~/server/publishHouses.server";
 import { getSingleBook, updateBook } from "~/server/books.server";
 import { getLibraries } from "~/server/libraries.server";
+import { getImage, uploadImage } from "~/server/media.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -60,6 +61,8 @@ export const loader = async ({ request }: LoaderArgs) => {
       getLibraries(),
     ]);
 
+    if (book.image) book.image = await getImage(book.image);
+
     return goodRequest({ book, categories, publishHouses, libraries });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
@@ -85,6 +88,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     if (intent === "update") {
       const name = formData.get("name");
       const author = formData.get("author");
+      const image = formData.get("image");
       const category = formData.get("category");
       const publishHouse = formData.get("publishHouse");
       const releaseYear = formData.get("releaseYear");
@@ -99,6 +103,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         !isString(bookId) ||
         !isString(name) ||
         !isString(author) ||
+        !isString(image) ||
         !isString(category) ||
         !isString(publishHouse) ||
         !isString(releaseYear) ||
@@ -117,6 +122,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
       const fields = {
         name,
         author,
+        image,
         category,
         publishHouse,
         releaseYear,
@@ -134,7 +140,8 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         });
       }
 
-      await updateBook({ ...fields, bookId });
+      const { imageId } = await uploadImage(image);
+      await updateBook({ ...fields, bookId, image: imageId });
 
       return goodRequest({
         message: SuccessUpdate,

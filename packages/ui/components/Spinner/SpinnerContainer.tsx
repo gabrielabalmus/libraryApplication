@@ -1,7 +1,7 @@
-import CircularProgress from "@mui/material/CircularProgress";
+import { StyledSpinner } from "./Spinner.style";
 
 const SpinnerContainer: React.FC = ({}) => {
-  return <CircularProgress />;
+  return <StyledSpinner />;
 };
 
 export default SpinnerContainer;

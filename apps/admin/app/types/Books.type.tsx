@@ -63,6 +63,7 @@ export interface BookLibrariesResponse {
 export interface BookResponse {
   name: string;
   author: string;
+  image: string;
   pagesNumber: number;
   category: { id: string };
   publishHouse: { id: string };
@@ -100,6 +101,7 @@ export interface BookLibrariesErrorObject {
 export interface ErrorState {
   name?: string;
   author?: string;
+  image?: string;
   pagesNumber?: string;
   category?: string;
   publishHouse?: string;
@@ -118,6 +120,7 @@ export interface BookLibrariesState {
 export interface BookState {
   name: string;
   author: string;
+  image: string;
   pagesNumber: string;
   category: string;
   publishHouse: string;
@@ -144,4 +147,5 @@ export interface BooksLibrariesProps {
   onChange: (value: string, field: BookLibrariesValues) => void;
   libraries: AutocompleteOptions[];
   error: BookLibrariesError;
+  onRemoveClick: () => void;
 }

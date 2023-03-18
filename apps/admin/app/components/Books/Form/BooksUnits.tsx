@@ -2,13 +2,14 @@ import Input from "@/components/Input";
 import Autocomplete from "@/components/Autocomplete";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
 import { BookLibrariesValues, BooksLibrariesProps } from "~/types/Books.type";
-import { UnitsFlex } from "../Books.style";
+import { StyledRemoveFab, StyledRemoveIcon, UnitsFlex } from "../Books.style";
 
 const BooksUnits: React.FC<BooksLibrariesProps> = ({
   bookLibrary,
   onChange,
   libraries,
   error,
+  onRemoveClick,
 }) => (
   <UnitsFlex>
     <Autocomplete
@@ -32,6 +33,9 @@ const BooksUnits: React.FC<BooksLibrariesProps> = ({
       value={bookLibrary.place}
       onChange={(value: string) => onChange(value, BookLibrariesValues.place)}
     />
+    <StyledRemoveFab color="primary" onClick={onRemoveClick}>
+      <StyledRemoveIcon />
+    </StyledRemoveFab>
   </UnitsFlex>
 );
 

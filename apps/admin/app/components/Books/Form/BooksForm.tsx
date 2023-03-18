@@ -1,6 +1,6 @@
 import Paper from "@mui/material/Paper";
 import Input from "@/components/Input";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useNavigate, useParams } from "@remix-run/react";
 import {
   ErrorState,
@@ -15,8 +15,13 @@ import Autocomplete from "@/components/Autocomplete";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
 import { InputType } from "@/components/Input/Input.type";
 import { StyledFlexButton } from "~/components/Libraries/Libraries.style";
-import { Details, initialBookLibrary, Units } from "../Books.const";
-import { StyledColumnFlex, StyledFab, StyleFlex } from "../Books.style";
+import {
+  Details,
+  ErrorImageUpload,
+  initialBookLibrary,
+  Units,
+} from "../Books.const";
+import { StyledColumnFlex, StyledAddFab, StyleFlex } from "../Books.style";
 import BooksUnits from "./BooksUnits";
 import { ColumnFlex, AlignedFlex } from "@/components/Flex";
 import Typography from "@mui/material/Typography";
@@ -82,6 +87,55 @@ const BooksForm: React.FC<BooksFormProps> = ({
       });
   };
 
+  const handleRemoveBookLibrary = (index: number) => {
+    setBook((oldBook) => {
+      const newBookLibraries = oldBook.bookLibraries.filter(
+        (item, i) => i !== index
+      );
+
+      return {
+        ...oldBook,
+        bookLibraries: newBookLibraries,
+      };
+    });
+
+    if (!isEmpty(inputErrors.bookLibraries))
+      setInputErrors((oldErrors) => {
+        delete oldErrors.bookLibraries;
+        return oldErrors;
+      });
+  };
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+
+    if (!file) {
+      setInputErrors((oldErrors) => ({
+        ...oldErrors,
+        image: ErrorImageUpload,
+      }));
+
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = () => {
+      setBook((oldBook) => ({
+        ...oldBook,
+        image: reader.result as string,
+      }));
+    };
+
+    reader.onerror = () => {
+      setInputErrors((oldErrors) => ({
+        ...oldErrors,
+        image: ErrorImageUpload,
+      }));
+    };
+  };
+
   const handleOnSubmit = () => {
     onSubmit({
       callback: (fieldErrors: ErrorState) => setInputErrors(fieldErrors),
@@ -111,18 +165,6 @@ const BooksForm: React.FC<BooksFormProps> = ({
                 handleInputChange(value, BookValue.author)
               }
             />
-            <Input
-              label="Pages number*"
-              type={InputType.number}
-              errorMessage={inputErrors.pagesNumber}
-              value={book.pagesNumber}
-              onChange={(value: string) =>
-                handleInputChange(value, BookValue.pagesNumber)
-              }
-            />
-          </StyledColumnFlex>
-
-          <StyledColumnFlex>
             <Autocomplete
               label="Category*"
               onChange={(value: AutocompleteOptions | null) =>
@@ -150,6 +192,9 @@ const BooksForm: React.FC<BooksFormProps> = ({
                 handleInputChange(value, BookValue.releaseYear)
               }
             />
+          </StyledColumnFlex>
+
+          <StyledColumnFlex>
             <Input
               label="Language*"
               errorMessage={inputErrors.language}
@@ -158,14 +203,33 @@ const BooksForm: React.FC<BooksFormProps> = ({
                 handleInputChange(value, BookValue.language)
               }
             />
+            <Input
+              label="Pages number*"
+              type={InputType.number}
+              errorMessage={inputErrors.pagesNumber}
+              value={book.pagesNumber}
+              onChange={(value: string) =>
+                handleInputChange(value, BookValue.pagesNumber)
+              }
+            />
+
+            <input
+              id="img"
+              type="file"
+              name="img"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+            {inputErrors.image && <p>{inputErrors.image}</p>}
+            <img src={book.image} />
           </StyledColumnFlex>
         </StyleFlex>
 
         <AlignedFlex gap="20px">
           <Typography variant="h3">{Units}</Typography>
-          <StyledFab color="primary" onClick={handleAddBookLibrary}>
+          <StyledAddFab color="primary" onClick={handleAddBookLibrary}>
             <AddIcon />
-          </StyledFab>
+          </StyledAddFab>
         </AlignedFlex>
 
         <ColumnFlex gap="20px">
@@ -176,6 +240,7 @@ const BooksForm: React.FC<BooksFormProps> = ({
               onChange={(value: string, field: BookLibrariesValues) =>
                 handleBookLibrariesChange(value, field, index)
               }
+              onRemoveClick={() => handleRemoveBookLibrary(index)}
               error={
                 (inputErrors.bookLibraries &&
                   inputErrors.bookLibraries[index]) ||

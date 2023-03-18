@@ -43,6 +43,7 @@ model Libraries {
 model Books {
   id             String          @id @default(auto()) @map("_id") @db.ObjectId
   name           String          @unique
+  image          String          @unique
   author         String
   categoryId     String          @db.ObjectId
   category       Categories      @relation(fields: [categoryId], references: [id])

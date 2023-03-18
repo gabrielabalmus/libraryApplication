@@ -15,6 +15,8 @@ export const SuccessDelete = "Book deleted successfuly";
 export const ErrorUpdate = "There was a problem in updating the book";
 export const SuccessUpdate = "Book updated successfully";
 
+export const ErrorImageUpload = "Error on upload. Try again!";
+
 export const SearchPlaceholder = "Search for name or author";
 
 export const Categories = "Categories";
@@ -24,6 +26,7 @@ export const Units = "Book units";
 export const initialBook = {
   name: "",
   author: "",
+  image: "",
   pagesNumber: "",
   category: "",
   publishHouse: "",
