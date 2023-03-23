@@ -9,7 +9,7 @@ import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import Box, { BoxProps } from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Divider, { DividerProps } from "@mui/material/Divider";
-import { DrawerType } from "./Menu.types";
+import { DrawerType } from "./Menu.type";
 
 export const StyledAppBar = MuiStyled(AppBar)<AppBarProps>(({ theme }) =>
   theme.unstable_sx({
@@ -33,7 +33,7 @@ export const StyledIconButton = MuiStyled(IconButton)<IconButtonProps>(
 export const StyledMainBox = MuiStyled(Box)<BoxProps>(({ theme }) =>
   theme.unstable_sx({
     backgroundColor: collorPalette.grey.lighter,
-    flexGrow: 1,
+    flex: 1,
     p: 3,
     width: {
       sm: `calc(100% - ${menuWidth}px)`,

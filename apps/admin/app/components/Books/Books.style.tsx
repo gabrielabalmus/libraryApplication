@@ -16,7 +16,7 @@ export const StyledFilters = styled(Flex)`
 export const StyledColumnFlex = styled(ColumnFlex)`
   gap: 20px;
   max-width: 350px;
-  flex-grow: 1;
+  flex: 1;
   align-self: flex-start;
   @media (max-width: 899px) {
     max-width: 100%;

@@ -27,6 +27,7 @@ import { ColumnFlex, AlignedFlex } from "@/components/Flex";
 import Typography from "@mui/material/Typography";
 import AddIcon from "@mui/icons-material/Add";
 import { isEmpty } from "lodash";
+import ImageUploader from "@/components/ImageUploader";
 
 const BooksForm: React.FC<BooksFormProps> = ({
   onSubmit,
@@ -106,34 +107,51 @@ const BooksForm: React.FC<BooksFormProps> = ({
       });
   };
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files && e.target.files[0];
+  const readFileAsync = (file: File) => {
+    return new Promise((resolve, reject) => {
+      let reader = new FileReader();
 
-    if (!file) {
-      setInputErrors((oldErrors) => ({
-        ...oldErrors,
-        image: ErrorImageUpload,
-      }));
+      reader.readAsDataURL(file);
 
-      return;
-    }
+      reader.onload = () => {
+        resolve(reader.result);
+      };
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
+      reader.onerror = reject;
+    });
+  };
 
-    reader.onload = () => {
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = e.target.files && e.target.files[0];
+
+      if (!file) {
+        setInputErrors((oldErrors) => ({
+          ...oldErrors,
+          image: ErrorImageUpload,
+        }));
+
+        return;
+      }
+
+      const image = await readFileAsync(file);
+
       setBook((oldBook) => ({
         ...oldBook,
-        image: reader.result as string,
+        image: image as string,
       }));
-    };
 
-    reader.onerror = () => {
+      if (inputErrors.image)
+        setInputErrors((oldErrors) => {
+          delete oldErrors.image;
+          return oldErrors;
+        });
+    } catch (err) {
       setInputErrors((oldErrors) => ({
         ...oldErrors,
         image: ErrorImageUpload,
       }));
-    };
+    }
   };
 
   const handleOnSubmit = () => {
@@ -213,15 +231,11 @@ const BooksForm: React.FC<BooksFormProps> = ({
               }
             />
 
-            <input
-              id="img"
-              type="file"
-              name="img"
-              accept="image/*"
-              onChange={handleImageChange}
+            <ImageUploader
+              onImageChange={handleImageChange}
+              errorMessage={inputErrors.image}
+              image={book.image}
             />
-            {inputErrors.image && <p>{inputErrors.image}</p>}
-            <img src={book.image} />
           </StyledColumnFlex>
         </StyleFlex>
 

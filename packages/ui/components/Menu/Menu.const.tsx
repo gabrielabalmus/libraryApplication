@@ -1,4 +1,4 @@
-import { MenuListType } from "./Menu.types";
+import { MenuListType } from "./Menu.type";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import DensitySmallIcon from "@mui/icons-material/DensitySmall";

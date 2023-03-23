@@ -12,7 +12,7 @@ import {
 } from "./Menu.style";
 import { menuTitle, menuWidth } from "./Menu.const";
 import Flex from "@/components/Flex";
-import { MenuContainerProps } from "./Menu.types";
+import { MenuContainerProps } from "./Menu.type";
 
 const Menu: React.FC<MenuContainerProps> = ({ onLogoutClick, children }) => {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);

@@ -2,7 +2,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TablePagination from "@mui/material/TablePagination";
 import TableHead from "@mui/material/TableHead";
-import { TableProps } from "./Table.types";
+import { TableProps } from "./Table.type";
 import TableContainer from "@mui/material/TableContainer";
 import {
   StyledTable,

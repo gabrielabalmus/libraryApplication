@@ -6,7 +6,7 @@ export const StandardAutocomplete = MuiStyled(
   Autocomplete
 )<AutocompleteFieldProps>(({ width, theme }) =>
   theme.unstable_sx({
-    flexGrow: 1,
+    flex: 1,
     maxWidth: { md: width, xs: "100%" },
   })
 );
