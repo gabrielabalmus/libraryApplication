@@ -20,7 +20,7 @@ export const ContainedButton = MuiStyled(Button)<ButtonProps>(({ theme }) =>
       backgroundColor: collorPalette.primary.base,
     },
   })
-);
+) as typeof Button;
 
 export const OutlinedButton = MuiStyled(Button)<ButtonProps>(({ theme }) =>
   theme.unstable_sx({
@@ -32,4 +32,4 @@ export const OutlinedButton = MuiStyled(Button)<ButtonProps>(({ theme }) =>
       backgroundColor: collorPalette.white,
     },
   })
-);
+) as typeof Button;

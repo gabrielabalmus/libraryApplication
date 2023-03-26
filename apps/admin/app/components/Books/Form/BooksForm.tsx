@@ -143,8 +143,8 @@ const BooksForm: React.FC<BooksFormProps> = ({
 
       if (inputErrors.image)
         setInputErrors((oldErrors) => {
-          delete oldErrors.image;
-          return oldErrors;
+          const { image, ...rest } = oldErrors;
+          return rest;
         });
     } catch (err) {
       setInputErrors((oldErrors) => ({
