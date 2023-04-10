@@ -18,7 +18,7 @@ export const getUserId = async (request: Request) => {
 export const login = async ({ email, password }: LoginState) => {
   try {
     const user = await prisma.users.findFirst({
-      where: { email, type: "admin" },
+      where: { email },
       select: {
         id: true,
         password: true,

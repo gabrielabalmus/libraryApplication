@@ -11,7 +11,6 @@ model Users {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
   password  String
-  type      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -88,4 +87,29 @@ model Cities {
   name      String      @unique
   value     String      @unique
   Libraries Libraries[]
+  Customers Customers[]
+}
+
+model Customers {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  address   String
+  phone     String
+  password  String
+  email     String   @unique
+  cityId    String   @db.ObjectId
+  city      Cities   @relation(fields: [cityId], references: [id])
+  Orders    Orders[]
+  deleted   Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Orders {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  customerId String    @db.ObjectId
+  customer   Customers @relation(fields: [customerId], references: [id])
+  deleted    Boolean
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
