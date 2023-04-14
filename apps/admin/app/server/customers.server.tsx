@@ -4,6 +4,7 @@ import {
   ErrorGetPaginated,
   ErrorGetSingle,
   ErrorUpdate,
+  NewCustomerSubject,
 } from "~/components/Customers/Customers.const";
 import {
   PaginatedCustomersProps,
@@ -11,6 +12,7 @@ import {
   CustomerIdProps,
 } from "~/types/Customers.type";
 import {
+  fromCustomerByEmail,
   fromPaginatedCustomersResponse,
   fromSingleCustomerResponse,
 } from "~/transformers/customers.transformer";
@@ -18,6 +20,9 @@ import { prisma } from "./prisma.server";
 import { ErrorMessage } from "~/const";
 import bcrypt from "bcryptjs";
 import generator from "generate-password";
+import { sendMail } from "./mail.server";
+import { NewCustomerMail } from "@/templates/NewCustomer.mail";
+import { CustomerByEmailProps } from "~/types/Orders.type";
 
 export const getPaginatedCustomers = async ({
   page,
@@ -38,14 +43,11 @@ export const getPaginatedCustomers = async ({
                 mode: "insensitive",
               },
             },
-            { email: { contains: search } },
-            { phone: { contains: search } },
+            { email: { contains: search, mode: "insensitive" } },
+            { phone: { contains: search, mode: "insensitive" } },
           ],
           city: {
-            name: {
-              contains: city,
-              mode: "insensitive",
-            },
+            name: city || undefined,
           },
         },
         orderBy: {
@@ -65,14 +67,11 @@ export const getPaginatedCustomers = async ({
                 mode: "insensitive",
               },
             },
-            { email: { contains: search } },
-            { phone: { contains: search } },
+            { email: { contains: search, mode: "insensitive" } },
+            { phone: { contains: search, mode: "insensitive" } },
           ],
           city: {
-            name: {
-              contains: city,
-              mode: "insensitive",
-            },
+            name: city || undefined,
           },
         },
         select: {
@@ -138,6 +137,18 @@ export const createCustomer = async ({
   phone,
 }: CustomerState) => {
   try {
+    const customerByEmail = await prisma.customers.findFirst({
+      where: {
+        email,
+        deleted: false,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (customerByEmail) throw new Error(ErrorCreate);
+
     const generatePass = generator.generate({
       length: 10,
       numbers: true,
@@ -153,11 +164,17 @@ export const createCustomer = async ({
         email,
         phone,
         password,
-        deleted: false,
       },
     });
 
     if (!customer) throw new Error(ErrorCreate);
+
+    await sendMail({
+      to: email,
+      subject: NewCustomerSubject,
+      template: NewCustomerMail,
+      data: { password: generatePass },
+    });
 
     return customer;
   } catch (err) {
@@ -174,6 +191,19 @@ export const updateCustomer = async ({
   phone,
 }: CustomerState & { customerId: string }) => {
   try {
+    const customerByEmail = await prisma.customers.findFirst({
+      where: {
+        email,
+        deleted: false,
+        id: { not: customerId },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (customerByEmail) throw new Error(ErrorUpdate);
+
     const customer = await prisma.customers.updateMany({
       where: {
         id: customerId,
@@ -218,7 +248,7 @@ export const deleteCustomer = async ({ customerId }: CustomerIdProps) => {
 export const getCustomerOrders = async ({ customerId }: CustomerIdProps) => {
   try {
     const customerOrders = await prisma.orders.findMany({
-      where: { customerId, deleted: false },
+      where: { customerId },
       select: {
         id: true,
       },
@@ -227,6 +257,37 @@ export const getCustomerOrders = async ({ customerId }: CustomerIdProps) => {
     if (!customerOrders) throw new Error(ErrorMessage);
 
     return customerOrders;
+  } catch (err) {
+    throw new Error(ErrorMessage);
+  }
+};
+
+export const getCustomerByEmail = async ({ email }: CustomerByEmailProps) => {
+  try {
+    if (!email) return null;
+
+    const customer = await prisma.customers.findFirst({
+      where: {
+        deleted: false,
+        email,
+      },
+      select: {
+        id: true,
+        name: true,
+        city: {
+          select: {
+            name: true,
+          },
+        },
+        email: true,
+        phone: true,
+        deleted: true,
+      },
+    });
+
+    if (!customer) return null;
+
+    return fromCustomerByEmail(customer);
   } catch (err) {
     throw new Error(ErrorMessage);
   }

@@ -23,7 +23,7 @@ export const getPaginatedLibraries = async ({
   city,
 }: PaginatedLibrariesProps) => {
   try {
-    const skip = (page > 1 && (page - 1) * 5) || undefined;
+    const skip = (page && page > 1 && (page - 1) * 5) || undefined;
 
     const libraries = await prisma.$transaction(async (db) => {
       const count = await db.libraries.count({
@@ -36,13 +36,10 @@ export const getPaginatedLibraries = async ({
                 mode: "insensitive",
               },
             },
-            { phone: { contains: search } },
+            { phone: { contains: search, mode: "insensitive" } },
           ],
           city: {
-            name: {
-              contains: city,
-              mode: "insensitive",
-            },
+            name: city || undefined,
           },
         },
         orderBy: {
@@ -62,13 +59,10 @@ export const getPaginatedLibraries = async ({
                 mode: "insensitive",
               },
             },
-            { phone: { contains: search } },
+            { phone: { contains: search, mode: "insensitive" } },
           ],
           city: {
-            name: {
-              contains: city,
-              mode: "insensitive",
-            },
+            name: city || undefined,
           },
         },
         select: {
@@ -133,6 +127,18 @@ export const createLibrary = async ({
   schedule,
 }: LibraryState) => {
   try {
+    const libraryByName = await prisma.libraries.findFirst({
+      where: {
+        name,
+        deleted: false,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (libraryByName) throw new Error(ErrorCreate);
+
     const library = await prisma.libraries.create({
       data: {
         name,
@@ -140,7 +146,6 @@ export const createLibrary = async ({
         address,
         phone,
         schedule,
-        deleted: false,
       },
     });
 
@@ -161,6 +166,19 @@ export const updateLibrary = async ({
   schedule,
 }: LibraryState & { libraryId: string }) => {
   try {
+    const libraryByName = await prisma.libraries.findFirst({
+      where: {
+        name,
+        deleted: false,
+        id: { not: libraryId },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (libraryByName) throw new Error(ErrorUpdate);
+
     const library = await prisma.libraries.updateMany({
       where: {
         id: libraryId,
@@ -185,23 +203,20 @@ export const updateLibrary = async ({
 
 export const deleteLibrary = async ({ libraryId }: LibraryIdProps) => {
   try {
-    const libraryBook = await prisma.bookLibraries.updateMany({
-      where: {
-        libraryId,
-      },
-      data: {
-        deleted: true,
-      },
-    });
-
-    if (!libraryBook) throw new Error(ErrorDelete);
-
     const library = await prisma.libraries.update({
       where: {
         id: libraryId,
       },
       data: {
         deleted: true,
+        bookLibraries: {
+          updateMany: {
+            where: { deleted: false },
+            data: {
+              deleted: true,
+            },
+          },
+        },
       },
     });
 

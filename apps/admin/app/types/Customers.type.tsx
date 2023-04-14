@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction } from "react";
 export interface CustomersResponse {
   id: string;
   name: string;
+  email: string;
   phone: string;
   city: { name: string };
 }
@@ -11,6 +12,7 @@ export interface CustomersResponse {
 export interface PaginatedCustomers {
   id: string;
   name: string;
+  email: string;
   city: string;
   phone: string;
 }
@@ -54,6 +56,15 @@ export interface CustomerResponse {
   email: string;
 }
 
+export interface CustomerByEmailResponse {
+  id: string;
+  name: string;
+  city: { name: string };
+  phone: string;
+  email: string;
+  deleted: boolean;
+}
+
 export enum CustomerValue {
   name = "name",
   city = "city",
@@ -87,4 +98,11 @@ export interface CustomersFormProps {
 
 export interface CustomersSubmitProps {
   callback: (fieldErrors: ErrorState) => void;
+}
+
+export interface SendMailProps {
+  to: string;
+  subject: string;
+  template: string;
+  data?: { [key: string]: string };
 }

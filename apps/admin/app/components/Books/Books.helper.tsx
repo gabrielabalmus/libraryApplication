@@ -1,6 +1,6 @@
 import { isEmpty } from "lodash";
 import { InvalidField, RequiredField } from "~/const";
-import { checkIfNumber } from "~/components/Libraries/Libraries.helper";
+import { checkIfNumber } from "@/utils/common";
 import { ErrorState, BookState, BookLibrariesError } from "~/types/Books.type";
 
 export const handleBookErrors = (formData: BookState) => {

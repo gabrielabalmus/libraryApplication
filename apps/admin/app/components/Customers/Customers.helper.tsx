@@ -1,7 +1,7 @@
 import { isEmpty } from "lodash";
 import { InvalidField, RequiredField } from "~/const";
 import { ErrorState, CustomerState } from "~/types/Customers.type";
-import { checkIfNumber } from "~/components/Libraries/Libraries.helper";
+import { checkIfEmail, checkIfNumber } from "@/utils/common";
 
 export const handleCustomerErrors = (formData: CustomerState) => {
   let errors: ErrorState = {};
@@ -13,7 +13,11 @@ export const handleCustomerErrors = (formData: CustomerState) => {
 
   if (isEmpty(address)) errors.address = RequiredField;
 
-  if (isEmpty(email)) errors.email = RequiredField;
+  if (isEmpty(email)) {
+    errors.email = RequiredField;
+  } else if (!checkIfEmail(email)) {
+    errors.email = InvalidField;
+  }
 
   if (isEmpty(phone)) {
     errors.phone = RequiredField;

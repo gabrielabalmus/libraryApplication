@@ -1,3 +1,5 @@
+import { LibraryState } from "~/types/Libraries.type";
+
 export const Libraries = "Libraries";
 export const NewLibrary = "New library";
 export const CreateLibraryTitle = "Create library";
@@ -20,7 +22,7 @@ export const SuccessUpdate = "Library updated successfully";
 
 export const SearchPlaceholder = "Search for name or phone";
 
-export const initialLibrary = {
+export const initialLibrary: LibraryState = {
   name: "",
   city: "",
   address: "",

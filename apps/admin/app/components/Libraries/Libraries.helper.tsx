@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from "dayjs";
+import { checkIfNumber } from "@/utils/common";
 import { isEmpty } from "lodash";
 import { InvalidField, RequiredField } from "~/const";
 import { ErrorState, LibraryState } from "~/types/Libraries.type";
@@ -77,14 +77,4 @@ export const handleLibraryErrors = (formData: LibraryState) => {
     };
 
   return errors;
-};
-
-export const checkIfValidDate = (value: Dayjs | null) => {
-  return value && dayjs(value).isValid()
-    ? dayjs(value).locale("ro").format()
-    : "";
-};
-
-export const checkIfNumber = (value: any) => {
-  return /^\d+$/.test(value);
 };

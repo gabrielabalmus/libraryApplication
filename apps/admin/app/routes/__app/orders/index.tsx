@@ -1,12 +1,13 @@
 import { ColumnFlex } from "@/components/Flex";
 import LayoutTitle from "~/components/LayoutTitle";
-import LibrariesOverview from "~/components/Libraries/Overview";
+import OrdersOverview from "~/components/Orders/Overview";
 import {
   ErrorDelete,
-  Libraries,
-  NewLibrary,
+  Orders,
+  NewOrder,
   SuccessDelete,
-} from "~/components/Libraries/Libraries.const";
+  OrderStatuses,
+} from "~/components/Orders/Orders.const";
 import Button from "@/components/Button";
 import { ButtonVariant } from "@/components/Button/Button.type";
 import {
@@ -15,10 +16,7 @@ import {
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
-import {
-  getPaginatedLibraries,
-  deleteLibrary,
-} from "~/server/libraries.server";
+import { getPaginatedOrders, deleteOrder } from "~/server/orders.server";
 import { badRequest, goodRequest } from "~/server/request.server";
 import { ErrorMessage } from "~/const";
 import { useCallback, useState } from "react";
@@ -35,7 +33,7 @@ import ErrorInterface from "~/components/ErrorInterface";
 import { getUserId } from "~/server/users.server";
 import { getCities } from "~/server/cities.server";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
-import { FilterState } from "~/types/Libraries.type";
+import { FilterState } from "~/types/Orders.type";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -49,20 +47,22 @@ export const loader = async ({ request }: LoaderArgs) => {
     const page = url.searchParams.get("page");
     const search = url.searchParams.get("search") || "";
     const city = url.searchParams.get("city") || "";
+    const status = url.searchParams.get("status") || "";
 
     let pageNumber = 1;
     if (page && checkIfNumber(page)) pageNumber = parseInt(page);
 
-    const [libraries, cities] = await Promise.all([
-      getPaginatedLibraries({
+    const [orders, cities] = await Promise.all([
+      getPaginatedOrders({
         page: pageNumber,
         search,
         city,
+        status
       }),
       getCities(),
     ]);
 
-    return goodRequest({ libraries, cities });
+    return goodRequest({ orders, cities });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -85,16 +85,16 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     const intent = formData.get("intent");
 
     if (intent === "delete") {
-      const libraryId = formData.get("libraryId");
+      const orderId = formData.get("orderId");
 
-      if (!isString(libraryId)) {
+      if (!isString(orderId)) {
         return badRequest({
           message: ErrorDelete,
           success: false,
         });
       }
 
-      await deleteLibrary({ libraryId });
+      await deleteOrder({ orderId });
 
       return goodRequest({
         message: SuccessDelete,
@@ -114,7 +114,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
   }
 };
 
-const PaginatedLibraries: React.FC = () => {
+const PaginatedOrders: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const data = useLoaderData();
@@ -125,23 +125,29 @@ const PaginatedLibraries: React.FC = () => {
   const page = searchParams.get("page");
   const search = searchParams.get("search") || "";
   const city = searchParams.get("city") || "";
+  const status = searchParams.get("status") || "";
 
   let pageNumber = 1;
   if (page && checkIfNumber(page)) pageNumber = parseInt(page);
 
-  const libraries = data.libraries;
+  const orders = data.orders;
   const cities = data.cities;
 
   const filterCities = cities.find(
     (item: AutocompleteOptions) => item.name === city
   );
 
+  const filterStatus = OrderStatuses.find(
+    (item: AutocompleteOptions) => item.name === status
+  );
+
   const [filter, setFilter] = useState<FilterState>({
     search,
     city: filterCities?.id || "",
+    status: filterStatus?.id || "",
   });
 
-  const handleCreateLibrary = () => {
+  const handleCreateOrder = () => {
     navigate(`${location.pathname}/create`);
   };
 
@@ -155,10 +161,11 @@ const PaginatedLibraries: React.FC = () => {
 
       if (value) params = { ...params, search: value };
       if (city) params = { ...params, city };
+      if (status) params = { ...params, status };
 
       setSearchParams(params);
     }, 500),
-    [city]
+    [city, status]
   );
 
   const handleSearchChange = (value: string) => {
@@ -175,7 +182,23 @@ const PaginatedLibraries: React.FC = () => {
     let params: URLSearchParamsInit = {};
 
     if (search) params = { ...params, search };
+    if (status) params = { ...params, status };
     if (value) params = { ...params, city: value?.name || "" };
+
+    setSearchParams(params);
+  };
+
+  const handleStatusChange = (value: AutocompleteOptions | null) => {
+    setFilter((oldValue: FilterState) => ({
+      ...oldValue,
+      status: value?.id || "",
+    }));
+
+    let params: URLSearchParamsInit = {};
+
+    if (search) params = { ...params, search };
+    if (city) params = { ...params, city };
+    if (value) params = { ...params, status: value?.name || "" };
 
     setSearchParams(params);
   };
@@ -183,33 +206,34 @@ const PaginatedLibraries: React.FC = () => {
   const handleDelete = (id: string) => {
     submit(
       {
-        libraryId: id,
+        orderId: id,
         intent: "delete",
       },
       {
         method: "delete",
-        action: `/libraries${location.search}`,
+        action: `/orders${location.search}`,
       }
     );
   };
 
   return (
     <ColumnFlex>
-      <LayoutTitle title={Libraries}>
+      <LayoutTitle title={Orders}>
         <Button
-          title={NewLibrary}
+          title={NewOrder}
           variant={ButtonVariant.contained}
-          onClick={handleCreateLibrary}
+          onClick={handleCreateOrder}
         />
       </LayoutTitle>
 
-      <LibrariesOverview
-        libraries={libraries}
+      <OrdersOverview
+        orders={orders}
         page={pageNumber}
         onPageChange={handleChangePage}
         filter={filter}
         onSearchChange={handleSearchChange}
         onCityChange={handleCityChange}
+        onStatusChange={handleStatusChange}
         onDelete={handleDelete}
         cities={cities}
       />
@@ -217,4 +241,4 @@ const PaginatedLibraries: React.FC = () => {
   );
 };
 
-export default PaginatedLibraries;
+export default PaginatedOrders;

@@ -1,3 +1,5 @@
+import { CustomerState } from "~/types/Customers.type";
+
 export const Customers = "Customers";
 export const NewCustomer = "New customer";
 export const CreateCustomerTitle = "Create customer";
@@ -21,8 +23,9 @@ export const SearchPlaceholder = "Search for name, email or phone";
 
 export const Details = "Details";
 export const Cities = "Cities";
+export const NewCustomerSubject = "New customer account";
 
-export const initialCustomer = {
+export const initialCustomer: CustomerState = {
   name: "",
   city: "",
   phone: "",

@@ -1,5 +1,6 @@
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
 import { Dispatch, SetStateAction } from "react";
+import { LibrarySchedule } from "@prisma/client";
 
 export interface LibrariesResponse {
   id: string;
@@ -14,16 +15,6 @@ export interface LibraryResponse {
   address: string;
   phone: string;
   schedule: LibrarySchedule;
-}
-
-export interface WeekTimes {
-  from: string;
-  to: string;
-}
-
-export interface LibrarySchedule {
-  mondayFriday: WeekTimes;
-  saturday: WeekTimes;
 }
 
 export interface LibraryState {

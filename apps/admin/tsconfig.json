@@ -7,6 +7,8 @@
     "paths": {
       "~/*": ["./app/*"],
       "@/components/*": ["../../packages/ui/components/*"],
+      "@/templates/*": ["../../packages/ui/templates/*"],
+      "@/utils/*": ["../../packages/ui/utils/*"],
       "@/theme/*": ["../../packages/ui/theme/*"],
     },
     "allowJs": true,

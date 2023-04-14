@@ -16,9 +16,9 @@ export interface PaginatedBooks {
 }
 
 export interface PaginatedBooksProps {
-  page: number;
-  search: string;
-  category: string;
+  page?: number;
+  search?: string;
+  category?: string;
 }
 
 export interface PaginatedBooks {
@@ -148,4 +148,9 @@ export interface BooksLibrariesProps {
   libraries: AutocompleteOptions[];
   error: BookLibrariesError;
   onRemoveClick: () => void;
+}
+
+export interface EachBookLibrary {
+  bookLibraries: BookLibrariesState[];
+  bookId: string;
 }

@@ -26,7 +26,7 @@ import {
   LoaderArgs,
   redirect,
 } from "@remix-run/node";
-import { checkIfNumber } from "~/components/Libraries/Libraries.helper";
+import { checkIfNumber } from "@/utils/common";
 import { useSearchParams, URLSearchParamsInit } from "react-router-dom";
 import ErrorInterface from "~/components/ErrorInterface";
 import { getUserId } from "~/server/users.server";

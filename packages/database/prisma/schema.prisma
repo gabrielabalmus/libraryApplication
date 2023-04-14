@@ -4,15 +4,7 @@ generator client {
 
 datasource db {
   provider = "mongodb"
-  url      = env("DATABASE_URL")
-}
-
-model Users {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  url      = env("DATABASE_URL")  
 }
 
 type LibrarySchedule {
@@ -25,15 +17,36 @@ type TimeSchedule {
   to   String
 }
 
+enum Status {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+type Penalty {
+  days   Int
+  amount Int
+  paid   Boolean
+}
+
+model Users {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Libraries {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  name          String          @unique
+  name          String
   address       String
   phone         String
   bookLibraries BookLibraries[]
   cityId        String          @db.ObjectId
   city          Cities          @relation(fields: [cityId], references: [id])
-  deleted       Boolean
+  deleted       Boolean         @default(false)
   schedule      LibrarySchedule
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
@@ -41,9 +54,10 @@ model Libraries {
 
 model Books {
   id             String          @id @default(auto()) @map("_id") @db.ObjectId
-  name           String          @unique
-  image          String          @unique
+  name           String
+  image          String
   author         String
+  bookLibraries  BookLibraries[]
   categoryId     String          @db.ObjectId
   category       Categories      @relation(fields: [categoryId], references: [id])
   publishHouseId String          @db.ObjectId
@@ -51,8 +65,7 @@ model Books {
   releaseYear    Int
   pagesNumber    Int
   language       String
-  bookLibraries  BookLibraries[]
-  deleted        Boolean
+  deleted        Boolean         @default(false)
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 }
@@ -72,22 +85,25 @@ model PublishHouses {
 }
 
 model BookLibraries {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  bookId    String    @db.ObjectId
-  book      Books     @relation(fields: [bookId], references: [id])
-  libraryId String    @db.ObjectId
-  library   Libraries @relation(fields: [libraryId], references: [id])
-  SKU       String    @unique
-  place     String
-  deleted   Boolean
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  bookId        String          @db.ObjectId
+  book          Books           @relation(fields: [bookId], references: [id])
+  libraryId     String          @db.ObjectId
+  library       Libraries       @relation(fields: [libraryId], references: [id])
+  orderProducts OrderProducts[]
+  SKU           String
+  place         String
+  deleted       Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 }
 
 model Cities {
   id        String      @id @default(auto()) @map("_id") @db.ObjectId
   name      String      @unique
   value     String      @unique
-  Libraries Libraries[]
-  Customers Customers[]
+  libraries Libraries[]
+  customers Customers[]
 }
 
 model Customers {
@@ -96,20 +112,35 @@ model Customers {
   address   String
   phone     String
   password  String
-  email     String   @unique
+  email     String
   cityId    String   @db.ObjectId
   city      Cities   @relation(fields: [cityId], references: [id])
-  Orders    Orders[]
-  deleted   Boolean
+  orders    Orders[]
+  deleted   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+model OrderProducts {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  bookLibraryId String        @db.ObjectId
+  bookLibrary   BookLibraries @relation(fields: [bookLibraryId], references: [id])
+  orderId       String        @db.ObjectId
+  order         Orders        @relation(fields: [orderId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
 model Orders {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  customerId String    @db.ObjectId
-  customer   Customers @relation(fields: [customerId], references: [id])
-  deleted    Boolean
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  number      String          @unique
+  status      Status          @default(PENDING)
+  customerId  String          @db.ObjectId
+  customer    Customers       @relation(fields: [customerId], references: [id])
+  products    OrderProducts[]
+  penalty     Penalty?
+  confirmedAt DateTime
+  completedAt DateTime
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 }

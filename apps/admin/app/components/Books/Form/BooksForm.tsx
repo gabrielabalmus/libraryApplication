@@ -28,6 +28,7 @@ import Typography from "@mui/material/Typography";
 import AddIcon from "@mui/icons-material/Add";
 import { isEmpty } from "lodash";
 import ImageUploader from "@/components/ImageUploader";
+import { readFileAsync } from "@/utils/common";
 
 const BooksForm: React.FC<BooksFormProps> = ({
   onSubmit,
@@ -105,20 +106,6 @@ const BooksForm: React.FC<BooksFormProps> = ({
         delete oldErrors.bookLibraries;
         return oldErrors;
       });
-  };
-
-  const readFileAsync = (file: File) => {
-    return new Promise((resolve, reject) => {
-      let reader = new FileReader();
-
-      reader.readAsDataURL(file);
-
-      reader.onload = () => {
-        resolve(reader.result);
-      };
-
-      reader.onerror = reject;
-    });
   };
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {

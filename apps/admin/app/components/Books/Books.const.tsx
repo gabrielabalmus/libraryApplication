@@ -1,3 +1,5 @@
+import { BookLibrariesState, BookState } from "~/types/Books.type";
+
 export const Books = "Books";
 export const NewBook = "New book";
 export const CreateBookTitle = "Create book";
@@ -17,13 +19,13 @@ export const SuccessUpdate = "Book updated successfully";
 
 export const ErrorImageUpload = "Error on upload. Try again!";
 
-export const SearchPlaceholder = "Search for name or author";
+export const SearchPlaceholder = "Search for name, author or sku";
 
 export const Categories = "Categories";
 export const Details = "Book details";
 export const Units = "Book units";
 
-export const initialBook = {
+export const initialBook: BookState = {
   name: "",
   author: "",
   image: "",
@@ -35,7 +37,7 @@ export const initialBook = {
   bookLibraries: [],
 };
 
-export const initialBookLibrary = {
+export const initialBookLibrary: BookLibrariesState = {
   library: "",
   sku: "",
   place: "",
