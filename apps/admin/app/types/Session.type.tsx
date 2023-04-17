@@ -5,6 +5,6 @@ export interface CreateSession {
 }
 
 export interface AlertDataState {
-  message?: string;
-  success?: boolean;
+  message: string;
+  success: boolean;
 }

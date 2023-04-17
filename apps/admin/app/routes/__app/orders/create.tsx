@@ -5,12 +5,7 @@ import {
   LoaderArgs,
   redirect,
 } from "@remix-run/node";
-import {
-  useActionData,
-  useLoaderData,
-  useNavigate,
-  useSubmit,
-} from "@remix-run/react";
+import { useActionData, useNavigate, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
@@ -34,11 +29,19 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   try {
     const url = new URL(request.url);
-    const email = url.searchParams.get("email") || "";
+    const email = url.searchParams.get("email");
+    const sku = url.searchParams.get("sku");
 
-    const [customer] = await Promise.all([getCustomerByEmail({ email })]);
+    if (email) {
+      const customer = await getCustomerByEmail({ email });
+      return goodRequest({ customer });
+    }
 
-    return goodRequest({ customer });
+    if (sku) {
+      return goodRequest({ books: [] });
+    }
+
+    return {};
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -77,40 +80,22 @@ export const ErrorBoundary = () => {
 
 const CreateOrder: React.FC = () => {
   const submit = useSubmit();
+
   const actionData = useActionData();
   const navigate = useNavigate();
-  const data = useLoaderData();
 
   const [order, setOrder] = useState<OrderState>(initialOrder);
-
-  const customer = data.customer;
 
   useEffect(() => {
     if (actionData && actionData.success === true) navigate(`/orders`);
   }, [actionData]);
 
-  const handleOnSubmit = ({ callback }: OrdersSubmitProps) => {
-    // submit(
-    //   {
-    //     ...order,
-    //     intent: "create",
-    //   },
-    //   {
-    //     method: "post",
-    //     action: "/orders/create",
-    //   }
-    // );
-  };
+  const handleOnSubmit = ({ callback }: OrdersSubmitProps) => {};
 
   return (
     <ColumnFlex>
       <LayoutTitle title={CreateOrderTitle} backUrl="/orders" />
-      <OrdersForm
-        onSubmit={handleOnSubmit}
-        setOrder={setOrder}
-        order={order}
-        customer={customer}
-      />
+      <OrdersForm onSubmit={handleOnSubmit} setOrder={setOrder} order={order} />
     </ColumnFlex>
   );
 };

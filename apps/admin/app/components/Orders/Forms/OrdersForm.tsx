@@ -5,7 +5,7 @@ import { ErrorState, OrdersFormProps } from "~/types/Orders.type";
 import Button from "@/components/Button";
 import { ButtonType, ButtonVariant } from "@/components/Button/Button.type";
 import { StyledFlexButton } from "~/components/Libraries/Libraries.style";
-import { Details } from "../Orders.const";
+import { Books, Customer } from "../Orders.const";
 import { ColumnFlex } from "@/components/Flex";
 import Typography from "@mui/material/Typography";
 import OrdersCustomers from "./OrdersCustomers";
@@ -14,7 +14,6 @@ const OrdersForm: React.FC<OrdersFormProps> = ({
   onSubmit,
   setOrder,
   order,
-  customer,
 }) => {
   const navigate = useNavigate();
   const urlParams = useParams();
@@ -29,14 +28,11 @@ const OrdersForm: React.FC<OrdersFormProps> = ({
 
   return (
     <Paper className="overview-paper">
-      <ColumnFlex gap="40px">
-        <Typography variant="h3">{Details}</Typography>
+      <ColumnFlex gap="40px" maxWidth="800px">
+        <Typography variant="h3">{Customer}</Typography>
+        <OrdersCustomers setOrder={setOrder} order={order} />
 
-        <OrdersCustomers
-          setOrder={setOrder}
-          order={order}
-          customer={customer}
-        />
+        <Typography variant="h3">{Books}</Typography>
       </ColumnFlex>
 
       <StyledFlexButton>

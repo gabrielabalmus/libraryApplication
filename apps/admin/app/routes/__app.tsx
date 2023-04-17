@@ -1,8 +1,8 @@
 import {
   Outlet,
   useActionData,
+  useNavigation,
   useSubmit,
-  useTransition,
 } from "@remix-run/react";
 import Menu from "@/components/Menu";
 import Spinner from "@/components/Spinner";
@@ -13,15 +13,18 @@ import { AlertDataState } from "~/types/Session.type";
 import isBoolean from "lodash/isBoolean";
 
 const AppLayout: React.FC = () => {
-  const transition = useTransition();
+  const navigation = useNavigation();
   const submit = useSubmit();
   const actionData = useActionData();
 
-  const [alertData, setAlertData] = useState<AlertDataState>({});
+  const [alertData, setAlertData] = useState<AlertDataState>();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (actionData && actionData.message && isBoolean(actionData.success))
+    if (actionData && actionData.message && isBoolean(actionData.success)) {
       setAlertData(actionData);
+      setIsOpen(true);
+    }
   }, [actionData]);
 
   const handleLogout = () => {
@@ -35,27 +38,27 @@ const AppLayout: React.FC = () => {
   };
 
   const handleAlertClose = () => {
-    setAlertData({});
+    setIsOpen(false);
   };
 
   return (
     <Menu onLogoutClick={handleLogout}>
       <Outlet />
 
-      {(transition.state === "submitting" ||
-        transition.state === "loading") && <Spinner />}
+      {(navigation.state === "submitting" ||
+        navigation.state === "loading") && <Spinner />}
 
       <Snackbar
-        open={Object.keys(alertData).length > 0}
-        autoHideDuration={5000}
+        open={isOpen}
+        autoHideDuration={3000}
         onClose={handleAlertClose}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
         <Alert
           onClose={handleAlertClose}
-          severity={alertData.success ? "success" : "error"}
+          severity={alertData?.success ? "success" : "error"}
         >
-          {alertData.message}
+          {alertData?.message}
         </Alert>
       </Snackbar>
     </Menu>

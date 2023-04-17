@@ -9,7 +9,7 @@ import {
   PaginatedOrdersProps,
   OrderState,
   OrderIdProps,
-  EachOrderProduct,
+  EachOrderBook,
   CustomerState,
 } from "~/types/Orders.type";
 import { ErrorMessage } from "~/const";
@@ -48,7 +48,7 @@ export const getPaginatedOrders = async ({
               },
             },
             {
-              products: {
+              books: {
                 some: {
                   bookLibrary: {
                     SKU: {
@@ -60,7 +60,7 @@ export const getPaginatedOrders = async ({
               },
             },
           ],
-          products: {
+          books: {
             some: {
               bookLibrary: {
                 library: {
@@ -98,7 +98,7 @@ export const getPaginatedOrders = async ({
               },
             },
             {
-              products: {
+              books: {
                 some: {
                   bookLibrary: {
                     SKU: {
@@ -110,7 +110,7 @@ export const getPaginatedOrders = async ({
               },
             },
           ],
-          products: {
+          books: {
             some: {
               bookLibrary: {
                 library: {
@@ -168,7 +168,7 @@ export const getSingleOrder = async ({ orderId }: OrderIdProps) => {
             deleted: true,
           },
         },
-        products: {
+        books: {
           select: {
             bookLibrary: {
               select: {
@@ -213,33 +213,33 @@ export const getSingleOrder = async ({ orderId }: OrderIdProps) => {
   }
 };
 
-const forEachOrderProduct = async ({
-  orderProducts,
+const EachOrderBook = async ({
+  orderBooks,
   orderId,
-}: EachOrderProduct) => {
-  const newProducts = orderProducts.map((item) => ({
+}: EachOrderBook) => {
+  const newBooks = orderBooks.map((item) => ({
     bookLibraryId: item.id,
     orderId,
   }));
 
-  const deleteOrderProducts = await prisma.orderProducts.deleteMany({
+  const deleteOrderBooks = await prisma.orderBooks.deleteMany({
     where: {
       orderId,
     },
   });
 
-  if (!deleteOrderProducts) throw new Error(ErrorMessage);
+  if (!deleteOrderBooks) throw new Error(ErrorMessage);
 
-  const createdOrderProducts = await prisma.orderProducts.createMany({
-    data: newProducts,
+  const createdOrderBooks = await prisma.orderBooks.createMany({
+    data: newBooks,
   });
 
-  if (!createdOrderProducts) throw new Error(ErrorMessage);
+  if (!createdOrderBooks) throw new Error(ErrorMessage);
 };
 
 export const createOrder = async ({
   customer,
-  products,
+  books,
   status,
 }: OrderState) => {
   try {
@@ -267,7 +267,7 @@ export const createOrder = async ({
 
     if (!order) throw new Error(ErrorCreate);
 
-    await forEachOrderProduct({ orderProducts: products, orderId: order.id });
+    await EachOrderBook({ orderBooks: books, orderId: order.id });
 
     return order;
   } catch (err) {
@@ -278,7 +278,7 @@ export const createOrder = async ({
 export const updateOrder = async ({
   orderId,
   customer,
-  products,
+  books,
   status,
 }: OrderState & { orderId: string }) => {
   try {
@@ -294,7 +294,7 @@ export const updateOrder = async ({
 
     if (!order) throw new Error(ErrorUpdate);
 
-    await forEachOrderProduct({ orderProducts: products, orderId });
+    await EachOrderBook({ orderBooks: books, orderId });
 
     return order;
   } catch (err) {
@@ -304,13 +304,13 @@ export const updateOrder = async ({
 
 export const deleteOrder = async ({ orderId }: OrderIdProps) => {
   try {
-    const orderProducts = await prisma.orderProducts.deleteMany({
+    const orderBooks = await prisma.orderBooks.deleteMany({
       where: {
         orderId,
       },
     });
 
-    if (!orderProducts) throw new Error(ErrorDelete);
+    if (!orderBooks) throw new Error(ErrorDelete);
 
     const order = await prisma.orders.deleteMany({
       where: {

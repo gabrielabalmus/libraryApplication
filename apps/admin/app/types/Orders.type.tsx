@@ -27,7 +27,7 @@ export interface LibraryResponse {
   deleted: boolean;
 }
 
-export interface ProductResponse {
+export interface BookLibraryResponse {
   bookLibrary: {
     id: string;
     book: BookResponse;
@@ -50,7 +50,7 @@ export interface CustomerResponse {
 export interface OrderResponse {
   number: string;
   customer: CustomerResponse;
-  products: ProductResponse[];
+  books: BookLibraryResponse[];
   status: Status;
   penalty: Penalty | null;
   createdAt: Date;
@@ -82,7 +82,7 @@ export interface LibraryState {
   deleted: boolean;
 }
 
-export interface ProductState {
+export interface BookLibraryState {
   id: string;
   book: BookState;
   library: LibraryState;
@@ -94,7 +94,7 @@ export interface ProductState {
 export interface OrderState {
   number?: string;
   customer: CustomerState | null;
-  products: ProductState[];
+  books: BookLibraryState[];
   status: Status;
   penalty?: Penalty;
   createdAt?: string;
@@ -106,13 +106,13 @@ export interface CustomerByEmailProps {
 
 export interface ErrorState {
   customer?: string;
-  products?: string;
+  books?: string;
   status?: string;
 }
 
 export enum OrderValue {
   customer = "customer",
-  products = "products",
+  books = "books",
   status = "status",
 }
 
@@ -120,13 +120,11 @@ export interface OrdersFormProps {
   order: OrderState;
   setOrder: Dispatch<SetStateAction<OrderState>>;
   onSubmit: ({ callback }: OrdersSubmitProps) => void;
-  customer: CustomerState | null;
 }
 
 export interface OrdersCustomersProps {
   order: OrderState;
   setOrder: Dispatch<SetStateAction<OrderState>>;
-  customer: CustomerState | null;
 }
 
 export interface OrdersSubmitProps {
@@ -175,7 +173,7 @@ export interface FilterState {
   status: string;
 }
 
-export interface EachOrderProduct {
-  orderProducts: ProductState[];
+export interface EachOrderBook {
+  orderBooks: BookLibraryState[];
   orderId: string;
 }

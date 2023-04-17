@@ -1,4 +1,4 @@
-import { json, LoaderArgs, redirect } from "@remix-run/node";
+import { LoaderArgs, redirect } from "@remix-run/node";
 import { Outlet, useTransition } from "@remix-run/react";
 import { getUserId } from "~/server/users.server";
 import Spinner from "@/components/Spinner";
@@ -10,7 +10,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     return redirect("/");
   }
 
-  return json({});
+  return {};
 };
 
 const AuthLayout: React.FC = () => {
