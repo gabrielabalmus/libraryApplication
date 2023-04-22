@@ -4,9 +4,9 @@ import { createBreakpoints } from "@mui/system";
 
 export const RequiredField = "This field is required";
 export const InvalidField = "Invalid field value";
-export const ErrorSubmit = "There was a problem in submitting your form.";
-export const ErrorMessage = "An error occured.";
-export const WrongLoginData = "Email or password is wrong.";
+export const ErrorSubmit = "There was a problem in submitting your form";
+export const ErrorMessage = "An error occured";
+export const WrongLoginData = "Email or password is wrong";
 
 const breakpoints = createBreakpoints({});
 

@@ -14,8 +14,8 @@ export const MenuList: MenuListType[] = [
     icon: <DashboardIcon />,
     url: "/",
   },
-  { label: "Orders", icon: <DensitySmallIcon />, url: "/orders" },
-  { label: "Customers", icon: <PeopleAltIcon />, url: "/customers" },
+  { label: "Loans", icon: <DensitySmallIcon />, url: "/loans" },
+  { label: "Readers", icon: <PeopleAltIcon />, url: "/readers" },
   { label: "Books", icon: <LibraryBooksIcon />, url: "/books" },
   { label: "Libraries", icon: <HomeWorkIcon />, url: "/libraries" },
 ];

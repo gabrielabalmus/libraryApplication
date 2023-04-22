@@ -154,3 +154,7 @@ export interface EachBookLibrary {
   bookLibraries: BookLibrariesState[];
   bookId: string;
 }
+
+export interface BookBySkuProps {
+  sku: string;
+}

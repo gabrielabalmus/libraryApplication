@@ -146,7 +146,10 @@ const PaginatedLibraries: React.FC = () => {
   };
 
   const handleChangePage = (pageNumber: number) => {
-    setSearchParams({ ...searchParams, page: pageNumber.toString() });
+    setSearchParams((oldSearchParams: URLSearchParams) => ({
+      ...oldSearchParams,
+      page: pageNumber.toString(),
+    }));
   };
 
   const debounceSearchChange = useCallback(

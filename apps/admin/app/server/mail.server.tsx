@@ -1,5 +1,5 @@
 import sendgridMail from "@sendgrid/mail";
-import { SendMailProps } from "~/types/Customers.type";
+import { SendMailProps } from "~/types/Readers.type";
 
 const SENDGRID_API_KEY =
   "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";

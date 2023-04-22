@@ -9,24 +9,25 @@ import {
   useActionData,
   useLoaderData,
   useNavigate,
+  useParams,
   useSubmit,
 } from "@remix-run/react";
 import { isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
-import LibrariesForm from "~/components/Libraries/Form/LibrariesForm";
+import ReadersForm from "~/components/Readers/Form/ReadersForm";
 import {
-  CreateLibraryTitle,
-  ErrorCreate,
-  initialLibrary,
-  SuccessCreate,
-} from "~/components/Libraries/Libraries.const";
-import { handleLibraryErrors } from "~/components/Libraries/Libraries.helper";
-import { LibrariesSubmitProps, LibraryState } from "~/types/Libraries.type";
+  UpdateReaderTitle,
+  ErrorUpdate,
+  SuccessUpdate,
+  ErrorGetSingle,
+} from "~/components/Readers/Readers.const";
+import { handleReaderErrors } from "~/components/Readers/Readers.helper";
+import { ReadersSubmitProps, ReaderState } from "~/types/Readers.type";
 import { ErrorMessage } from "~/const";
 import { getCities } from "~/server/cities.server";
-import { createLibrary } from "~/server/libraries.server";
+import { getSingleReader, updateReader } from "~/server/readers.server";
 import { badRequest, goodRequest } from "~/server/request.server";
 import { getUserId } from "~/server/users.server";
 
@@ -38,12 +39,31 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 
   try {
-    const cities = await getCities();
+    const url = new URL(request.url);
+    const readerId = url.pathname.split("/").pop();
 
-    return goodRequest({ cities });
+    if (!isString(readerId)) {
+      return badRequest({
+        message: ErrorGetSingle,
+        success: false,
+      });
+    }
+
+    const [reader, cities] = await Promise.all([
+      getSingleReader({
+        readerId,
+      }),
+      getCities(),
+    ]);
+
+    return goodRequest({ reader, cities });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
+};
+
+export const ErrorBoundary = () => {
+  return <ErrorInterface />;
 };
 
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
@@ -58,43 +78,45 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
     const intent = formData.get("intent");
 
-    if (intent === "create") {
+    if (intent === "update") {
       const name = formData.get("name");
       const city = formData.get("city");
       const address = formData.get("address");
+      const email = formData.get("email");
       const phone = formData.get("phone");
-      const schedule = formData.get("schedule");
+
+      const url = new URL(request.url);
+      const readerId = url.pathname.split("/").pop();
 
       if (
+        !isString(readerId) ||
         !isString(name) ||
         !isString(city) ||
         !isString(address) ||
-        !isString(phone) ||
-        !isString(schedule)
+        !isString(email) ||
+        !isString(phone)
       ) {
         return badRequest({
-          message: ErrorCreate,
+          message: ErrorUpdate,
           success: false,
         });
       }
 
-      const objectSchedule = JSON.parse(schedule);
+      const fields = { name, city, address, email, phone };
 
-      const fields = { name, city, address, phone, schedule: objectSchedule };
-
-      const fieldErrors = handleLibraryErrors(fields);
+      const fieldErrors = handleReaderErrors(fields);
 
       if (Object.values(fieldErrors).some(Boolean)) {
         return badRequest({
-          message: ErrorCreate,
+          message: ErrorUpdate,
           success: false,
         });
       }
 
-      await createLibrary(fields);
+      await updateReader({ ...fields, readerId });
 
       return goodRequest({
-        message: SuccessCreate,
+        message: SuccessUpdate,
         success: true,
       });
     }
@@ -111,58 +133,52 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
   }
 };
 
-export const ErrorBoundary = () => {
-  return <ErrorInterface />;
-};
-
-const CreateLibrary: React.FC = () => {
+const UpdateReader: React.FC = () => {
   const submit = useSubmit();
   const actionData = useActionData();
   const navigate = useNavigate();
   const data = useLoaderData();
+  const urlParams = useParams();
 
-  const [library, setLibrary] = useState<LibraryState>(initialLibrary);
+  const [reader, setReader] = useState<ReaderState>(data.reader);
 
   const cities = data.cities;
 
   useEffect(() => {
-    if (actionData && actionData.success === true) navigate("/libraries");
+    if (actionData && actionData.success === true) navigate("/readers");
   }, [actionData]);
 
-  const handleOnSubmit = ({ callback }: LibrariesSubmitProps) => {
-    const fieldErrors = handleLibraryErrors(library);
+  const handleOnSubmit = ({ callback }: ReadersSubmitProps) => {
+    const fieldErrors = handleReaderErrors(reader);
 
     if (Object.values(fieldErrors).some(Boolean)) {
       callback(fieldErrors);
       return;
     }
 
-    const stringSchedule = JSON.stringify(library.schedule);
-
     submit(
       {
-        ...library,
-        schedule: stringSchedule,
-        intent: "create",
+        ...reader,
+        intent: "update",
       },
       {
         method: "post",
-        action: "/libraries/create",
+        action: `/readers/${urlParams.readerId}`,
       }
     );
   };
 
   return (
     <ColumnFlex>
-      <LayoutTitle title={CreateLibraryTitle} backUrl="/libraries" />
-      <LibrariesForm
+      <LayoutTitle title={UpdateReaderTitle} backUrl="/readers" />
+      <ReadersForm
         onSubmit={handleOnSubmit}
-        setLibrary={setLibrary}
-        library={library}
+        setReader={setReader}
+        reader={reader}
         cities={cities}
       />
     </ColumnFlex>
   );
 };
 
-export default CreateLibrary;
+export default UpdateReader;

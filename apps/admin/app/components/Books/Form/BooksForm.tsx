@@ -236,6 +236,7 @@ const BooksForm: React.FC<BooksFormProps> = ({
         <ColumnFlex gap="20px">
           {book.bookLibraries.map((item: BookLibrariesState, index) => (
             <BooksUnits
+              key={index}
               bookLibrary={item}
               libraries={libraries}
               onChange={(value: string, field: BookLibrariesValues) =>

@@ -18,9 +18,9 @@ type TimeSchedule {
 }
 
 enum Status {
-  PENDING
-  CONFIRMED
-  COMPLETED
+  RESERVED
+  BORROWED
+  RETURNED
   CANCELLED
 }
 
@@ -85,17 +85,17 @@ model PublishHouses {
 }
 
 model BookLibraries {
-  id         String       @id @default(auto()) @map("_id") @db.ObjectId
-  bookId     String       @db.ObjectId
-  book       Books        @relation(fields: [bookId], references: [id])
-  libraryId  String       @db.ObjectId
-  library    Libraries    @relation(fields: [libraryId], references: [id])
-  orderBooks OrderBooks[]
-  SKU        String
-  place      String
-  deleted    Boolean      @default(false)
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  bookId    String      @db.ObjectId
+  book      Books       @relation(fields: [bookId], references: [id])
+  libraryId String      @db.ObjectId
+  library   Libraries   @relation(fields: [libraryId], references: [id])
+  loanBooks LoanBooks[]
+  SKU       String
+  place     String
+  deleted   Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 }
 
 model Cities {
@@ -103,10 +103,10 @@ model Cities {
   name      String      @unique
   value     String      @unique
   libraries Libraries[]
-  customers Customers[]
+  readers   Readers[]
 }
 
-model Customers {
+model Readers {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   address   String
@@ -115,32 +115,32 @@ model Customers {
   email     String
   cityId    String   @db.ObjectId
   city      Cities   @relation(fields: [cityId], references: [id])
-  orders    Orders[]
+  loans     Loans[]
   deleted   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model OrderBooks {
+model LoanBooks {
   id            String        @id @default(auto()) @map("_id") @db.ObjectId
   bookLibraryId String        @db.ObjectId
   bookLibrary   BookLibraries @relation(fields: [bookLibraryId], references: [id])
-  orderId       String        @db.ObjectId
-  order         Orders        @relation(fields: [orderId], references: [id])
+  loanId        String        @db.ObjectId
+  loan          Loans         @relation(fields: [loanId], references: [id])
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 }
 
-model Orders {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  number      String       @unique
-  status      Status       @default(PENDING)
-  customerId  String       @db.ObjectId
-  customer    Customers    @relation(fields: [customerId], references: [id])
-  books       OrderBooks[]
-  penalty     Penalty?
-  confirmedAt DateTime?
-  completedAt DateTime?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+model Loans {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  number     String      @unique
+  status     Status      @default(RESERVED)
+  readerId   String      @db.ObjectId
+  reader     Readers     @relation(fields: [readerId], references: [id])
+  books      LoanBooks[]
+  penalty    Penalty?
+  borrowedAt DateTime?
+  returnedAt DateTime?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }

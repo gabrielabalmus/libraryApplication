@@ -8,6 +8,7 @@ import { ErrorState, LoginFormProps, LoginValue } from "~/types/Login.type";
 import { InputType } from "@/components/Input/Input.type";
 import { ColumnFlex } from "@/components/Flex";
 import Typography from "@mui/material/Typography";
+import { LoginDescription } from "../Login.const";
 
 const LoginForm: React.FC<LoginFormProps> = ({
   onSubmit,
@@ -40,9 +41,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         <ColumnFlex gap="10px">
           <Typography variant="h5">{menuTitle}</Typography>
 
-          <StyledParagraph variant="h2">
-            Please enter your login data.
-          </StyledParagraph>
+          <StyledParagraph variant="h2">{LoginDescription}</StyledParagraph>
         </ColumnFlex>
         <ColumnFlex gap="20px">
           <Input

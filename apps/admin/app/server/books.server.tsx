@@ -10,8 +10,10 @@ import {
   BookIdProps,
   BookState,
   EachBookLibrary,
+  BookBySkuProps,
 } from "~/types/Books.type";
 import {
+  fromBookBySku,
   fromPaginatedBooksResponse,
   fromSingleBookResponse,
 } from "~/transformers/books.transformer";
@@ -161,6 +163,8 @@ const forEachBookLibrary = async ({
 
   if (!deleteBookLibraries) throw new Error(ErrorMessage);
 
+  let error = false;
+
   for (const item of bookLibraries) {
     if (item.id) {
       const bookBySKU = await prisma.bookLibraries.findFirst({
@@ -174,7 +178,10 @@ const forEachBookLibrary = async ({
         },
       });
 
-      if (bookBySKU && !isEmpty(skuDuplicates)) throw new Error(ErrorMessage);
+      if (bookBySKU && !isEmpty(skuDuplicates)) {
+        error = true;
+        continue;
+      }
 
       const updatedBookLibrary = await prisma.bookLibraries.updateMany({
         where: {
@@ -189,7 +196,10 @@ const forEachBookLibrary = async ({
         },
       });
 
-      if (!updatedBookLibrary) throw new Error(ErrorMessage);
+      if (!updatedBookLibrary) {
+        error = true;
+        continue;
+      }
 
       continue;
     }
@@ -204,7 +214,10 @@ const forEachBookLibrary = async ({
       },
     });
 
-    if (bookBySKU) throw new Error(ErrorUpdate);
+    if (bookBySKU) {
+      error = true;
+      continue;
+    }
 
     const createdBookLibrary = await prisma.bookLibraries.create({
       data: {
@@ -215,8 +228,13 @@ const forEachBookLibrary = async ({
       },
     });
 
-    if (!createdBookLibrary) throw new Error(ErrorMessage);
+    if (!createdBookLibrary) {
+      error = true;
+      continue;
+    }
   }
+
+  if (error) throw new Error(ErrorMessage);
 };
 
 export const createBook = async ({
@@ -364,5 +382,52 @@ export const updateBook = async ({
     return book;
   } catch (err) {
     throw new Error(ErrorUpdate);
+  }
+};
+
+export const getBookBySku = async ({ sku }: BookBySkuProps) => {
+  try {
+    if (!sku) return null;
+
+    const book = await prisma.bookLibraries.findFirst({
+      where: {
+        deleted: false,
+        SKU: sku,
+        NOT: [
+          {
+            loanBooks: {
+              some: {
+                bookLibrary: {
+                  SKU: sku,
+                },
+              },
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        book: {
+          select: {
+            name: true,
+          },
+        },
+        library: {
+          select: {
+            name: true,
+            city: { select: { name: true } },
+          },
+        },
+        SKU: true,
+        place: true,
+        deleted: true,
+      },
+    });
+
+    if (!book) return null;
+
+    return fromBookBySku(book);
+  } catch (err) {
+    throw new Error(ErrorMessage);
   }
 };
