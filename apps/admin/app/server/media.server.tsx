@@ -3,9 +3,9 @@ import cloudinary from "cloudinary";
 import { v4 as uuid } from "uuid";
 
 cloudinary.v2.config({
-  cloud_name: "digj60j3v",
-  api_key: "212858448923675",
-  api_secret: "OydaafY1z-JuMcb7RkkcOjHu8BQ",
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 export const uploadImage = async (image: string) => {

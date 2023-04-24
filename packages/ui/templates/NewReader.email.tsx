@@ -1,4 +1,4 @@
-export const NewReaderMail = `<html>
+export const NewReaderEmail = `<html>
 <head>
   <meta charset="utf-8">
   <title>New Reader Account</title>

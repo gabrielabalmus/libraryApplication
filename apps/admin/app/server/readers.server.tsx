@@ -20,8 +20,8 @@ import { prisma } from "./prisma.server";
 import { ErrorMessage } from "~/const";
 import bcrypt from "bcryptjs";
 import generator from "generate-password";
-import { sendMail } from "./mail.server";
-import { NewReaderMail } from "@/templates/NewReader.mail";
+import { sendEmail } from "./mail.server";
+import { NewReaderEmail } from "@/templates/NewReader.email";
 import { ReaderByEmailProps } from "~/types/Loans.type";
 
 export const getPaginatedReaders = async ({
@@ -118,6 +118,7 @@ export const getSingleReader = async ({ readerId }: ReaderIdProps) => {
         address: true,
         email: true,
         phone: true,
+        birthdate: true,
       },
     });
 
@@ -135,6 +136,7 @@ export const createReader = async ({
   address,
   email,
   phone,
+  birthdate,
 }: ReaderState) => {
   try {
     const readerByEmail = await prisma.readers.findFirst({
@@ -164,15 +166,16 @@ export const createReader = async ({
         email,
         phone,
         password,
+        birthdate,
       },
     });
 
     if (!reader) throw new Error(ErrorCreate);
 
-    await sendMail({
+    await sendEmail({
       to: email,
       subject: NewReaderSubject,
-      template: NewReaderMail,
+      template: NewReaderEmail,
       data: { password: generatePass },
     });
 
@@ -189,6 +192,7 @@ export const updateReader = async ({
   address,
   email,
   phone,
+  birthdate,
 }: ReaderState & { readerId: string }) => {
   try {
     const readerByEmail = await prisma.readers.findFirst({
@@ -215,6 +219,7 @@ export const updateReader = async ({
         address,
         email,
         phone,
+        birthdate,
       },
     });
 

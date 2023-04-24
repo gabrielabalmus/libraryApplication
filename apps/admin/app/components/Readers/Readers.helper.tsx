@@ -1,11 +1,11 @@
 import { isEmpty } from "lodash";
 import { InvalidField, RequiredField } from "~/const";
 import { ErrorState, ReaderState } from "~/types/Readers.type";
-import { checkIfEmail, checkIfNumber } from "@/utils/common";
+import { checkIfEmail, checkIfNumber, checkIfValidDate } from "@/utils/common";
 
 export const handleReaderErrors = (formData: ReaderState) => {
   let errors: ErrorState = {};
-  const { name, city, address, email, phone } = formData;
+  const { name, city, address, email, phone, birthdate } = formData;
 
   if (isEmpty(name)) errors.name = RequiredField;
 
@@ -24,6 +24,9 @@ export const handleReaderErrors = (formData: ReaderState) => {
   } else if (!checkIfNumber(phone) || phone.length !== 10) {
     errors.phone = InvalidField;
   }
+
+  if (isEmpty(birthdate) || !checkIfValidDate(birthdate))
+    errors.birthdate = RequiredField;
 
   return errors;
 };

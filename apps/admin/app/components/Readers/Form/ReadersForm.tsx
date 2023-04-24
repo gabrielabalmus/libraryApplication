@@ -9,6 +9,7 @@ import {
 } from "~/types/Readers.type";
 import Button from "@/components/Button";
 import { ButtonType, ButtonVariant } from "@/components/Button/Button.type";
+import DatePicker from "@/components/DatePicker";
 import { StyledFlexButton } from "~/components/Libraries/Libraries.style";
 import Autocomplete from "@/components/Autocomplete";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
@@ -16,6 +17,8 @@ import { StyledColumnFlex, StyleFlex } from "~/components/Books/Books.style";
 import { Details } from "../Readers.const";
 import { ColumnFlex } from "@/components/Flex";
 import Typography from "@mui/material/Typography";
+import { Dayjs } from "dayjs";
+import { transformDate } from "@/utils/common";
 
 const ReadersForm: React.FC<ReadersFormProps> = ({
   onSubmit,
@@ -30,6 +33,18 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
 
   const handleInputChange = (value: string, field: ReaderValue) => {
     setReader((oldReader) => ({ ...oldReader, [field]: value }));
+
+    if (inputErrors[field])
+      setInputErrors((oldErrors) => {
+        delete oldErrors[field];
+        return oldErrors;
+      });
+  };
+
+  const handleBirthdate = (value: Dayjs | null, field: ReaderValue) => {
+    const newTime = transformDate(value);
+
+    setReader((oldReader) => ({ ...oldReader, [field]: newTime }));
 
     if (inputErrors[field])
       setInputErrors((oldErrors) => {
@@ -58,7 +73,6 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
               onChange={(value: string) =>
                 handleInputChange(value, ReaderValue.name)
               }
-              width="350px"
             />
             <Input
               label="Email*"
@@ -67,7 +81,6 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
               onChange={(value: string) =>
                 handleInputChange(value, ReaderValue.email)
               }
-              width="350px"
               multiline
             />
             <Autocomplete
@@ -78,7 +91,6 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
               errorMessage={inputErrors.city}
               options={cities}
               value={reader.city}
-              width="350px"
             />
           </StyledColumnFlex>
 
@@ -90,7 +102,6 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
               onChange={(value: string) =>
                 handleInputChange(value, ReaderValue.address)
               }
-              width="350px"
               multiline
             />
             <Input
@@ -100,7 +111,15 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
               onChange={(value: string) =>
                 handleInputChange(value, ReaderValue.phone)
               }
-              width="350px"
+            />
+
+            <DatePicker
+              label="Birthdate*"
+              value={reader.birthdate}
+              errorMessage={inputErrors.birthdate}
+              onChange={(value) =>
+                handleBirthdate(value, ReaderValue.birthdate)
+              }
             />
           </StyledColumnFlex>
         </StyleFlex>

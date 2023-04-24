@@ -64,13 +64,15 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
       const address = formData.get("address");
       const email = formData.get("email");
       const phone = formData.get("phone");
+      const birthdate = formData.get("birthdate");
 
       if (
         !isString(name) ||
         !isString(city) ||
         !isString(address) ||
         !isString(email) ||
-        !isString(phone)
+        !isString(phone) ||
+        !isString(birthdate)
       ) {
         return badRequest({
           message: ErrorCreate,
@@ -78,7 +80,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         });
       }
 
-      const fields = { name, city, address, email, phone };
+      const fields = { name, city, address, email, phone, birthdate };
 
       const fieldErrors = handleReaderErrors(fields);
 

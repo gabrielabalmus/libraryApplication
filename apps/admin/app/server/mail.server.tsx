@@ -1,21 +1,17 @@
 import sendgridMail from "@sendgrid/mail";
-import { SendMailProps } from "~/types/Readers.type";
+import { SendEmailProps } from "~/types/Readers.type";
 
-const SENDGRID_API_KEY =
-  "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";
-const FROM_EMAIL = "library1@email.com";
+sendgridMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
-sendgridMail.setApiKey(SENDGRID_API_KEY);
-
-export const sendMail = async ({
+export const sendEmail = async ({
   to,
   subject,
   template,
   data,
-}: SendMailProps) => {
+}: SendEmailProps) => {
   const message = {
     to,
-    from: FROM_EMAIL,
+    from: process.env.FROM_EMAIL!,
     subject,
     html: template,
     substitutions: data,

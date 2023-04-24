@@ -1,4 +1,4 @@
-import { checkIfNumber } from "@/utils/common";
+import { checkIfNumber, checkIfValidDate } from "@/utils/common";
 import { isEmpty } from "lodash";
 import { InvalidField, RequiredField } from "~/const";
 import { ErrorState, LibraryState } from "~/types/Libraries.type";
@@ -28,7 +28,7 @@ export const handleLibraryErrors = (formData: LibraryState) => {
     errors.phone = InvalidField;
   }
 
-  if (isEmpty(mondayFridayFrom))
+  if (isEmpty(mondayFridayFrom) || !checkIfValidDate(mondayFridayFrom))
     errors = {
       ...errors,
       schedule: {
@@ -40,7 +40,7 @@ export const handleLibraryErrors = (formData: LibraryState) => {
       },
     };
 
-  if (isEmpty(mondayFridayTo))
+  if (isEmpty(mondayFridayTo) || !checkIfValidDate(mondayFridayFrom))
     errors = {
       ...errors,
       schedule: {
@@ -52,7 +52,7 @@ export const handleLibraryErrors = (formData: LibraryState) => {
       },
     };
 
-  if (isEmpty(saturdayFrom))
+  if (isEmpty(saturdayFrom) || !checkIfValidDate(mondayFridayFrom))
     errors = {
       ...errors,
       schedule: {
@@ -64,7 +64,7 @@ export const handleLibraryErrors = (formData: LibraryState) => {
       },
     };
 
-  if (isEmpty(saturdayTo))
+  if (isEmpty(saturdayTo) || !checkIfValidDate(mondayFridayFrom))
     errors = {
       ...errors,
       schedule: {

@@ -54,6 +54,7 @@ export interface ReaderResponse {
   phone: string;
   address: string;
   email: string;
+  birthdate: string;
 }
 
 export enum ReaderValue {
@@ -62,6 +63,7 @@ export enum ReaderValue {
   phone = "phone",
   address = "address",
   email = "email",
+  birthdate = "birthdate",
 }
 
 export interface ErrorState {
@@ -70,6 +72,7 @@ export interface ErrorState {
   phone?: string;
   address?: string;
   email?: string;
+  birthdate?: string;
 }
 
 export interface ReaderState {
@@ -78,6 +81,7 @@ export interface ReaderState {
   phone: string;
   address: string;
   email: string;
+  birthdate: string;
 }
 
 export interface ReadersFormProps {
@@ -91,7 +95,7 @@ export interface ReadersSubmitProps {
   callback: (fieldErrors: ErrorState) => void;
 }
 
-export interface SendMailProps {
+export interface SendEmailProps {
   to: string;
   subject: string;
   template: string;

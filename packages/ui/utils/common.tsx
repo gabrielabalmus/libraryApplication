@@ -14,17 +14,21 @@ export const readFileAsync = (file: File) => {
   });
 };
 
-export const checkIfValidDate = (value: Dayjs | null) => {
-  return value && dayjs(value).isValid()
+export const checkIfValidDate = (value: any) => {
+  return dayjs(value).isValid();
+};
+
+export const transformDate = (value: Dayjs | null) => {
+  return value && checkIfValidDate(value)
     ? dayjs(value).locale("ro").format()
     : "";
 };
 
-export const checkIfNumber = (value: string) => {
+export const checkIfNumber = (value: any) => {
   return /^\d+$/.test(value);
 };
 
-export const checkIfEmail = (email: string) => {
+export const checkIfEmail = (email: any) => {
   return /@/.test(email);
 };
 

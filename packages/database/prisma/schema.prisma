@@ -113,6 +113,7 @@ model Readers {
   phone     String
   password  String
   email     String
+  birthdate String
   cityId    String   @db.ObjectId
   city      Cities   @relation(fields: [cityId], references: [id])
   loans     Loans[]

@@ -31,6 +31,7 @@ export const initialReader: ReaderState = {
   phone: "",
   address: "",
   email: "",
+  birthdate: "",
 };
 
 export const readersColumns = [

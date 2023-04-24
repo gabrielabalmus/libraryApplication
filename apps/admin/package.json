@@ -4,9 +4,8 @@
   "private": true,
   "scripts": {
     "build": "remix build",
-    "dev": "remix dev",
-    "start": "remix-serve build",
-    "typecheck": "tsc -b"
+    "dev": "dotenv -e ../../.env remix dev",
+    "start": "remix-serve build"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -27,6 +26,7 @@
     "cloudinary": "^1.35.0",
     "database": "*",
     "dayjs": "^1.11.7",
+    "dotenv-cli": "^7.2.1",
     "generate-password": "^1.7.0",
     "isbot": "^3.6.5",
     "lodash": "^4.17.21",

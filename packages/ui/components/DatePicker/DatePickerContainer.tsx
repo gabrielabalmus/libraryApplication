@@ -1,17 +1,17 @@
-import TextField, { TextFieldProps } from "@mui/material/TextField";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { TimeProps } from "./TimePicker.type";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePickerProps } from "./DatePicker.type";
+import TextField, { TextFieldProps } from "@mui/material/TextField";
 
-const TimePickerContainer: React.FC<TimeProps> = ({
+const DatePickerContainer: React.FC<DatePickerProps> = ({
   label,
   value,
   errorMessage,
   onChange,
 }) => (
   <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <TimePicker
+    <DatePicker
       label={label}
       value={value}
       onChange={onChange}
@@ -27,4 +27,4 @@ const TimePickerContainer: React.FC<TimeProps> = ({
   </LocalizationProvider>
 );
 
-export default TimePickerContainer;
+export default DatePickerContainer;

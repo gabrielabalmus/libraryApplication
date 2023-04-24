@@ -8,7 +8,7 @@ import {
   LibraryValue,
   ScheduleTimeValue,
 } from "~/types/Libraries.type";
-import { checkIfValidDate } from "@/utils/common";
+import { transformDate } from "@/utils/common";
 import Button from "@/components/Button";
 import { ButtonType, ButtonVariant } from "@/components/Button/Button.type";
 import { ColumnFlex } from "@/components/Flex";
@@ -50,7 +50,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
     value: Dayjs | null,
     field: ScheduleTimeValue
   ) => {
-    const newTime = checkIfValidDate(value);
+    const newTime = transformDate(value);
 
     setLibrary((oldLibrary) => ({
       ...oldLibrary,
@@ -70,7 +70,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
   };
 
   const handleSaturday = (value: Dayjs | null, field: ScheduleTimeValue) => {
-    const newTime = checkIfValidDate(value);
+    const newTime = transformDate(value);
 
     setLibrary((oldLibrary) => ({
       ...oldLibrary,
@@ -108,7 +108,6 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
             onChange={(value: string) =>
               handleInputChange(value, LibraryValue.name)
             }
-            width="350px"
           />
           <Autocomplete
             label="City*"
@@ -118,7 +117,6 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
             errorMessage={inputErrors.city}
             options={cities}
             value={library.city}
-            width="350px"
           />
           <Input
             label="Address*"
@@ -127,7 +125,6 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
             onChange={(value: string) =>
               handleInputChange(value, LibraryValue.address)
             }
-            width="350px"
             multiline
           />
           <Input
@@ -137,7 +134,6 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
             onChange={(value: string) =>
               handleInputChange(value, LibraryValue.phone)
             }
-            width="350px"
           />
         </StyledColumnFlex>
 
