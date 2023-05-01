@@ -57,14 +57,16 @@ model Books {
   name           String
   image          String
   author         String
+  description    String
   bookLibraries  BookLibraries[]
   categoryId     String          @db.ObjectId
   category       Categories      @relation(fields: [categoryId], references: [id])
   publishHouseId String          @db.ObjectId
   publishHouse   PublishHouses   @relation(fields: [publishHouseId], references: [id])
+  languageId     String          @db.ObjectId
+  language       Languages       @relation(fields: [languageId], references: [id])
   releaseYear    Int
   pagesNumber    Int
-  language       String
   deleted        Boolean         @default(false)
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
@@ -107,19 +109,20 @@ model Cities {
 }
 
 model Readers {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  address   String
-  phone     String
-  password  String
-  email     String
-  birthdate String
-  cityId    String   @db.ObjectId
-  city      Cities   @relation(fields: [cityId], references: [id])
-  loans     Loans[]
-  deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  address     String
+  phone       String
+  password    String
+  email       String
+  birthdate   String
+  cityId      String   @db.ObjectId
+  city        Cities   @relation(fields: [cityId], references: [id])
+  loans       Loans[]
+  deleted     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  languagesId String?  @db.ObjectId
 }
 
 model LoanBooks {
@@ -144,4 +147,11 @@ model Loans {
   returnedAt DateTime?
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+}
+
+model Languages {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  name  String  @unique
+  value String  @unique
+  books Books[]
 }

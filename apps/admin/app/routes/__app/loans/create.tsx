@@ -17,6 +17,7 @@ import { getReaderByEmail } from "~/server/readers.server";
 import { LoanState, LoansSubmitProps } from "~/types/Loans.type";
 import { CreateLoanTitle, initialLoan } from "~/components/Loans/Loans.const";
 import { getBookBySku } from "~/server/books.server";
+import { handleLoanErrors } from "~/components/Loans/Loans.helper";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -89,7 +90,32 @@ const CreateLoan: React.FC = () => {
     if (actionData && actionData.success === true) navigate(`/loans`);
   }, [actionData]);
 
-  const handleOnSubmit = ({ callback }: LoansSubmitProps) => {};
+  const handleOnSubmit = ({ callback }: LoansSubmitProps) => {
+    const fieldErrors = handleLoanErrors(loan);
+
+    if (Object.values(fieldErrors).some(Boolean)) {
+      callback(fieldErrors);
+      return;
+    }
+
+    const stringReader = JSON.stringify(loan.reader);
+    const stringBooks = JSON.stringify(loan.books);
+    const stringPenalty = JSON.stringify(loan.penalty);
+
+    submit(
+      {
+        ...loan,
+        reader: stringReader,
+        books: stringBooks,
+        penalty: stringPenalty,
+        intent: "create",
+      },
+      {
+        method: "post",
+        action: `/loans/create`,
+      }
+    );
+  };
 
   return (
     <ColumnFlex>

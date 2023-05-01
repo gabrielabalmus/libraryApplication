@@ -7,7 +7,7 @@ import { StyledFilters } from "~/components/Books/Books.style";
 import {
   SearchPlaceholder,
   loansColumns,
-  Cities,
+  Libraries,
   Status,
   LoanStatuses,
 } from "../Loans.const";
@@ -20,10 +20,10 @@ const LoansOverview: React.FC<LoansOverviewProps> = ({
   filter,
   onPageChange,
   onSearchChange,
-  onCityChange,
+  onLibraryChange,
   onStatusChange,
   onDelete,
-  cities,
+  libraries,
 }) => {
   return (
     <Paper className="overview-paper">
@@ -44,10 +44,10 @@ const LoansOverview: React.FC<LoansOverviewProps> = ({
               width="200px"
             />
             <Autocomplete
-              onChange={onCityChange}
-              options={cities}
-              value={filter.city}
-              placeholder={Cities}
+              onChange={onLibraryChange}
+              options={libraries}
+              value={filter.library}
+              placeholder={Libraries}
               width="200px"
             />
           </StyledAutocomplete>

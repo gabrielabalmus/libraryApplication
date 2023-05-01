@@ -34,13 +34,13 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
   const navigate = useNavigate();
   const urlParams = useParams();
 
-  const [inputErrors, setInputErrors] = useState<ErrorState>({});
+  const [errors, setErrors] = useState<ErrorState>({});
 
   const handleInputChange = (value: string, field: LibraryValue) => {
     setLibrary((oldLibrary) => ({ ...oldLibrary, [field]: value }));
 
-    if (inputErrors[field])
-      setInputErrors((oldErrors) => {
+    if (errors[field])
+      setErrors((oldErrors) => {
         delete oldErrors[field];
         return oldErrors;
       });
@@ -60,12 +60,9 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
       },
     }));
 
-    if (
-      inputErrors.schedule?.mondayFriday &&
-      inputErrors.schedule.mondayFriday[field]
-    ) {
-      delete inputErrors.schedule.mondayFriday[field];
-      setInputErrors(inputErrors);
+    if (errors.schedule?.mondayFriday && errors.schedule.mondayFriday[field]) {
+      delete errors.schedule.mondayFriday[field];
+      setErrors(errors);
     }
   };
 
@@ -80,18 +77,15 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
       },
     }));
 
-    if (
-      inputErrors.schedule?.saturday &&
-      inputErrors.schedule.saturday[field]
-    ) {
-      delete inputErrors.schedule.saturday[field];
-      setInputErrors(inputErrors);
+    if (errors.schedule?.saturday && errors.schedule.saturday[field]) {
+      delete errors.schedule.saturday[field];
+      setErrors(errors);
     }
   };
 
   const handleOnSubmit = () => {
     onSubmit({
-      callback: (fieldErrors: ErrorState) => setInputErrors(fieldErrors),
+      callback: (fieldErrors: ErrorState) => setErrors(fieldErrors),
     });
   };
 
@@ -103,7 +97,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
 
           <Input
             label="Name*"
-            errorMessage={inputErrors.name}
+            errorMessage={errors.name}
             value={library.name}
             onChange={(value: string) =>
               handleInputChange(value, LibraryValue.name)
@@ -114,13 +108,13 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
             onChange={(value: AutocompleteOptions | null) =>
               handleInputChange(value?.id || "", LibraryValue.city)
             }
-            errorMessage={inputErrors.city}
+            errorMessage={errors.city}
             options={cities}
             value={library.city}
           />
           <Input
             label="Address*"
-            errorMessage={inputErrors.address}
+            errorMessage={errors.address}
             value={library.address}
             onChange={(value: string) =>
               handleInputChange(value, LibraryValue.address)
@@ -129,7 +123,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
           />
           <Input
             label="Phone*"
-            errorMessage={inputErrors.phone}
+            errorMessage={errors.phone}
             value={library.phone}
             onChange={(value: string) =>
               handleInputChange(value, LibraryValue.phone)
@@ -153,7 +147,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
             <ColumnFlex gap="20px">
               <TimePicker
                 label="From*"
-                errorMessage={inputErrors.schedule?.mondayFriday?.from}
+                errorMessage={errors.schedule?.mondayFriday?.from}
                 value={library.schedule.mondayFriday.from}
                 onChange={(value) =>
                   handleMondayFriday(value, ScheduleTimeValue.from)
@@ -161,7 +155,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
               />
               <TimePicker
                 label="To*"
-                errorMessage={inputErrors.schedule?.mondayFriday?.to}
+                errorMessage={errors.schedule?.mondayFriday?.to}
                 value={library.schedule.mondayFriday.to}
                 onChange={(value) =>
                   handleMondayFriday(value, ScheduleTimeValue.to)
@@ -177,7 +171,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
               <TimePicker
                 label="From*"
                 value={library.schedule.saturday.from}
-                errorMessage={inputErrors.schedule?.saturday?.from}
+                errorMessage={errors.schedule?.saturday?.from}
                 onChange={(value) =>
                   handleSaturday(value, ScheduleTimeValue.from)
                 }
@@ -185,7 +179,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
               <TimePicker
                 label="To*"
                 value={library.schedule.saturday.to}
-                errorMessage={inputErrors.schedule?.saturday?.to}
+                errorMessage={errors.schedule?.saturday?.to}
                 onChange={(value) =>
                   handleSaturday(value, ScheduleTimeValue.to)
                 }

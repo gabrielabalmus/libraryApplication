@@ -50,6 +50,9 @@ export const theme = createTheme({
           "&:-webkit-autofill": {
             "-webkit-box-shadow": "0 0 0 100px #fff inset",
           },
+          "&:focus": {
+            backgroundColor: "inherit",
+          },
         },
       },
     },
@@ -71,7 +74,7 @@ export const theme = createTheme({
         fontSize: 15,
       },
       [breakpoints.up("sm")]: {
-        fontSize: 17,
+        fontSize: 16,
       },
     },
     h5: {

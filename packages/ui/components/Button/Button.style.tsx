@@ -7,7 +7,7 @@ const commonStyle = {
   padding: "6px 20px",
   letterSpacing: "0.5px",
   fontSize: "15px",
-  minWidth: "170px",
+  minWidth: "120px",
 };
 
 export const ContainedButton = MuiStyled(Button)<ButtonProps>(({ theme }) =>
@@ -18,6 +18,11 @@ export const ContainedButton = MuiStyled(Button)<ButtonProps>(({ theme }) =>
     border: `2px solid ${collorPalette.primary.base}`,
     "&:hover": {
       backgroundColor: collorPalette.primary.base,
+    },
+    "&:disabled": {
+      backgroundColor: collorPalette.grey.lighter,
+      color: collorPalette.grey.base,
+      border: `2px solid ${collorPalette.grey.lighter}`,
     },
   })
 ) as typeof Button;
@@ -30,6 +35,11 @@ export const OutlinedButton = MuiStyled(Button)<ButtonProps>(({ theme }) =>
     border: `2px solid ${collorPalette.primary.base}`,
     "&:hover": {
       backgroundColor: collorPalette.white,
+    },
+    "&:disabled": {
+      backgroundColor: collorPalette.grey.lighter,
+      color: collorPalette.grey.base,
+      border: `2px solid ${collorPalette.grey.lighter}`,
     },
   })
 ) as typeof Button;

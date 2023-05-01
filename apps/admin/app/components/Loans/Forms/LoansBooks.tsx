@@ -1,17 +1,17 @@
 import Input from "@/components/Input";
 import { useEffect, useState } from "react";
 import { BookLibraryState, LoansBooksProps } from "~/types/Loans.type";
-import { ColumnFlex } from "@/components/Flex";
+import { ColumnFlex, SpaceBetweenCenterFlex } from "@/components/Flex";
 import Button from "@/components/Button";
 import { ButtonType, ButtonVariant } from "@/components/Button/Button.type";
-import { IconButton, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import {
   StyledTable,
   StyledTableColumn,
   StyledRow,
   StyledSearch,
   StyledFormHelperText,
-  StyledFlex,
+  StyledIconButton,
 } from "../Loans.style";
 import { useFetcher, useParams } from "@remix-run/react";
 import { isEmpty, isNull } from "lodash";
@@ -24,9 +24,15 @@ import {
   DeletedBook,
   Add,
   DuplicatedBook,
+  SameLibrary,
 } from "../Loans.const";
 
-const LoansBooks: React.FC<LoansBooksProps> = ({ setLoan, loan }) => {
+const LoansBooks: React.FC<LoansBooksProps> = ({
+  setLoan,
+  loan,
+  error,
+  setError,
+}) => {
   const fetcher = useFetcher();
   const urlParams = useParams();
   const { books } = loan;
@@ -43,6 +49,15 @@ const LoansBooks: React.FC<LoansBooksProps> = ({ setLoan, loan }) => {
     }
 
     if (data.book) {
+      const sameLoanLibrary = loan.books.find(
+        (item) => item.library === data.book.library
+      );
+
+      if (!sameLoanLibrary) {
+        setSearchError(SameLibrary);
+        return;
+      }
+
       setLoan((oldLoad) => ({
         ...oldLoad,
         books: [...oldLoad.books, data.book],
@@ -52,6 +67,12 @@ const LoansBooks: React.FC<LoansBooksProps> = ({ setLoan, loan }) => {
   }, [data.book]);
 
   const onBookSearch = () => {
+    if (error.books)
+      setError((oldError) => {
+        const { books, ...rest } = oldError;
+        return rest;
+      });
+
     if (!search) {
       setSearchError(MandatoryBookSku);
       return;
@@ -90,9 +111,10 @@ const LoansBooks: React.FC<LoansBooksProps> = ({ setLoan, loan }) => {
           value={search}
           placeholder={BookPlaceholder}
           onChange={onSkuChange}
-          errorMessage={searchError}
+          errorMessage={error.books || searchError}
           width="350px"
         />
+
         <Button
           type={ButtonType.button}
           title={Add}
@@ -115,17 +137,19 @@ const LoansBooks: React.FC<LoansBooksProps> = ({ setLoan, loan }) => {
                 <StyledRow key={index}>
                   {bookColumns.map((column, index) => (
                     <td key={index}>
-                      <StyledFlex>
+                      <SpaceBetweenCenterFlex>
                         <Typography variant="h2">
                           {book[column.name as keyof BookLibraryState]}
                         </Typography>
 
                         {bookColumns.length === index + 1 && (
-                          <IconButton onClick={() => onBookRemove(book.id)}>
+                          <StyledIconButton
+                            onClick={() => onBookRemove(book.id)}
+                          >
                             <DeleteOutlineIcon />
-                          </IconButton>
+                          </StyledIconButton>
                         )}
-                      </StyledFlex>
+                      </SpaceBetweenCenterFlex>
                     </td>
                   ))}
                 </StyledRow>

@@ -23,9 +23,10 @@ import { isEmpty } from "lodash";
 import { toFindDuplicates } from "@/utils/common";
 
 export const getPaginatedBooks = async ({
-  page = 1,
-  search = "",
-  category = "",
+  page,
+  search,
+  category,
+  library,
 }: PaginatedBooksProps) => {
   try {
     const skip = (page > 1 && (page - 1) * 5) || undefined;
@@ -44,13 +45,28 @@ export const getPaginatedBooks = async ({
             { author: { contains: search, mode: "insensitive" } },
             {
               bookLibraries: {
-                some: { SKU: { contains: search, mode: "insensitive" } },
+                some: {
+                  deleted: false,
+                  SKU: { contains: search, mode: "insensitive" },
+                },
               },
             },
           ],
-          category: {
-            name: category || undefined,
-          },
+          category:
+            (category && {
+              name: category,
+            }) ||
+            undefined,
+          bookLibraries:
+            (library && {
+              some: {
+                deleted: false,
+                library: {
+                  name: library,
+                },
+              },
+            }) ||
+            undefined,
         },
         orderBy: {
           createdAt: "desc",
@@ -72,18 +88,34 @@ export const getPaginatedBooks = async ({
             { author: { contains: search, mode: "insensitive" } },
             {
               bookLibraries: {
-                some: { SKU: { contains: search, mode: "insensitive" } },
+                some: {
+                  deleted: false,
+                  SKU: { contains: search, mode: "insensitive" },
+                },
               },
             },
           ],
-          category: {
-            name: category || undefined,
-          },
+          category:
+            (category && {
+              name: category,
+            }) ||
+            undefined,
+          bookLibraries:
+            (library && {
+              some: {
+                deleted: false,
+                library: {
+                  name: library,
+                },
+              },
+            }) ||
+            undefined,
         },
         select: {
           id: true,
           name: true,
           author: true,
+          description: true,
           category: {
             select: {
               name: true,
@@ -240,6 +272,7 @@ const forEachBookLibrary = async ({
 export const createBook = async ({
   name,
   author,
+  description,
   image,
   pagesNumber,
   category,
@@ -265,12 +298,13 @@ export const createBook = async ({
       data: {
         name,
         author,
+        description,
         image,
         pagesNumber: parseInt(pagesNumber),
         categoryId: category,
         publishHouseId: publishHouse,
         releaseYear: parseInt(releaseYear),
-        language,
+        languageId: language,
       },
     });
 
@@ -295,6 +329,7 @@ export const getSingleBook = async ({ bookId }: BookIdProps) => {
         select: {
           name: true,
           author: true,
+          description: true,
           image: true,
           category: {
             select: {
@@ -308,7 +343,11 @@ export const getSingleBook = async ({ bookId }: BookIdProps) => {
           },
           releaseYear: true,
           pagesNumber: true,
-          language: true,
+          language: {
+            select: {
+              id: true,
+            },
+          },
           bookLibraries: {
             where: { deleted: false },
             select: {
@@ -336,6 +375,7 @@ export const updateBook = async ({
   bookId,
   name,
   author,
+  description,
   image,
   pagesNumber,
   category,
@@ -366,12 +406,13 @@ export const updateBook = async ({
       data: {
         name,
         author,
+        description,
         image,
         pagesNumber: parseInt(pagesNumber),
         categoryId: category,
         publishHouseId: publishHouse,
         releaseYear: parseInt(releaseYear),
-        language,
+        languageId: language,
       },
     });
 

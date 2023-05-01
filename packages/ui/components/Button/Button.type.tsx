@@ -3,6 +3,7 @@ export interface ButtonProps {
   title: string;
   onClick?: () => void;
   type?: ButtonType;
+  disabled?: boolean;
 }
 
 export enum ButtonVariant {

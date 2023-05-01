@@ -46,9 +46,11 @@ export const getPaginatedReaders = async ({
             { email: { contains: search, mode: "insensitive" } },
             { phone: { contains: search, mode: "insensitive" } },
           ],
-          city: {
-            name: city || undefined,
-          },
+          city:
+            (city && {
+              name: city,
+            }) ||
+            undefined,
         },
         orderBy: {
           createdAt: "desc",
@@ -70,9 +72,11 @@ export const getPaginatedReaders = async ({
             { email: { contains: search, mode: "insensitive" } },
             { phone: { contains: search, mode: "insensitive" } },
           ],
-          city: {
-            name: city || undefined,
-          },
+          city:
+            (city && {
+              name: city,
+            }) ||
+            undefined,
         },
         select: {
           id: true,

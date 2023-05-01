@@ -23,11 +23,13 @@ export const SearchPlaceholder = "Search for name, author or sku";
 
 export const Categories = "Categories";
 export const Details = "Book details";
+export const Libraries = "Libraries";
 export const Units = "Book units";
 
 export const initialBook: BookState = {
   name: "",
   author: "",
+  description: "",
   image: "",
   pagesNumber: "",
   category: "",

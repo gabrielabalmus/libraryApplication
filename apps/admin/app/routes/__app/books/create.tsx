@@ -32,6 +32,7 @@ import { getPublishHouses } from "~/server/publishHouses.server";
 import { createBook } from "~/server/books.server";
 import { getLibraries } from "~/server/libraries.server";
 import { uploadImage } from "~/server/media.server";
+import { getLanguages } from "~/server/languages.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -41,13 +42,11 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 
   try {
-    const [categories, publishHouses, libraries] = await Promise.all([
-      getCategories(),
-      getPublishHouses(),
-      getLibraries(),
-    ]);
+    const [categories, publishHouses, libraries, languages] = await Promise.all(
+      [getCategories(), getPublishHouses(), getLibraries(), getLanguages()]
+    );
 
-    return goodRequest({ categories, publishHouses, libraries });
+    return goodRequest({ categories, publishHouses, libraries, languages });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -68,6 +67,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     if (intent === "create") {
       const name = formData.get("name");
       const author = formData.get("author");
+      const description = formData.get("description");
       const category = formData.get("category");
       const image = formData.get("image");
       const publishHouse = formData.get("publishHouse");
@@ -79,6 +79,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
       if (
         !isString(name) ||
         !isString(author) ||
+        !isString(description) ||
         !isString(category) ||
         !isString(image) ||
         !isString(publishHouse) ||
@@ -98,6 +99,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
       const fields = {
         name,
         author,
+        description,
         category,
         image,
         publishHouse,
@@ -152,6 +154,7 @@ const CreateBook: React.FC = () => {
   const categories = data.categories;
   const publishHouses = data.publishHouses;
   const libraries = data.libraries;
+  const languages = data.languages;
 
   useEffect(() => {
     if (actionData && actionData.success === true) navigate(`/books`);
@@ -190,6 +193,7 @@ const CreateBook: React.FC = () => {
         categories={categories}
         publishHouses={publishHouses}
         libraries={libraries}
+        languages={languages}
       />
     </ColumnFlex>
   );

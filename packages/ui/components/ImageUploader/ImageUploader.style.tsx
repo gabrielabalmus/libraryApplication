@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Flex, { ColumnFlex } from "@/components/Flex";
+import { AlignedFlex, ColumnFlex } from "@/components/Flex";
 import collorPalette from "@/theme/colorPalette";
 import { ImagePaperProps } from "./ImageUploader.type";
 
@@ -11,8 +11,7 @@ export const ImagePaper = styled(ColumnFlex)<ImagePaperProps>`
   border-radius: 5px;
 `;
 
-export const ImageBox = styled(Flex)`
-  align-items: center;
+export const ImageBox = styled(AlignedFlex)`
   margin: auto;
   flex: auto;
   min-height: 40px;

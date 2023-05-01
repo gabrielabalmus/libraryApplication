@@ -23,7 +23,7 @@ import { Status } from "@prisma/client";
 export const getPaginatedLoans = async ({
   page,
   search,
-  city,
+  library,
   status,
 }: PaginatedLoansProps) => {
   try {
@@ -60,18 +60,18 @@ export const getPaginatedLoans = async ({
               },
             },
           ],
-          books: {
-            some: {
-              bookLibrary: {
-                library: {
-                  city: {
-                    name: city || undefined,
+          books:
+            (library && {
+              some: {
+                bookLibrary: {
+                  library: {
+                    name: library,
                   },
                 },
               },
-            },
-          },
-          status: status ? Status[status as Status] : undefined,
+            }) ||
+            undefined,
+          status: (status && Status[status as Status]) || undefined,
         },
         orderBy: {
           createdAt: "desc",
@@ -110,18 +110,18 @@ export const getPaginatedLoans = async ({
               },
             },
           ],
-          books: {
-            some: {
-              bookLibrary: {
-                library: {
-                  city: {
-                    name: city || undefined,
+          books:
+            (library && {
+              some: {
+                bookLibrary: {
+                  library: {
+                    name: library,
                   },
                 },
               },
-            },
-          },
-          status: status ? Status[status as Status] : undefined,
+            }) ||
+            undefined,
+          status: (status && Status[status as Status]) || undefined,
         },
         select: {
           id: true,
@@ -208,24 +208,53 @@ export const getSingleLoan = async ({ loanId }: LoanIdProps) => {
 };
 
 const EachLoanBook = async ({ loanBooks, loanId }: EachLoanBook) => {
-  const newBooks = loanBooks.map((item) => ({
-    bookLibraryId: item.id,
-    loanId,
-  }));
-
-  const deleteLoanBooks = await prisma.loanBooks.deleteMany({
+  const loanedBooks = await prisma.loans.findFirst({
     where: {
-      loanId,
+      id: loanId,
+    },
+    select: {
+      books: { select: { bookLibraryId: true } },
     },
   });
 
-  if (!deleteLoanBooks) throw new Error(ErrorMessage);
+  const alreadyLoaned = new Set(loanedBooks?.books);
 
-  const createdLoanBooks = await prisma.loanBooks.createMany({
-    data: newBooks,
-  });
+  const newBooks = loanBooks
+    .filter((item) => !alreadyLoaned.has({ bookLibraryId: item.id }))
+    .map((item) => ({
+      bookLibraryId: item.id,
+      loanId,
+    }));
 
-  if (!createdLoanBooks) throw new Error(ErrorMessage);
+  let error = false;
+
+  for (const item of newBooks) {
+    const loanedBook = await prisma.loanBooks.findFirst({
+      where: {
+        bookLibraryId: item.bookLibraryId,
+        loan: { status: { in: [Status.BORROWED, Status.RESERVED] } },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (loanedBook) {
+      error = true;
+      continue;
+    }
+
+    const createdLoanBooks = await prisma.loanBooks.create({
+      data: item,
+    });
+
+    if (!createdLoanBooks) {
+      error = true;
+      continue;
+    }
+  }
+
+  if (error) throw new Error(ErrorMessage);
 };
 
 export const createLoan = async ({ reader, books, status }: LoanState) => {
@@ -240,7 +269,8 @@ export const createLoan = async ({ reader, books, status }: LoanState) => {
       },
     });
 
-    const number = lastLoan ? (parseInt(lastLoan.number) + 1).toString() : "1";
+    const number =
+      (lastLoan && (parseInt(lastLoan.number) + 1).toString()) || "1";
 
     const loan = await prisma.loans.create({
       data: {

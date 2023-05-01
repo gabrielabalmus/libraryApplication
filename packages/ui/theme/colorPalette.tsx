@@ -34,6 +34,7 @@ const collorPalette = {
     dark: "#666666",
     base: "#8C8C8C",
     light: "#CCCCCC",
+    
     lighter: "#F2F2F2",
     lightest: "#F9F9F9",
   },

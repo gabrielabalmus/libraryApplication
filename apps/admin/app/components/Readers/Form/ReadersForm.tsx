@@ -29,13 +29,13 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
   const navigate = useNavigate();
   const urlParams = useParams();
 
-  const [inputErrors, setInputErrors] = useState<ErrorState>({});
+  const [errors, setErrors] = useState<ErrorState>({});
 
   const handleInputChange = (value: string, field: ReaderValue) => {
     setReader((oldReader) => ({ ...oldReader, [field]: value }));
 
-    if (inputErrors[field])
-      setInputErrors((oldErrors) => {
+    if (errors[field])
+      setErrors((oldErrors) => {
         delete oldErrors[field];
         return oldErrors;
       });
@@ -46,8 +46,8 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
 
     setReader((oldReader) => ({ ...oldReader, [field]: newTime }));
 
-    if (inputErrors[field])
-      setInputErrors((oldErrors) => {
+    if (errors[field])
+      setErrors((oldErrors) => {
         delete oldErrors[field];
         return oldErrors;
       });
@@ -55,7 +55,7 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
 
   const handleOnSubmit = () => {
     onSubmit({
-      callback: (fieldErrors: ErrorState) => setInputErrors(fieldErrors),
+      callback: (fieldErrors: ErrorState) => setErrors(fieldErrors),
     });
   };
 
@@ -68,7 +68,7 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
           <StyledColumnFlex>
             <Input
               label="Name*"
-              errorMessage={inputErrors.name}
+              errorMessage={errors.name}
               value={reader.name}
               onChange={(value: string) =>
                 handleInputChange(value, ReaderValue.name)
@@ -76,7 +76,7 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
             />
             <Input
               label="Email*"
-              errorMessage={inputErrors.email}
+              errorMessage={errors.email}
               value={reader.email}
               onChange={(value: string) =>
                 handleInputChange(value, ReaderValue.email)
@@ -88,7 +88,7 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
               onChange={(value: AutocompleteOptions | null) =>
                 handleInputChange(value?.id || "", ReaderValue.city)
               }
-              errorMessage={inputErrors.city}
+              errorMessage={errors.city}
               options={cities}
               value={reader.city}
             />
@@ -97,7 +97,7 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
           <StyledColumnFlex>
             <Input
               label="Address*"
-              errorMessage={inputErrors.address}
+              errorMessage={errors.address}
               value={reader.address}
               onChange={(value: string) =>
                 handleInputChange(value, ReaderValue.address)
@@ -106,7 +106,7 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
             />
             <Input
               label="Phone*"
-              errorMessage={inputErrors.phone}
+              errorMessage={errors.phone}
               value={reader.phone}
               onChange={(value: string) =>
                 handleInputChange(value, ReaderValue.phone)
@@ -116,7 +116,7 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
             <DatePicker
               label="Birthdate*"
               value={reader.birthdate}
-              errorMessage={inputErrors.birthdate}
+              errorMessage={errors.birthdate}
               onChange={(value) =>
                 handleBirthdate(value, ReaderValue.birthdate)
               }

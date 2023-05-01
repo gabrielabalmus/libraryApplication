@@ -8,6 +8,7 @@ export const handleBookErrors = (formData: BookState) => {
   const {
     name,
     author,
+    description,
     image,
     pagesNumber,
     category,
@@ -20,6 +21,8 @@ export const handleBookErrors = (formData: BookState) => {
   if (isEmpty(name)) errors.name = RequiredField;
 
   if (isEmpty(author)) errors.author = RequiredField;
+
+  if (isEmpty(description)) errors.description = RequiredField;
 
   if (isEmpty(image)) errors.image = RequiredField;
 

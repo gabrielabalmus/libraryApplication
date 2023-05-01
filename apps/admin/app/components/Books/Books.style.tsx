@@ -1,12 +1,11 @@
-import Flex, { ColumnFlex } from "@/components/Flex";
+import Flex, { ColumnFlex, SpaceBetweenFlex } from "@/components/Flex";
 import styled from "styled-components";
 import collorPalette from "@/theme/colorPalette";
 import { styled as MuiStyled } from "@mui/material/styles";
 import Fab, { FabProps } from "@mui/material/Fab";
 import RemoveIcon from "@mui/icons-material/Remove";
 
-export const StyledFilters = styled(Flex)`
-  justify-content: space-between;
+export const StyledFilters = styled(SpaceBetweenFlex)`
   gap: 20px;
   @media (max-width: 900px) {
     flex-direction: column;
@@ -66,10 +65,9 @@ export const StyledRemoveFab = MuiStyled(Fab)<FabProps>(({ theme }) =>
   })
 );
 
-export const StyledRemoveIcon = MuiStyled(RemoveIcon)(
-  ({ theme }) =>
-    theme.unstable_sx({
-      width: "17px",
-      height: "17px",
-    })
+export const StyledRemoveIcon = MuiStyled(RemoveIcon)(({ theme }) =>
+  theme.unstable_sx({
+    width: "17px",
+    height: "17px",
+  })
 );

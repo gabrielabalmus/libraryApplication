@@ -35,13 +35,20 @@ export const fromSingleBookResponse = (book: BookResponse): BookState => ({
   releaseYear: book.releaseYear.toString(),
   category: book.category.id,
   publishHouse: book.publishHouse.id,
+  language: book.language.id,
   bookLibraries: fromBookLibraries(book.bookLibraries),
 });
 
-export const fromBookBySku = (book: BookBySkuResponse): BookBySkuState => ({
-  ...book,
-  name: book.book.name,
-  library: book.library.name,
-  city: book.library.city.name,
-  sku: book.SKU,
-});
+export const fromBookBySku = (bookBySku: BookBySkuResponse): BookBySkuState => {
+  const { id, book, library, SKU, place, deleted } = bookBySku;
+
+  return {
+    id,
+    name: book.name,
+    library: library.name,
+    city: library.city.name,
+    sku: SKU,
+    place,
+    deleted,
+  };
+};

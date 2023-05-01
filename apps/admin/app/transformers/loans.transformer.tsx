@@ -21,13 +21,19 @@ export const fromSingleLoanResponse = (loan: LoanResponse): LoanState => {
     city: loan.reader.city.name,
   };
 
-  const books = loan.books.map((book) => ({
-    ...book.bookLibrary,
-    name: book.bookLibrary.book.name,
-    sku: book.bookLibrary.SKU,
-    library: book.bookLibrary.library.name,
-    city: book.bookLibrary.library.city.name,
-  }));
+  const books = loan.books.map((loandBook) => {
+    const { id, book, library, SKU, place, deleted } = loandBook.bookLibrary;
+
+    return {
+      id,
+      name: book.name,
+      library: library.name,
+      city: library.city.name,
+      sku: SKU,
+      place,
+      deleted,
+    };
+  });
 
   const transformedLoan: LoanState = {
     number: loan.number,

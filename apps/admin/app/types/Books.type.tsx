@@ -16,16 +16,10 @@ export interface PaginatedBooks {
 }
 
 export interface PaginatedBooksProps {
-  page?: number;
-  search?: string;
-  category?: string;
-}
-
-export interface PaginatedBooks {
-  id: string;
-  name: string;
+  page: number;
+  search: string;
   category: string;
-  author: string;
+  library: string;
 }
 
 export interface CountPaginatedBooks {
@@ -40,8 +34,10 @@ export interface BooksOverviewProps {
   onPageChange: (page: number) => void;
   onSearchChange: (value: string) => void;
   onCategoryChange: (value: AutocompleteOptions | null) => void;
+  onLibraryChange: (value: AutocompleteOptions | null) => void;
   onDelete: (id: string) => void;
   categories: AutocompleteOptions[];
+  libraries: AutocompleteOptions[];
 }
 
 export interface BookIdProps {
@@ -51,6 +47,7 @@ export interface BookIdProps {
 export interface FilterState {
   search: string;
   category: string;
+  library: string;
 }
 
 export interface BookLibrariesResponse {
@@ -63,12 +60,13 @@ export interface BookLibrariesResponse {
 export interface BookResponse {
   name: string;
   author: string;
+  description: string;
   image: string;
   pagesNumber: number;
   category: { id: string };
   publishHouse: { id: string };
   releaseYear: number;
-  language: string;
+  language: { id: string };
   bookLibraries: BookLibrariesResponse[];
 }
 
@@ -81,6 +79,7 @@ export enum BookLibrariesValues {
 export enum BookValue {
   name = "name",
   author = "author",
+  description = "description",
   pagesNumber = "pagesNumber",
   category = "category",
   publishHouse = "publishHouse",
@@ -101,6 +100,7 @@ export interface BookLibrariesErrorObject {
 export interface ErrorState {
   name?: string;
   author?: string;
+  description?: string;
   image?: string;
   pagesNumber?: string;
   category?: string;
@@ -120,6 +120,7 @@ export interface BookLibrariesState {
 export interface BookState {
   name: string;
   author: string;
+  description: string;
   image: string;
   pagesNumber: string;
   category: string;
@@ -136,6 +137,7 @@ export interface BooksFormProps {
   categories: AutocompleteOptions[];
   publishHouses: AutocompleteOptions[];
   libraries: AutocompleteOptions[];
+  languages: AutocompleteOptions[];
 }
 
 export interface BooksSubmitProps {

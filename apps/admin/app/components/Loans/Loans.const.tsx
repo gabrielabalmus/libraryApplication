@@ -9,8 +9,17 @@ export const UpdateLoanTitle = "Update loan";
 
 export const Reader = "Reader";
 export const Books = "Books";
+export const Penalty = "Penalty";
+export const Details = "Details";
+export const DaysNumber = "Days number";
+export const Amount = "Amount";
+export const Paid = "Paid";
+export const ReservedAt = "Reserved at";
+export const BorrowedAt = "Borrowed at";
+export const ReturnedAt = "Returned at";
+
 export const Add = "Add";
-export const Cities = "Cities";
+export const Libraries = "Libraries";
 export const Status = "Status";
 
 export const ReaderPlaceholder = "Reader email";
@@ -37,6 +46,11 @@ export const MandatoryBookSku = "You have to insert book sku";
 export const DuplicatedBook = "You already have this book in the loan";
 export const DeletedBook = "This book no longer exists";
 export const NoBook = "We didn't find any available book with this sku";
+export const SameLibrary = "Books must belong to the same library";
+
+export const BooksDescription = "Books must belong to a single library";
+export const PenaltyDescription =
+  "Penalties are calculated according to the number of delayed days multiplied by 0.1 EUR";
 
 export const readerColumns = [
   { name: "name", value: "Name" },

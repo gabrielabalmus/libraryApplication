@@ -6,13 +6,13 @@ import TableRow, { TableRowProps } from "@mui/material/TableRow";
 
 export const StyledHeaderRow = MuiStyled(TableRow)<TableRowProps>(({ theme }) =>
   theme.unstable_sx({
-    "td, th": { border: 0 },
+    "td, th": { border: 0, whiteSpace: "nowrap" },
   })
 );
 
 export const StyledBodyRow = MuiStyled(TableRow)<TableRowProps>(({ theme }) =>
   theme.unstable_sx({
-    "td, th": { border: 0 },
+    "td, th": { border: 0, whiteSpace: "nowrap" },
     borderTop: `1px solid ${collorPalette.grey.lighter}`,
     borderRight: `1px solid transparent`,
     borderLeft: `1px solid transparent`,
@@ -26,7 +26,7 @@ export const StyledBodyRow = MuiStyled(TableRow)<TableRowProps>(({ theme }) =>
 
 export const EmptyBodyRow = MuiStyled(TableRow)<TableRowProps>(({ theme }) =>
   theme.unstable_sx({
-    "td, th": { border: 0 },
+    "td, th": { border: 0, whiteSpace: "nowrap" },
     borderTop: `1px solid ${collorPalette.grey.lighter}`,
     borderRight: `1px solid transparent`,
     borderLeft: `1px solid transparent`,
@@ -35,7 +35,7 @@ export const EmptyBodyRow = MuiStyled(TableRow)<TableRowProps>(({ theme }) =>
 
 export const StyledTable = MuiStyled(Table)<TableProps>(({ theme }) =>
   theme.unstable_sx({
-    minWidth: 450,
+    minWidth: 600,
     marginBottom: "20px",
   })
 );

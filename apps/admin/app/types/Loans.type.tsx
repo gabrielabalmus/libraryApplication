@@ -104,9 +104,20 @@ export interface LoansFormProps {
   onSubmit: ({ callback }: LoansSubmitProps) => void;
 }
 
-export interface LoansReadersProps {
+export interface LoansReaderProps {
   loan: LoanState;
   setLoan: Dispatch<SetStateAction<LoanState>>;
+  error: ErrorState;
+  setError: Dispatch<SetStateAction<ErrorState>>;
+}
+
+export interface LoansDetailsProps {
+  loan: LoanState;
+  setLoan: Dispatch<SetStateAction<LoanState>>;
+}
+
+export interface LoansPenaltyProps {
+  penalty: Penalty;
 }
 
 export interface LoansSubmitProps {
@@ -116,7 +127,7 @@ export interface LoansSubmitProps {
 export interface PaginatedLoansProps {
   page: number;
   search: string;
-  city: string;
+  library: string;
   status: string;
 }
 
@@ -139,10 +150,10 @@ export interface LoansOverviewProps {
   filter: FilterState;
   onPageChange: (page: number) => void;
   onSearchChange: (value: string) => void;
-  onCityChange: (value: AutocompleteOptions | null) => void;
+  onLibraryChange: (value: AutocompleteOptions | null) => void;
   onStatusChange: (value: AutocompleteOptions | null) => void;
   onDelete: (id: string) => void;
-  cities: AutocompleteOptions[];
+  libraries: AutocompleteOptions[];
 }
 
 export interface LoanIdProps {
@@ -151,7 +162,7 @@ export interface LoanIdProps {
 
 export interface FilterState {
   search: string;
-  city: string;
+  library: string;
   status: string;
 }
 
@@ -163,4 +174,11 @@ export interface EachLoanBook {
 export interface LoansBooksProps {
   loan: LoanState;
   setLoan: Dispatch<SetStateAction<LoanState>>;
+  error: ErrorState;
+  setError: Dispatch<SetStateAction<ErrorState>>;
+}
+
+export interface FilteredStatuses {
+  value: Status;
+  name: Status;
 }

@@ -17,13 +17,13 @@ const LoginForm: React.FC<LoginFormProps> = ({
   generalError,
   setGeneralError,
 }) => {
-  const [inputErrors, setInputErrors] = useState<ErrorState>({});
+  const [errors, setErrors] = useState<ErrorState>({});
 
   const handleInputChange = (value: string, field: LoginValue) => {
     setData((oldData) => ({ ...oldData, [field]: value }));
 
-    if (inputErrors[field])
-      setInputErrors((oldErrors) => {
+    if (errors[field])
+      setErrors((oldErrors) => {
         delete oldErrors[field];
         return oldErrors;
       });
@@ -32,7 +32,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
   };
 
   const handleOnSubmit = () => {
-    onSubmit({ callback: (fieldErrors) => setInputErrors(fieldErrors) });
+    onSubmit({ callback: (fieldErrors) => setErrors(fieldErrors) });
   };
 
   return (
@@ -46,7 +46,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         <ColumnFlex gap="20px">
           <Input
             label="Email*"
-            errorMessage={inputErrors.email}
+            errorMessage={errors.email}
             value={data.email}
             onChange={(value: string) =>
               handleInputChange(value, LoginValue.email)
@@ -55,7 +55,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           <Input
             label="Password*"
             type={InputType.password}
-            errorMessage={inputErrors.password}
+            errorMessage={errors.password}
             value={data.password}
             onChange={(value: string) =>
               handleInputChange(value, LoginValue.password)

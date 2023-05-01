@@ -33,6 +33,7 @@ import { getUserId } from "~/server/users.server";
 import { getCategories } from "~/server/categories.server";
 import { FilterState } from "~/types/Books.type";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
+import { getLibraries } from "~/server/libraries.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -46,20 +47,23 @@ export const loader = async ({ request }: LoaderArgs) => {
     const page = url.searchParams.get("page");
     const search = url.searchParams.get("search") || "";
     const category = url.searchParams.get("category") || "";
+    const library = url.searchParams.get("library") || "";
 
     let pageNumber = 1;
     if (page && checkIfNumber(page)) pageNumber = parseInt(page);
 
-    const [books, categories] = await Promise.all([
+    const [books, categories, libraries] = await Promise.all([
       getPaginatedBooks({
         page: pageNumber,
         search,
         category,
+        library,
       }),
       getCategories(),
+      getLibraries(),
     ]);
 
-    return goodRequest({ books, categories });
+    return goodRequest({ books, categories, libraries });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -122,20 +126,27 @@ const PaginatedBooks: React.FC = () => {
   const page = searchParams.get("page");
   const search = searchParams.get("search") || "";
   const category = searchParams.get("category") || "";
+  const library = searchParams.get("library") || "";
 
   let pageNumber = 1;
   if (page && checkIfNumber(page)) pageNumber = parseInt(page);
 
   const books = data.books;
   const categories = data.categories;
+  const libraries = data.libraries;
 
   const filterCategory = categories.find(
     (item: AutocompleteOptions) => item.name === category
   );
 
+  const filterLibrary = libraries.find(
+    (item: AutocompleteOptions) => item.name === library
+  );
+
   const [filter, setFilter] = useState<FilterState>({
     search,
     category: filterCategory?.id || "",
+    library: filterLibrary?.id || "",
   });
 
   const handleCreateBook = () => {
@@ -154,10 +165,11 @@ const PaginatedBooks: React.FC = () => {
 
       if (value) params = { ...params, search: value };
       if (category) params = { ...params, category };
+      if (library) params = { ...params, library };
 
       setSearchParams(params);
     }, 500),
-    [category]
+    [category, library]
   );
 
   const handleSearchChange = (value: string) => {
@@ -174,7 +186,23 @@ const PaginatedBooks: React.FC = () => {
     let params: URLSearchParamsInit = {};
 
     if (search) params = { ...params, search };
+    if (library) params = { ...params, library };
     if (value) params = { ...params, category: value?.name || "" };
+
+    setSearchParams(params);
+  };
+
+  const handleLibraryChange = (value: AutocompleteOptions | null) => {
+    setFilter((oldValue: FilterState) => ({
+      ...oldValue,
+      library: value?.id || "",
+    }));
+
+    let params: URLSearchParamsInit = {};
+
+    if (search) params = { ...params, search };
+    if (category) params = { ...params, category };
+    if (value) params = { ...params, library: value?.name || "" };
 
     setSearchParams(params);
   };
@@ -209,8 +237,10 @@ const PaginatedBooks: React.FC = () => {
         filter={filter}
         onSearchChange={handleSearchChange}
         onCategoryChange={handleCategoryChange}
+        onLibraryChange={handleLibraryChange}
         onDelete={handleDelete}
         categories={categories}
+        libraries={libraries}
       />
     </ColumnFlex>
   );

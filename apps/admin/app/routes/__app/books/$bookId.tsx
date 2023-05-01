@@ -33,6 +33,7 @@ import { getPublishHouses } from "~/server/publishHouses.server";
 import { getSingleBook, updateBook } from "~/server/books.server";
 import { getLibraries } from "~/server/libraries.server";
 import { getImage, uploadImage } from "~/server/media.server";
+import { getLanguages } from "~/server/languages.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -52,18 +53,26 @@ export const loader = async ({ request }: LoaderArgs) => {
       });
     }
 
-    const [book, categories, publishHouses, libraries] = await Promise.all([
-      getSingleBook({
-        bookId,
-      }),
-      getCategories(),
-      getPublishHouses(),
-      getLibraries(),
-    ]);
+    const [book, categories, publishHouses, libraries, languages] =
+      await Promise.all([
+        getSingleBook({
+          bookId,
+        }),
+        getCategories(),
+        getPublishHouses(),
+        getLibraries(),
+        getLanguages(),
+      ]);
 
     if (book.image) book.image = await getImage(book.image);
 
-    return goodRequest({ book, categories, publishHouses, libraries });
+    return goodRequest({
+      book,
+      categories,
+      publishHouses,
+      libraries,
+      languages,
+    });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -88,6 +97,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     if (intent === "update") {
       const name = formData.get("name");
       const author = formData.get("author");
+      const description = formData.get("description");
       const image = formData.get("image");
       const category = formData.get("category");
       const publishHouse = formData.get("publishHouse");
@@ -103,6 +113,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         !isString(bookId) ||
         !isString(name) ||
         !isString(author) ||
+        !isString(description) ||
         !isString(image) ||
         !isString(category) ||
         !isString(publishHouse) ||
@@ -122,6 +133,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
       const fields = {
         name,
         author,
+        description,
         image,
         category,
         publishHouse,
@@ -173,6 +185,7 @@ const UpdateBook: React.FC = () => {
   const categories = data.categories;
   const publishHouses = data.publishHouses;
   const libraries = data.libraries;
+  const languages = data.languages;
 
   useEffect(() => {
     if (actionData && actionData.success === true) navigate("/books");
@@ -211,6 +224,7 @@ const UpdateBook: React.FC = () => {
         categories={categories}
         libraries={libraries}
         publishHouses={publishHouses}
+        languages={languages}
       />
     </ColumnFlex>
   );

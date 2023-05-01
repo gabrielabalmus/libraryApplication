@@ -5,32 +5,88 @@ import { ErrorState, LoansFormProps } from "~/types/Loans.type";
 import Button from "@/components/Button";
 import { ButtonType, ButtonVariant } from "@/components/Button/Button.type";
 import { StyledFlexButton } from "~/components/Libraries/Libraries.style";
-import { Books, Reader } from "../Loans.const";
-import { ColumnFlex } from "@/components/Flex";
+import {
+  Books,
+  Reader,
+  Penalty,
+  Details,
+  BooksDescription,
+  PenaltyDescription,
+} from "../Loans.const";
+import { AlignedFlex, ColumnFlex } from "@/components/Flex";
 import Typography from "@mui/material/Typography";
-import LoansReaders from "./LoansReaders";
+import LoansReader from "./LoansReader";
 import LoansBooks from "./LoansBooks";
+import LoansPenalty from "./LoansPenalty";
+import LoansDetails from "./LoansDetails";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { LoanFilteredStatuses } from "../Loans.helper";
+import { Status } from "@prisma/client";
 
 const LoansForm: React.FC<LoansFormProps> = ({ onSubmit, setLoan, loan }) => {
   const navigate = useNavigate();
   const urlParams = useParams();
 
-  const [inputErrors, setInputErrors] = useState<ErrorState>({});
+  const [errors, setErrors] = useState<ErrorState>({});
 
   const handleOnSubmit = () => {
     onSubmit({
-      callback: (fieldErrors: ErrorState) => setInputErrors(fieldErrors),
+      callback: (fieldErrors: ErrorState) => setErrors(fieldErrors),
     });
   };
+  const filteredStatuses = LoanFilteredStatuses(loan.status);
 
   return (
     <Paper className="overview-paper">
       <ColumnFlex gap="40px" maxWidth="800px">
-        <Typography variant="h3">{Reader}</Typography>
-        <LoansReaders setLoan={setLoan} loan={loan} />
+        {loan.status && (
+          <AlignedFlex gap="20px">
+            <Typography variant="h3">Status</Typography>
+            <Select value={loan.status} onChange={() => {}} variant="standard">
+              {filteredStatuses.map((item) => (
+                <MenuItem value={item.value}>{item.name}</MenuItem>
+              ))}
+            </Select>
+          </AlignedFlex>
+        )}
 
-        <Typography variant="h3">{Books}</Typography>
-        <LoansBooks setLoan={setLoan} loan={loan} />
+        {loan.createdAt && (
+          <>
+            <Typography variant="h3">{Details}</Typography>
+            <LoansDetails loan={loan} setLoan={setLoan} />
+          </>
+        )}
+
+        <Typography variant="h3">{Reader}</Typography>
+        <LoansReader
+          setLoan={setLoan}
+          loan={loan}
+          error={errors}
+          setError={setErrors}
+        />
+
+        <ColumnFlex gap="10px">
+          <Typography variant="h3">{Books}</Typography>
+          <Typography variant="h1">{BooksDescription}</Typography>
+        </ColumnFlex>
+        <LoansBooks
+          setLoan={setLoan}
+          loan={loan}
+          error={errors}
+          setError={setErrors}
+        />
+
+        {loan.penalty && (
+          <>
+            <ColumnFlex gap="10px">
+              <Typography variant="h3">{Penalty}</Typography>
+              <Typography variant="h1">{PenaltyDescription}</Typography>
+            </ColumnFlex>
+
+            <LoansPenalty penalty={loan.penalty} />
+          </>
+        )}
       </ColumnFlex>
 
       <StyledFlexButton>
@@ -44,6 +100,9 @@ const LoansForm: React.FC<LoansFormProps> = ({ onSubmit, setLoan, loan }) => {
           title={urlParams.loanId ? "Update" : "Create"}
           variant={ButtonVariant.contained}
           onClick={handleOnSubmit}
+          disabled={
+            loan.status === Status.RETURNED || loan.status === Status.CANCELLED
+          }
         />
       </StyledFlexButton>
     </Paper>

@@ -31,9 +31,9 @@ import { checkIfNumber } from "@/utils/common";
 import { useSearchParams, URLSearchParamsInit } from "react-router-dom";
 import ErrorInterface from "~/components/ErrorInterface";
 import { getUserId } from "~/server/users.server";
-import { getCities } from "~/server/cities.server";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
 import { FilterState } from "~/types/Loans.type";
+import { getLibraries } from "~/server/libraries.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -46,23 +46,23 @@ export const loader = async ({ request }: LoaderArgs) => {
     const url = new URL(request.url);
     const page = url.searchParams.get("page");
     const search = url.searchParams.get("search") || "";
-    const city = url.searchParams.get("city") || "";
+    const library = url.searchParams.get("library") || "";
     const status = url.searchParams.get("status") || "";
 
     let pageNumber = 1;
     if (page && checkIfNumber(page)) pageNumber = parseInt(page);
 
-    const [loans, cities] = await Promise.all([
+    const [loans, libraries] = await Promise.all([
       getPaginatedLoans({
         page: pageNumber,
         search,
-        city,
+        library,
         status,
       }),
-      getCities(),
+      getLibraries(),
     ]);
 
-    return goodRequest({ loans, cities });
+    return goodRequest({ loans, libraries });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -124,17 +124,17 @@ const PaginatedLoans: React.FC = () => {
 
   const page = searchParams.get("page");
   const search = searchParams.get("search") || "";
-  const city = searchParams.get("city") || "";
+  const library = searchParams.get("library") || "";
   const status = searchParams.get("status") || "";
 
   let pageNumber = 1;
   if (page && checkIfNumber(page)) pageNumber = parseInt(page);
 
   const loans = data.loans;
-  const cities = data.cities;
+  const libraries = data.libraries;
 
-  const filterCities = cities.find(
-    (item: AutocompleteOptions) => item.name === city
+  const filterLibraries = libraries.find(
+    (item: AutocompleteOptions) => item.name === library
   );
 
   const filterStatus = LoanStatuses.find(
@@ -143,7 +143,7 @@ const PaginatedLoans: React.FC = () => {
 
   const [filter, setFilter] = useState<FilterState>({
     search,
-    city: filterCities?.id || "",
+    library: filterLibraries?.id || "",
     status: filterStatus?.id || "",
   });
 
@@ -163,12 +163,12 @@ const PaginatedLoans: React.FC = () => {
       let params: URLSearchParamsInit = {};
 
       if (value) params = { ...params, search: value };
-      if (city) params = { ...params, city };
+      if (library) params = { ...params, library };
       if (status) params = { ...params, status };
 
       setSearchParams(params);
     }, 500),
-    [city, status]
+    [library, status]
   );
 
   const handleSearchChange = (value: string) => {
@@ -176,17 +176,17 @@ const PaginatedLoans: React.FC = () => {
     debounceSearchChange(value);
   };
 
-  const handleCityChange = (value: AutocompleteOptions | null) => {
+  const handleLibraryChange = (value: AutocompleteOptions | null) => {
     setFilter((oldValue: FilterState) => ({
       ...oldValue,
-      city: value?.id || "",
+      library: value?.id || "",
     }));
 
     let params: URLSearchParamsInit = {};
 
     if (search) params = { ...params, search };
     if (status) params = { ...params, status };
-    if (value) params = { ...params, city: value?.name || "" };
+    if (value) params = { ...params, library: value?.name || "" };
 
     setSearchParams(params);
   };
@@ -200,7 +200,7 @@ const PaginatedLoans: React.FC = () => {
     let params: URLSearchParamsInit = {};
 
     if (search) params = { ...params, search };
-    if (city) params = { ...params, city };
+    if (library) params = { ...params, library };
     if (value) params = { ...params, status: value?.name || "" };
 
     setSearchParams(params);
@@ -235,10 +235,10 @@ const PaginatedLoans: React.FC = () => {
         onPageChange={handleChangePage}
         filter={filter}
         onSearchChange={handleSearchChange}
-        onCityChange={handleCityChange}
+        onLibraryChange={handleLibraryChange}
         onStatusChange={handleStatusChange}
         onDelete={handleDelete}
-        cities={cities}
+        libraries={libraries}
       />
     </ColumnFlex>
   );

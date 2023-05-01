@@ -29,6 +29,7 @@ const InputContainer: React.FC<InputProps> = ({
       onChange={handleOnChange}
       width={width}
       multiline={type !==InputType.number && multiline}
+      maxRows={4}
     />
   );
 };

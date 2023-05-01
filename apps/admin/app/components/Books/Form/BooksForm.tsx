@@ -37,17 +37,18 @@ const BooksForm: React.FC<BooksFormProps> = ({
   categories,
   libraries,
   publishHouses,
+  languages,
 }) => {
   const navigate = useNavigate();
   const urlParams = useParams();
 
-  const [inputErrors, setInputErrors] = useState<ErrorState>({});
+  const [errors, setErrors] = useState<ErrorState>({});
 
   const handleInputChange = (value: string, field: BookValue) => {
     setBook((oldBook) => ({ ...oldBook, [field]: value }));
 
-    if (inputErrors[field])
-      setInputErrors((oldErrors) => {
+    if (errors[field])
+      setErrors((oldErrors) => {
         delete oldErrors[field];
         return oldErrors;
       });
@@ -69,8 +70,8 @@ const BooksForm: React.FC<BooksFormProps> = ({
       return { ...oldBook, bookLibraries };
     });
 
-    if (inputErrors.bookLibraries && inputErrors.bookLibraries[index][field])
-      setInputErrors((oldErrors) => {
+    if (errors.bookLibraries && errors.bookLibraries[index][field])
+      setErrors((oldErrors) => {
         oldErrors.bookLibraries && delete oldErrors.bookLibraries[index][field];
         return oldErrors;
       });
@@ -82,8 +83,8 @@ const BooksForm: React.FC<BooksFormProps> = ({
       bookLibraries: [...oldBook.bookLibraries, initialBookLibrary],
     }));
 
-    if (!isEmpty(inputErrors.bookLibraries))
-      setInputErrors((oldErrors) => {
+    if (!isEmpty(errors.bookLibraries))
+      setErrors((oldErrors) => {
         delete oldErrors.bookLibraries;
         return oldErrors;
       });
@@ -101,8 +102,8 @@ const BooksForm: React.FC<BooksFormProps> = ({
       };
     });
 
-    if (!isEmpty(inputErrors.bookLibraries))
-      setInputErrors((oldErrors) => {
+    if (!isEmpty(errors.bookLibraries))
+      setErrors((oldErrors) => {
         delete oldErrors.bookLibraries;
         return oldErrors;
       });
@@ -113,7 +114,7 @@ const BooksForm: React.FC<BooksFormProps> = ({
       const file = e.target.files && e.target.files[0];
 
       if (!file) {
-        setInputErrors((oldErrors) => ({
+        setErrors((oldErrors) => ({
           ...oldErrors,
           image: ErrorImageUpload,
         }));
@@ -128,13 +129,13 @@ const BooksForm: React.FC<BooksFormProps> = ({
         image: image as string,
       }));
 
-      if (inputErrors.image)
-        setInputErrors((oldErrors) => {
+      if (errors.image)
+        setErrors((oldErrors) => {
           const { image, ...rest } = oldErrors;
           return rest;
         });
     } catch (err) {
-      setInputErrors((oldErrors) => ({
+      setErrors((oldErrors) => ({
         ...oldErrors,
         image: ErrorImageUpload,
       }));
@@ -143,7 +144,7 @@ const BooksForm: React.FC<BooksFormProps> = ({
 
   const handleOnSubmit = () => {
     onSubmit({
-      callback: (fieldErrors: ErrorState) => setInputErrors(fieldErrors),
+      callback: (fieldErrors: ErrorState) => setErrors(fieldErrors),
     });
   };
 
@@ -152,80 +153,91 @@ const BooksForm: React.FC<BooksFormProps> = ({
       <ColumnFlex gap="40px">
         <Typography variant="h3">{Details}</Typography>
 
-        <StyleFlex>
-          <StyledColumnFlex>
-            <Input
-              label="Name*"
-              errorMessage={inputErrors.name}
-              value={book.name}
-              onChange={(value: string) =>
-                handleInputChange(value, BookValue.name)
-              }
-            />
-            <Input
-              label="Author*"
-              errorMessage={inputErrors.author}
-              value={book.author}
-              onChange={(value: string) =>
-                handleInputChange(value, BookValue.author)
-              }
-            />
-            <Autocomplete
-              label="Category*"
-              onChange={(value: AutocompleteOptions | null) =>
-                handleInputChange(value?.id || "", BookValue.category)
-              }
-              errorMessage={inputErrors.category}
-              options={categories}
-              value={book.category}
-            />
-            <Autocomplete
-              label="Publish house*"
-              onChange={(value: AutocompleteOptions | null) =>
-                handleInputChange(value?.id || "", BookValue.publishHouse)
-              }
-              errorMessage={inputErrors.publishHouse}
-              options={publishHouses}
-              value={book.publishHouse}
-            />
-            <Input
-              label="Release year*"
-              type={InputType.number}
-              errorMessage={inputErrors.releaseYear}
-              value={book.releaseYear}
-              onChange={(value: string) =>
-                handleInputChange(value, BookValue.releaseYear)
-              }
-            />
-          </StyledColumnFlex>
+        <ColumnFlex gap="20px">
+          <StyleFlex>
+            <StyledColumnFlex>
+              <Input
+                label="Name*"
+                errorMessage={errors.name}
+                value={book.name}
+                onChange={(value: string) =>
+                  handleInputChange(value, BookValue.name)
+                }
+              />
+              <Input
+                label="Author*"
+                errorMessage={errors.author}
+                value={book.author}
+                onChange={(value: string) =>
+                  handleInputChange(value, BookValue.author)
+                }
+              />
+              <Autocomplete
+                label="Category*"
+                onChange={(value: AutocompleteOptions | null) =>
+                  handleInputChange(value?.id || "", BookValue.category)
+                }
+                errorMessage={errors.category}
+                options={categories}
+                value={book.category}
+              />
+              <Autocomplete
+                label="Publish house*"
+                onChange={(value: AutocompleteOptions | null) =>
+                  handleInputChange(value?.id || "", BookValue.publishHouse)
+                }
+                errorMessage={errors.publishHouse}
+                options={publishHouses}
+                value={book.publishHouse}
+              />
+              <Input
+                label="Release year*"
+                type={InputType.number}
+                errorMessage={errors.releaseYear}
+                value={book.releaseYear}
+                onChange={(value: string) =>
+                  handleInputChange(value, BookValue.releaseYear)
+                }
+              />
+            </StyledColumnFlex>
 
-          <StyledColumnFlex>
-            <Input
-              label="Language*"
-              errorMessage={inputErrors.language}
-              value={book.language}
-              onChange={(value: string) =>
-                handleInputChange(value, BookValue.language)
-              }
-            />
-            <Input
-              label="Pages number*"
-              type={InputType.number}
-              errorMessage={inputErrors.pagesNumber}
-              value={book.pagesNumber}
-              onChange={(value: string) =>
-                handleInputChange(value, BookValue.pagesNumber)
-              }
-            />
+            <StyledColumnFlex>
+              <Autocomplete
+                label="Language*"
+                onChange={(value: AutocompleteOptions | null) =>
+                  handleInputChange(value?.id || "", BookValue.language)
+                }
+                errorMessage={errors.language}
+                options={languages}
+                value={book.language}
+              />
+              <Input
+                label="Pages number*"
+                type={InputType.number}
+                errorMessage={errors.pagesNumber}
+                value={book.pagesNumber}
+                onChange={(value: string) =>
+                  handleInputChange(value, BookValue.pagesNumber)
+                }
+              />
+              <ImageUploader
+                onImageChange={handleImageChange}
+                errorMessage={errors.image}
+                image={book.image}
+              />
+            </StyledColumnFlex>
+          </StyleFlex>
 
-            <ImageUploader
-              onImageChange={handleImageChange}
-              errorMessage={inputErrors.image}
-              image={book.image}
-            />
-          </StyledColumnFlex>
-        </StyleFlex>
-
+          <Input
+            label="Description*"
+            errorMessage={errors.description}
+            value={book.description}
+            onChange={(value: string) =>
+              handleInputChange(value, BookValue.description)
+            }
+            multiline
+          />
+        </ColumnFlex>
         <AlignedFlex gap="20px">
           <Typography variant="h3">{Units}</Typography>
           <StyledAddFab color="primary" onClick={handleAddBookLibrary}>
@@ -244,9 +256,7 @@ const BooksForm: React.FC<BooksFormProps> = ({
               }
               onRemoveClick={() => handleRemoveBookLibrary(index)}
               error={
-                (inputErrors.bookLibraries &&
-                  inputErrors.bookLibraries[index]) ||
-                {}
+                (errors.bookLibraries && errors.bookLibraries[index]) || {}
               }
             />
           ))}

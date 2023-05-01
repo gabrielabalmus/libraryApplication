@@ -9,6 +9,7 @@ import {
   useActionData,
   useLoaderData,
   useNavigate,
+  useParams,
   useSubmit,
 } from "@remix-run/react";
 import { isString } from "lodash";
@@ -20,11 +21,12 @@ import { ErrorMessage } from "~/const";
 import { getReaderByEmail } from "~/server/readers.server";
 import { badRequest, goodRequest } from "~/server/request.server";
 import { getUserId } from "~/server/users.server";
-import { UpdateLoanTitle, initialLoan } from "~/components/Loans/Loans.const";
+import { UpdateLoanTitle } from "~/components/Loans/Loans.const";
 import LoansForm from "~/components/Loans/Forms";
 import { LoanState, LoansSubmitProps } from "~/types/Loans.type";
 import { getSingleLoan } from "~/server/loans.server";
 import { getBookBySku } from "~/server/books.server";
+import { handleLoanErrors } from "~/components/Loans/Loans.helper";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -102,6 +104,7 @@ const UpdateLoan: React.FC = () => {
   const data = useLoaderData();
   const actionData = useActionData();
   const navigate = useNavigate();
+  const urlParams = useParams();
 
   const [loan, setLoan] = useState<LoanState>(data.loan);
 
@@ -109,7 +112,32 @@ const UpdateLoan: React.FC = () => {
     if (actionData && actionData.success === true) navigate(`/loans`);
   }, [actionData]);
 
-  const handleOnSubmit = ({ callback }: LoansSubmitProps) => {};
+  const handleOnSubmit = ({ callback }: LoansSubmitProps) => {
+    const fieldErrors = handleLoanErrors(loan);
+
+    if (Object.values(fieldErrors).some(Boolean)) {
+      callback(fieldErrors);
+      return;
+    }
+
+    const stringReader = JSON.stringify(loan.reader);
+    const stringBooks = JSON.stringify(loan.books);
+    const stringPenalty = JSON.stringify(loan.penalty);
+
+    submit(
+      {
+        ...loan,
+        reader: stringReader,
+        books: stringBooks,
+        penalty: stringPenalty,
+        intent: "update",
+      },
+      {
+        method: "post",
+        action: `/loans/${urlParams.loanId}`,
+      }
+    );
+  };
 
   return (
     <ColumnFlex>

@@ -6,17 +6,18 @@ const ButtonContainer: React.FC<ButtonProps> = ({
   variant,
   onClick,
   type,
+  disabled,
 }) => {
   if (variant === ButtonVariant.contained) {
     return (
-      <ContainedButton onClick={onClick} type={type}>
+      <ContainedButton onClick={onClick} type={type} disabled={disabled}>
         {title}
       </ContainedButton>
     );
   }
 
   return (
-    <OutlinedButton onClick={onClick} type={type}>
+    <OutlinedButton onClick={onClick} type={type} disabled={disabled}>
       {title}
     </OutlinedButton>
   );
