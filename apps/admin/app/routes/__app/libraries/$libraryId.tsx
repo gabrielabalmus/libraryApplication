@@ -12,7 +12,7 @@ import {
   useParams,
   useSubmit,
 } from "@remix-run/react";
-import { isString } from "lodash";
+import { isEqual, isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
@@ -24,10 +24,7 @@ import {
   ErrorGetSingle,
 } from "~/components/Libraries/Libraries.const";
 import { handleLibraryErrors } from "~/components/Libraries/Libraries.helper";
-import {
-  LibrariesSubmitProps,
-  LibraryState,
-} from "~/types/Libraries.type";
+import { LibrariesSubmitProps, LibraryState } from "~/types/Libraries.type";
 import { ErrorMessage } from "~/const";
 import { getCities } from "~/server/cities.server";
 import { getSingleLibrary, updateLibrary } from "~/server/libraries.server";
@@ -148,6 +145,11 @@ const UpdateLibrary: React.FC = () => {
   const [library, setLibrary] = useState<LibraryState>(data.library);
 
   const cities = data.cities;
+
+  useEffect(() => {
+    if (data.library && !isEqual(data.library, library))
+      setLibrary(data.library);
+  }, [data.library]);
 
   useEffect(() => {
     if (actionData && actionData.success === true) navigate("/libraries");

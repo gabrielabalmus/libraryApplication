@@ -1,4 +1,5 @@
 import dayjs, { Dayjs } from "dayjs";
+import moment from "moment";
 
 export const readFileAsync = (file: File) => {
   return new Promise((resolve, reject) => {
@@ -14,14 +15,26 @@ export const readFileAsync = (file: File) => {
   });
 };
 
-export const checkIfValidDate = (value: any) => {
-  return dayjs(value).isValid();
+export const checkIfValidDate = (date: any) => {
+  return dayjs(date).isValid();
 };
 
-export const transformDate = (value: Dayjs | null) => {
-  return value && checkIfValidDate(value)
-    ? dayjs(value).locale("ro").format()
-    : "";
+export const transformDate = (date: Dayjs | null) => {
+  return date && checkIfValidDate(date) ? dayjs(date).format() : "";
+};
+
+export const formatLoangDate = (date: Date) => {
+  return moment(date).format("DD MMM YYYY, HH:mm");
+};
+
+export const formatShortDate = (date: Date) => {
+  return moment(date).format("DD MMM YYYY");
+};
+
+export const addDateDays = (days: number) => {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return date;
 };
 
 export const checkIfNumber = (value: any) => {

@@ -7,6 +7,10 @@ export const NewLoan = "New loan";
 export const CreateLoanTitle = "Create loan";
 export const UpdateLoanTitle = "Update loan";
 
+export const ReservedLoanSubject = "Loan status reserved";
+export const BorrowedLoanSubject = "Loan status borrowed";
+export const CancelledLoanSubject = "Loan status cancelled";
+
 export const Reader = "Reader";
 export const Books = "Books";
 export const Penalty = "Penalty";

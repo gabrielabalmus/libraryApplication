@@ -12,7 +12,7 @@ import {
   useParams,
   useSubmit,
 } from "@remix-run/react";
-import { isString } from "lodash";
+import { isEqual, isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
@@ -145,6 +145,10 @@ const UpdateReader: React.FC = () => {
   const [reader, setReader] = useState<ReaderState>(data.reader);
 
   const cities = data.cities;
+
+  useEffect(() => {
+    if (data.reader && !isEqual(data.reader, reader)) setReader(data.reader);
+  }, [data.reader]);
 
   useEffect(() => {
     if (actionData && actionData.success === true) navigate("/readers");

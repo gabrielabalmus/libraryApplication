@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 import { DateColumnFlex, StyleFlex, StyledTypography } from "../Loans.style";
 import { BorrowedAt, ReservedAt, ReturnedAt } from "../Loans.const";
 
-const LoansDetails: React.FC<LoansDetailsProps> = ({ loan, setLoan }) => {
+const LoansDetails: React.FC<LoansDetailsProps> = ({ loan }) => {
   return (
     <StyleFlex>
       {loan.createdAt && (

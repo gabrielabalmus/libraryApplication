@@ -4,7 +4,7 @@ import {
   LoanState,
   PaginatedLoans,
 } from "~/types/Loans.type";
-import moment from "moment";
+import { formatLoangDate } from "@/utils/common";
 
 export const fromPaginatedLoansResponse = (
   loans: LoansResponse[]
@@ -12,7 +12,7 @@ export const fromPaginatedLoansResponse = (
   loans.map((item) => ({
     ...item,
     email: item.reader.email,
-    createdAt: moment(item.createdAt).format("DD MMM YYYY, HH:mm"),
+    createdAt: formatLoangDate(item.createdAt),
   }));
 
 export const fromSingleLoanResponse = (loan: LoanResponse): LoanState => {
@@ -40,20 +40,16 @@ export const fromSingleLoanResponse = (loan: LoanResponse): LoanState => {
     status: loan.status,
     reader,
     books,
-    createdAt: moment(loan.createdAt).format("DD MMM YYYY, HH:mm"),
+    createdAt: formatLoangDate(loan.createdAt),
   };
 
   if (loan.penalty) transformedLoan.penalty = loan.penalty;
 
   if (loan.borrowedAt)
-    transformedLoan.borrowedAt = moment(loan.borrowedAt).format(
-      "DD MMM YYYY, HH:mm"
-    );
+    transformedLoan.borrowedAt = formatLoangDate(loan.borrowedAt);
 
   if (loan.returnedAt)
-    transformedLoan.returnedAt = moment(loan.returnedAt).format(
-      "DD MMM YYYY, HH:mm"
-    );
+    transformedLoan.returnedAt = formatLoangDate(loan.returnedAt);
 
   return transformedLoan;
 };

@@ -113,7 +113,6 @@ export interface LoansReaderProps {
 
 export interface LoansDetailsProps {
   loan: LoanState;
-  setLoan: Dispatch<SetStateAction<LoanState>>;
 }
 
 export interface LoansPenaltyProps {

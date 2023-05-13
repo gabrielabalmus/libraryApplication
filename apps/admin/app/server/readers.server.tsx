@@ -180,7 +180,7 @@ export const createReader = async ({
       to: email,
       subject: NewReaderSubject,
       template: NewReaderEmail,
-      data: { password: generatePass },
+      data: { password: generatePass, reader: name },
     });
 
     return reader;

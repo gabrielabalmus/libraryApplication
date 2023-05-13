@@ -15,7 +15,7 @@ export const MenuList: MenuListType[] = [
     url: "/",
   },
   { label: "Loans", icon: <DensitySmallIcon />, url: "/loans" },
-  { label: "Readers", icon: <PeopleAltIcon />, url: "/readers" },
   { label: "Books", icon: <LibraryBooksIcon />, url: "/books" },
+  { label: "Readers", icon: <PeopleAltIcon />, url: "/readers" },
   { label: "Libraries", icon: <HomeWorkIcon />, url: "/libraries" },
 ];

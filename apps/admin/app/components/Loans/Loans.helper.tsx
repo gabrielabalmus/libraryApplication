@@ -17,7 +17,7 @@ export const handleLoanErrors = (formData: LoanState) => {
 };
 
 export const LoanFilteredStatuses = (
-  currentStatus: Status
+  currentStatus?: Status
 ): FilteredStatuses[] => {
   const statuses = Object.keys(Status).map((item) => ({
     value: item,
@@ -57,6 +57,13 @@ export const LoanFilteredStatuses = (
         return newStatuses.has(item.value);
       });
     default:
-      return [];
+      return statuses.filter((item) => {
+        const newStatuses = new Set([
+          Status.RESERVED,
+          Status.BORROWED,
+        ]) as Set<Status>;
+
+        return newStatuses.has(item.value);
+      });
   }
 };

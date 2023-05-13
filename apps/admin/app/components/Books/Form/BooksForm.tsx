@@ -153,7 +153,7 @@ const BooksForm: React.FC<BooksFormProps> = ({
       <ColumnFlex gap="40px">
         <Typography variant="h3">{Details}</Typography>
 
-        <ColumnFlex gap="20px">
+        <ColumnFlex gap="20px" maxWidth="750px">
           <StyleFlex>
             <StyledColumnFlex>
               <Input

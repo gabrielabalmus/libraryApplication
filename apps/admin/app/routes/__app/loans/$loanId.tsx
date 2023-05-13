@@ -12,11 +12,15 @@ import {
   useParams,
   useSubmit,
 } from "@remix-run/react";
-import { isString } from "lodash";
+import { isEqual, isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
-import { ErrorGetSingle } from "~/components/Loans/Loans.const";
+import {
+  ErrorGetSingle,
+  ErrorUpdate,
+  SuccessUpdate,
+} from "~/components/Loans/Loans.const";
 import { ErrorMessage } from "~/const";
 import { getReaderByEmail } from "~/server/readers.server";
 import { badRequest, goodRequest } from "~/server/request.server";
@@ -24,9 +28,10 @@ import { getUserId } from "~/server/users.server";
 import { UpdateLoanTitle } from "~/components/Loans/Loans.const";
 import LoansForm from "~/components/Loans/Forms";
 import { LoanState, LoansSubmitProps } from "~/types/Loans.type";
-import { getSingleLoan } from "~/server/loans.server";
+import { getSingleLoan, updateLoan } from "~/server/loans.server";
 import { getBookBySku } from "~/server/books.server";
 import { handleLoanErrors } from "~/components/Loans/Loans.helper";
+import { Status } from "@prisma/client";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -85,6 +90,48 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     const intent = formData.get("intent");
 
     if (intent === "update") {
+      const status = formData.get("status");
+      const reader = formData.get("reader");
+      const books = formData.get("books");
+
+      const url = new URL(request.url);
+      const loanId = url.pathname.split("/").pop();
+
+      if (
+        !isString(loanId) ||
+        !isString(status) ||
+        !isString(reader) ||
+        !isString(books)
+      ) {
+        return badRequest({
+          message: ErrorUpdate,
+          success: false,
+        });
+      }
+
+      const objectReader = JSON.parse(reader);
+      const objectBooks = JSON.parse(books);
+
+      const fields = {
+        status: status as Status,
+        reader: objectReader,
+        books: objectBooks,
+      };
+
+      const fieldErrors = handleLoanErrors(fields);
+
+      if (Object.values(fieldErrors).some(Boolean)) {
+        return badRequest({
+          message: ErrorUpdate,
+          success: false,
+        });
+      }
+      await updateLoan({ ...fields, loanId });
+
+      return goodRequest({
+        message: SuccessUpdate,
+        success: true,
+      });
     }
 
     return badRequest({
@@ -107,6 +154,10 @@ const UpdateLoan: React.FC = () => {
   const urlParams = useParams();
 
   const [loan, setLoan] = useState<LoanState>(data.loan);
+
+  useEffect(() => {
+    if (data.loan && !isEqual(data.loan, loan)) setLoan(data.loan);
+  }, [data.loan]);
 
   useEffect(() => {
     if (actionData && actionData.success === true) navigate(`/loans`);

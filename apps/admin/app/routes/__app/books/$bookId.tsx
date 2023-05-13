@@ -12,7 +12,7 @@ import {
   useParams,
   useSubmit,
 } from "@remix-run/react";
-import { isString } from "lodash";
+import { isEqual, isString } from "lodash";
 import { useEffect, useState } from "react";
 import { handleBookErrors } from "~/components/Books/Books.helper";
 import { BooksSubmitProps, BookState } from "~/types/Books.type";
@@ -186,6 +186,10 @@ const UpdateBook: React.FC = () => {
   const publishHouses = data.publishHouses;
   const libraries = data.libraries;
   const languages = data.languages;
+
+  useEffect(() => {
+    if (data.book && !isEqual(data.book, book)) setBook(data.book);
+  }, [data.book]);
 
   useEffect(() => {
     if (actionData && actionData.success === true) navigate("/books");

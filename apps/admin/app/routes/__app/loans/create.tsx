@@ -15,9 +15,17 @@ import { getUserId } from "~/server/users.server";
 import LoansForm from "~/components/Loans/Forms";
 import { getReaderByEmail } from "~/server/readers.server";
 import { LoanState, LoansSubmitProps } from "~/types/Loans.type";
-import { CreateLoanTitle, initialLoan } from "~/components/Loans/Loans.const";
+import {
+  CreateLoanTitle,
+  ErrorCreate,
+  SuccessCreate,
+  initialLoan,
+} from "~/components/Loans/Loans.const";
 import { getBookBySku } from "~/server/books.server";
 import { handleLoanErrors } from "~/components/Loans/Loans.helper";
+import { createLoan } from "~/server/loans.server";
+import { isString } from "lodash";
+import { Status } from "@prisma/client";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -60,6 +68,40 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
     const intent = formData.get("intent");
 
     if (intent === "create") {
+      const status = formData.get("status");
+      const reader = formData.get("reader");
+      const books = formData.get("books");
+
+      if (!isString(status) || !isString(reader) || !isString(books)) {
+        return badRequest({
+          message: ErrorCreate,
+          success: false,
+        });
+      }
+
+      const objectReader = JSON.parse(reader);
+      const objectBooks = JSON.parse(books);
+
+      const fields = {
+        status: status as Status,
+        reader: objectReader,
+        books: objectBooks,
+      };
+
+      const fieldErrors = handleLoanErrors(fields);
+
+      if (Object.values(fieldErrors).some(Boolean)) {
+        return badRequest({
+          message: ErrorCreate,
+          success: false,
+        });
+      }
+      await createLoan(fields);
+
+      return goodRequest({
+        message: SuccessCreate,
+        success: true,
+      });
     }
 
     return badRequest({

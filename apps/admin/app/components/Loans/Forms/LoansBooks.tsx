@@ -53,7 +53,7 @@ const LoansBooks: React.FC<LoansBooksProps> = ({
         (item) => item.library === data.book.library
       );
 
-      if (!sameLoanLibrary) {
+      if (!isEmpty(loan.books) && !sameLoanLibrary) {
         setSearchError(SameLibrary);
         return;
       }
