@@ -1,21 +1,26 @@
-import sendgridMail from "@sendgrid/mail";
+import nodemailer from "nodemailer";
 import { SendEmailProps } from "~/types/Readers.type";
 
-sendgridMail.setApiKey(process.env.SENDGRID_API_KEY!);
+export const sendEmail = async ({ to, subject, template }: SendEmailProps) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: 587,
+      auth: {
+        user: process.env.FROM_EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
 
-export const sendEmail = async ({
-  to,
-  subject,
-  template,
-  data,
-}: SendEmailProps) => {
-  const message = {
-    to,
-    from: process.env.FROM_EMAIL!,
-    subject,
-    html: template,
-    substitutions: data,
-  };
+    const message = {
+      to,
+      from: process.env.FROM_EMAIL,
+      subject,
+      html: template,
+    };
 
-  sendgridMail.send(message).catch(() => {});
+    await transporter.sendMail(message);
+  } catch (e) {
+    console.log("eee", e);
+  }
 };

@@ -11,7 +11,7 @@ import {
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
-import { isString } from "lodash";
+import { isBoolean, isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
@@ -126,7 +126,7 @@ const CreateLibrary: React.FC = () => {
   const cities = data.cities;
 
   useEffect(() => {
-    if (actionData && actionData.success === true) navigate("/libraries");
+    if (actionData && isBoolean(actionData.success)) navigate("/libraries");
   }, [actionData]);
 
   const handleOnSubmit = ({ callback }: LibrariesSubmitProps) => {

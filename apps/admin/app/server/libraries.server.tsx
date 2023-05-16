@@ -15,7 +15,7 @@ import {
   fromPaginatedLibrariesResponse,
   fromSingleLibraryResponse,
 } from "~/transformers/libraries.transformer";
-import { prisma } from "./prisma.server";
+import prisma from "prisma";
 
 export const getPaginatedLibraries = async ({
   page,

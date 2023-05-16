@@ -17,7 +17,7 @@ import {
   fromPaginatedBooksResponse,
   fromSingleBookResponse,
 } from "~/transformers/books.transformer";
-import { prisma } from "./prisma.server";
+import prisma from "prisma";
 import { ErrorMessage } from "~/const";
 import { isEmpty } from "lodash";
 import { toFindDuplicates } from "@/utils/common";

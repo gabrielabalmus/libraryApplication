@@ -11,4 +11,4 @@ if (!global.db) {
 }
 prisma = global.db;
 
-export { prisma };
+export default prisma;

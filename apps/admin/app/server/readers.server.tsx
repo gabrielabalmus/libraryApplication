@@ -16,7 +16,7 @@ import {
   fromPaginatedReadersResponse,
   fromSingleReaderResponse,
 } from "~/transformers/readers.transformer";
-import { prisma } from "./prisma.server";
+import prisma from "prisma";
 import { ErrorMessage } from "~/const";
 import bcrypt from "bcryptjs";
 import generator from "generate-password";
@@ -176,11 +176,12 @@ export const createReader = async ({
 
     if (!reader) throw new Error(ErrorCreate);
 
+    const data = { password: generatePass, reader: name };
+
     await sendEmail({
       to: email,
       subject: NewReaderSubject,
-      template: NewReaderEmail,
-      data: { password: generatePass, reader: name },
+      template: NewReaderEmail(data),
     });
 
     return reader;

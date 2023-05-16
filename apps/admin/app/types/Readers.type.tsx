@@ -99,5 +99,4 @@ export interface SendEmailProps {
   to: string;
   subject: string;
   template: string;
-  data?: { [key: string]: string };
 }

@@ -12,7 +12,7 @@ import {
   useParams,
   useSubmit,
 } from "@remix-run/react";
-import { isEqual, isString } from "lodash";
+import { isBoolean, isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
@@ -156,11 +156,7 @@ const UpdateLoan: React.FC = () => {
   const [loan, setLoan] = useState<LoanState>(data.loan);
 
   useEffect(() => {
-    if (data.loan && !isEqual(data.loan, loan)) setLoan(data.loan);
-  }, [data.loan]);
-
-  useEffect(() => {
-    if (actionData && actionData.success === true) navigate(`/loans`);
+    if (actionData && isBoolean(actionData.success)) navigate(`/loans`);
   }, [actionData]);
 
   const handleOnSubmit = ({ callback }: LoansSubmitProps) => {

@@ -11,7 +11,12 @@
     "dev:admin": "turbo run dev --scope=admin",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push --skip-generate"
+  },
+  "prisma": {
+    "schema": "./packages/database/prisma/schema.prisma"
   },
   "devDependencies": {
     "prettier": "latest",

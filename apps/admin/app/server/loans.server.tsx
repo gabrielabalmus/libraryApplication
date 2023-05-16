@@ -20,7 +20,7 @@ import {
   fromPaginatedLoansResponse,
   fromSingleLoanResponse,
 } from "~/transformers/loans.transformer";
-import { prisma } from "./prisma.server";
+import prisma from "prisma";
 import { Status } from "@prisma/client";
 import { isEmpty } from "lodash";
 import { LoanFilteredStatuses } from "~/components/Loans/Loans.helper";
@@ -342,31 +342,31 @@ export const createLoan = async ({ reader, books, status }: LoanState) => {
 
     if (status === Status.RESERVED) {
       const byDate = addDateDays(2);
+      const data = {
+        reader: (reader as ReaderState).name,
+        byDate: formatShortDate(byDate),
+        number: loan.number,
+      };
 
       await sendEmail({
         to: (reader as ReaderState).email,
         subject: ReservedLoanSubject,
-        template: ReservedLoanEmail,
-        data: {
-          reader: (reader as ReaderState).name,
-          byDate: formatShortDate(byDate),
-          number: loan.number,
-        },
+        template: ReservedLoanEmail(data),
       });
     }
 
     if (status === Status.BORROWED) {
       const byDate = addDateDays(30);
+      const data = {
+        reader: (reader as ReaderState).name,
+        byDate: formatShortDate(byDate),
+        number: loan.number,
+      };
 
       await sendEmail({
         to: (reader as ReaderState).email,
         subject: BorrowedLoanSubject,
-        template: BorrowedLoanEmail,
-        data: {
-          reader: (reader as ReaderState).name,
-          byDate: formatShortDate(byDate),
-          number: loan.number,
-        },
+        template: BorrowedLoanEmail(data),
       });
     }
 
@@ -438,27 +438,29 @@ export const updateLoan = async ({
     if (status === Status.BORROWED && status !== currentLoan.status) {
       const byDate = addDateDays(30);
 
+      const data = {
+        reader: (reader as ReaderState).name,
+        byDate: formatShortDate(byDate),
+        number: loan.number,
+      };
+
       await sendEmail({
         to: (reader as ReaderState).email,
         subject: BorrowedLoanSubject,
-        template: BorrowedLoanEmail,
-        data: {
-          reader: (reader as ReaderState).name,
-          byDate: formatShortDate(byDate),
-          number: loan.number,
-        },
+        template: BorrowedLoanEmail(data),
       });
     }
 
     if (status === Status.CANCELLED && status !== currentLoan.status) {
+      const data = {
+        reader: (reader as ReaderState).name,
+        number: loan.number,
+      };
+
       await sendEmail({
         to: (reader as ReaderState).email,
         subject: CancelledLoanSubject,
-        template: CancelledLoanEmail,
-        data: {
-          reader: (reader as ReaderState).name,
-          number: loan.number,
-        },
+        template: CancelledLoanEmail(data),
       });
     }
 

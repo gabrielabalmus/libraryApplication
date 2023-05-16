@@ -61,8 +61,10 @@ const LoansForm: React.FC<LoansFormProps> = ({ onSubmit, setLoan, loan }) => {
               onChange={changeStatus}
               variant="standard"
             >
-              {filteredStatuses.map((item) => (
-                <MenuItem value={item.value}>{item.name}</MenuItem>
+              {filteredStatuses.map((item, index) => (
+                <MenuItem key={index} value={item.value}>
+                  {item.name}
+                </MenuItem>
               ))}
             </Select>
           </AlignedFlex>

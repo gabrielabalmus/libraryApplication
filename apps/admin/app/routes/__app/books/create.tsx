@@ -11,7 +11,7 @@ import {
   useNavigate,
   useSubmit,
 } from "@remix-run/react";
-import { isString } from "lodash";
+import { isBoolean, isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
@@ -157,7 +157,7 @@ const CreateBook: React.FC = () => {
   const languages = data.languages;
 
   useEffect(() => {
-    if (actionData && actionData.success === true) navigate(`/books`);
+    if (actionData && isBoolean(actionData.success)) navigate(`/books`);
   }, [actionData]);
 
   const handleOnSubmit = ({ callback }: BooksSubmitProps) => {

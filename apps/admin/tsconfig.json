@@ -10,6 +10,7 @@
       "@/templates/*": ["../../packages/ui/templates/*"],
       "@/utils/*": ["../../packages/ui/utils/*"],
       "@/theme/*": ["../../packages/ui/theme/*"],
+      "prisma": ["../../packages/database/prisma"],
     },
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,

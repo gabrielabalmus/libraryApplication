@@ -1,5 +1,5 @@
 import { ErrorMessage } from "~/const";
-import { prisma } from "./prisma.server";
+import prisma from "prisma";
 
 export const getPublishHouses = async () => {
   try {

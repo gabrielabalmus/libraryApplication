@@ -99,13 +99,14 @@ const LoansReader: React.FC<LoansReaderProps> = ({
       {reader && (
         <StyledTableColumn>
           <StyledTable>
-            <tr>
-              {readerColumns.map((item, index) => (
-                <th key={index}>{item.value}</th>
-              ))}
-            </tr>
-
-            <>
+            <thead>
+              <tr>
+                {readerColumns.map((item, index) => (
+                  <th key={index}>{item.value}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
               <StyledRow>
                 {readerColumns.map((item, index) => (
                   <td key={index}>
@@ -119,7 +120,7 @@ const LoansReader: React.FC<LoansReaderProps> = ({
               {reader?.deleted && (
                 <FormHelperText error={true}>{DeletedReader}</FormHelperText>
               )}
-            </>
+            </tbody>
           </StyledTable>
         </StyledTableColumn>
       )}

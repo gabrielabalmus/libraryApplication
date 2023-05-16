@@ -1,7 +1,7 @@
 import { getSession } from "./session.server";
 import { LoginState } from "~/types/Login.type";
 import bcrypt from "bcryptjs";
-import { prisma } from "./prisma.server";
+import prisma from "prisma";
 import { ErrorSubmit, WrongLoginData } from "~/const";
 
 export const getUserSession = (request: Request) => {

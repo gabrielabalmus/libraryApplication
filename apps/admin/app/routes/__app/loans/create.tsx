@@ -24,7 +24,7 @@ import {
 import { getBookBySku } from "~/server/books.server";
 import { handleLoanErrors } from "~/components/Loans/Loans.helper";
 import { createLoan } from "~/server/loans.server";
-import { isString } from "lodash";
+import { isBoolean, isString } from "lodash";
 import { Status } from "@prisma/client";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -129,7 +129,7 @@ const CreateLoan: React.FC = () => {
   const [loan, setLoan] = useState<LoanState>(initialLoan);
 
   useEffect(() => {
-    if (actionData && actionData.success === true) navigate(`/loans`);
+    if (actionData && isBoolean(actionData.success)) navigate(`/loans`);
   }, [actionData]);
 
   const handleOnSubmit = ({ callback }: LoansSubmitProps) => {

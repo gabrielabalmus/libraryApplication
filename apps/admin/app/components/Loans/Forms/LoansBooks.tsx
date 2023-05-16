@@ -126,41 +126,44 @@ const LoansBooks: React.FC<LoansBooksProps> = ({
       {!isEmpty(books) && (
         <StyledTableColumn>
           <StyledTable>
-            <tr>
-              {bookColumns.map((item, index) => (
-                <th key={index}>{item.value}</th>
+            <thead>
+              <tr>
+                {bookColumns.map((item, index) => (
+                  <th key={index}>{item.value}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {books.map((book, index) => (
+                <>
+                  <StyledRow key={index}>
+                    {bookColumns.map((column, index) => (
+                      <td key={index}>
+                        <SpaceBetweenCenterFlex>
+                          <Typography variant="h2">
+                            {book[column.name as keyof BookLibraryState]}
+                          </Typography>
+
+                          {bookColumns.length === index + 1 && (
+                            <StyledIconButton
+                              onClick={() => onBookRemove(book.id)}
+                            >
+                              <DeleteOutlineIcon />
+                            </StyledIconButton>
+                          )}
+                        </SpaceBetweenCenterFlex>
+                      </td>
+                    ))}
+                  </StyledRow>
+
+                  {book?.deleted && (
+                    <StyledFormHelperText error={true}>
+                      {DeletedBook}
+                    </StyledFormHelperText>
+                  )}
+                </>
               ))}
-            </tr>
-
-            {books.map((book, index) => (
-              <>
-                <StyledRow key={index}>
-                  {bookColumns.map((column, index) => (
-                    <td key={index}>
-                      <SpaceBetweenCenterFlex>
-                        <Typography variant="h2">
-                          {book[column.name as keyof BookLibraryState]}
-                        </Typography>
-
-                        {bookColumns.length === index + 1 && (
-                          <StyledIconButton
-                            onClick={() => onBookRemove(book.id)}
-                          >
-                            <DeleteOutlineIcon />
-                          </StyledIconButton>
-                        )}
-                      </SpaceBetweenCenterFlex>
-                    </td>
-                  ))}
-                </StyledRow>
-
-                {book?.deleted && (
-                  <StyledFormHelperText error={true}>
-                    {DeletedBook}
-                  </StyledFormHelperText>
-                )}
-              </>
-            ))}
+            </tbody>
           </StyledTable>
         </StyledTableColumn>
       )}

@@ -12,7 +12,7 @@ import {
   useParams,
   useSubmit,
 } from "@remix-run/react";
-import { isEqual, isString } from "lodash";
+import { isBoolean, isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
@@ -147,12 +147,7 @@ const UpdateLibrary: React.FC = () => {
   const cities = data.cities;
 
   useEffect(() => {
-    if (data.library && !isEqual(data.library, library))
-      setLibrary(data.library);
-  }, [data.library]);
-
-  useEffect(() => {
-    if (actionData && actionData.success === true) navigate("/libraries");
+    if (actionData && isBoolean(actionData.success)) navigate("/libraries");
   }, [actionData]);
 
   const handleOnSubmit = ({ callback }: LibrariesSubmitProps) => {
