@@ -153,7 +153,7 @@ const BooksForm: React.FC<BooksFormProps> = ({
       <ColumnFlex gap="40px">
         <Typography variant="h3">{Details}</Typography>
 
-        <ColumnFlex gap="20px" maxWidth="750px">
+        <ColumnFlex gap="20px">
           <StyleFlex>
             <StyledColumnFlex>
               <Input
@@ -228,15 +228,17 @@ const BooksForm: React.FC<BooksFormProps> = ({
             </StyledColumnFlex>
           </StyleFlex>
 
-          <Input
-            label="Description*"
-            errorMessage={errors.description}
-            value={book.description}
-            onChange={(value: string) =>
-              handleInputChange(value, BookValue.description)
-            }
-            multiline
-          />
+          <StyleFlex>
+            <Input
+              label="Description*"
+              errorMessage={errors.description}
+              value={book.description}
+              onChange={(value: string) =>
+                handleInputChange(value, BookValue.description)
+              }
+              multiline
+            />
+          </StyleFlex>
         </ColumnFlex>
         <AlignedFlex gap="20px">
           <Typography variant="h3">{Units}</Typography>

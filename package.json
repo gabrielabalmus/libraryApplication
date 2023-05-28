@@ -10,10 +10,10 @@
     "build": "turbo run build",
     "dev:admin": "turbo run dev --scope=admin",
     "dev": "turbo run dev --parallel",
-    "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:generate": "prisma generate",
-    "db:push": "prisma db push --skip-generate"
+    "db:push": "prisma db push --skip-generate",
+    "start": "turbo run start"
   },
   "prisma": {
     "schema": "./packages/database/prisma/schema.prisma"

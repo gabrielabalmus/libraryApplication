@@ -7,7 +7,6 @@ const { getSession, commitSession, destroySession } =
     cookie: {
       name: "session",
       httpOnly: true,
-      expires: new Date(Date.now() + 60 * 60 * 24),
       maxAge: 60 * 60 * 24,
       sameSite: "lax",
       secrets: ["s3cret1"],
@@ -26,7 +25,9 @@ export const createUserSession = async ({
 
   return redirect(redirectTo, {
     headers: {
-      "Set-Cookie": await commitSession(session),
+      "Set-Cookie": await commitSession(session, {
+        expires: new Date(Date.now() + 60 * 60 * 24),
+      }),
     },
   });
 };

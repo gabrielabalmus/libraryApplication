@@ -24,6 +24,7 @@ export const StyledColumnFlex = styled(ColumnFlex)`
 
 export const StyleFlex = styled(Flex)`
   gap: 50px;
+  max-width: 750px;
   @media (max-width: 900px) {
     gap: 20px;
     flex-direction: column;

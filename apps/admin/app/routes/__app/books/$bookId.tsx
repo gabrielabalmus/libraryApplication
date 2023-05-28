@@ -34,6 +34,7 @@ import { getSingleBook, updateBook } from "~/server/books.server";
 import { getLibraries } from "~/server/libraries.server";
 import { getImage, uploadImage } from "~/server/media.server";
 import { getLanguages } from "~/server/languages.server";
+import { isValidUrl } from "@/utils/common";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -66,13 +67,13 @@ export const loader = async ({ request }: LoaderArgs) => {
 
     if (book.image) book.image = await getImage(book.image);
 
-    return goodRequest({
-      book,
-      categories,
-      publishHouses,
-      libraries,
-      languages,
-    });
+      return goodRequest({
+        book,
+        categories,
+        publishHouses,
+        libraries,
+        languages,
+      });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -152,7 +153,9 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         });
       }
 
-      const { imageId } = await uploadImage(image);
+      let imageId;
+      if (!isValidUrl(image)) imageId = await uploadImage(image);
+
       await updateBook({ ...fields, bookId, image: imageId });
 
       return goodRequest({

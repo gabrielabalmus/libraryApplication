@@ -14,7 +14,7 @@ export const uploadImage = async (image: string) => {
       public_id: uuid(),
     });
 
-    return { imageId: public_id };
+    return public_id;
   } catch (err) {
     throw new Error(ErrorMessage);
   }
@@ -25,7 +25,5 @@ export const getImage = async (imageName: string) => {
     const { secure_url } = await cloudinary.v2.api.resource(imageName);
 
     return secure_url;
-  } catch (err) {
-    throw new Error(ErrorMessage);
-  }
+  } catch (err) {}
 };

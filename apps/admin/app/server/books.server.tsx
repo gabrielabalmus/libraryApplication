@@ -383,7 +383,7 @@ export const updateBook = async ({
   releaseYear,
   language,
   bookLibraries,
-}: BookState & { bookId: string }) => {
+}: Omit<BookState, "image"> & { bookId: string; image?: string }) => {
   try {
     const bookByName = await prisma.books.findFirst({
       where: {

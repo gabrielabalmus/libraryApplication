@@ -118,7 +118,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
         });
       }
 
-      const { imageId } = await uploadImage(image);
+      const imageId = await uploadImage(image);
       await createBook({ ...fields, image: imageId });
 
       return goodRequest({

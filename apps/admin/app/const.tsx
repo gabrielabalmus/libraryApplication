@@ -48,7 +48,7 @@ export const theme = createTheme({
       styleOverrides: {
         input: {
           "&:-webkit-autofill": {
-            "-webkit-box-shadow": "0 0 0 100px #fff inset",
+            "WebkitBoxShadow": "0 0 0 100px #fff inset",
           },
           "&:focus": {
             backgroundColor: "inherit",
