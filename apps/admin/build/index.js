@@ -344,10 +344,7 @@ var { getSession, commitSession, destroySession } = (0, import_node.createCookie
 var import_bcryptjs = __toESM(require("bcryptjs"));
 
 // ../../packages/database/prisma/connect.tsx
-var import_client = require("@prisma/client"), prisma;
-global.db || (global.db = new import_client.PrismaClient(), global.db.$connect());
-prisma = global.db;
-var connect_default = prisma;
+var import_client = require("@prisma/client"), prisma = new import_client.PrismaClient(), connect_default = prisma;
 
 // app/server/users.server.tsx
 var getUserSession = (request) => getSession(request.headers.get("Cookie")), getUserId = async (request) => (await getUserSession(request)).get("userId"), login = async ({ email, password }) => {
@@ -2466,28 +2463,28 @@ var import_nodemailer = __toESM(require("nodemailer")), sendEmail = async ({ to,
       auth: {
         user: process.env.FROM_EMAIL,
         pass: process.env.EMAIL_PASSWORD
-      }
+      },
+      from: process.env.FROM_EMAIL
     }), message = {
+      from: `Library <${process.env.FROM_EMAIL}>`,
       to,
-      from: process.env.FROM_EMAIL,
       subject,
       html: template
     };
     await transporter.sendMail(message);
-  } catch (e) {
-    console.log("eee", e);
+  } catch {
   }
 };
 
 // ../../packages/ui/templates/NewReader.email.tsx
-var NewReaderEmail = ({ name, password }) => `<html>
+var NewReaderEmail = ({ reader, password }) => `<html>
 <head>
   <meta charset="utf-8">
   <title>New reader account</title>
 </head>  
 <body>
   <div style="text-align: center; margin: 30px 0; font-size: 15px">
-    <h2 style="margin-bottom: 35px; font-size: 22px">Hi ${name},</h2>
+    <h2 style="margin-bottom: 35px; font-size: 22px">Hi ${reader},</h2>
     <p>Your reader account has been created.</p>
     <p>Your current password is <strong>${password}</strong>.</p>
   </div>

@@ -10,7 +10,7 @@ export interface CancelledLoanProps {
 }
 
 export interface NewReaderProps {
-  name: string;
+  reader: string;
   password: string;
 }
 

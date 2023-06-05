@@ -48,7 +48,8 @@ app.all(
 const port = process.env.PORT || 3000;
 
 cron.schedule("0 0 * * *",  async () => {
-  await expireLoanReservedStatus()
+  await expireLoansReservedStatus()
+  await calculateLoansPenalties()
 });
 
 app.listen(port, () => {
@@ -69,26 +70,66 @@ const removeDateDays = (days) => {
   return date;
 };
 
-const expireLoanReservedStatus = async () => {
+const expireLoansReservedStatus = async () => {
   try {
     const lastDate = removeDateDays(2);
   
     await prisma.loans.updateMany({
       where: {
         status: Status.RESERVED,
-        createdAt: { lte: lastDate },
+        createdAt: { lt: lastDate },
       },
       data: {
         status: Status.CANCELLED,
       },
     });
-
-    console.log(`Loan reserved status successfully changed to cancelled on 
-    ${moment(new Date).format("DD MMM YYYY, HH:mm")}`)
+  
+    console.log(`Loans reserved status successfully changed to cancelled on 
+    ${moment(new Date()).format("DD MMM YYYY, HH:mm")}`);
   } catch (err) {
     console.error(
-      `Failure on changing loan reserved status to cancelled on
-      ${moment(new Date).format("DD MMM YYYY, HH:mm")}` 
+      `Failure on changing loans reserved status to cancelled on
+      ${moment(new Date()).format("DD MMM YYYY, HH:mm")}`
     );
+  }
+};
+
+const calculateLoansPenalties = async () => {
+  try {
+    const lastDate = removeDateDays(30);
+  
+    await prisma.$runCommandRaw({
+      update: "Loans",
+      updates: [
+        {
+          q: {
+            status: Status.BORROWED,
+            $expr: {
+              $lt: [
+                {
+                  $dateToString: {
+                    format: "%Y-%m-%dT%H:%M:%S.%LZ",
+                    date: "$borrowedAt",
+                  },
+                },
+                lastDate,
+              ],
+            },
+            $or: [{ penalty: { $exists: false } }, { "penalty.paid": false }],
+          },
+          u: {
+            $set: { "penalty.paid": false },
+            $inc: { "penalty.days": 1, "penalty.amount": 0.1 },
+          },
+          multi: true,
+        },
+      ],
+    });
+  
+    console.log(`Loans penalties successfully calculated for exceeded borrowed status on 
+    ${moment(new Date()).format("DD MMM YYYY, HH:mm")}`);
+  } catch (err) {
+    console.error(`Failure on calculating loans penalties for exceeded borrowed status on 
+    ${moment(new Date()).format("DD MMM YYYY, HH:mm")}`);
   }
 };
