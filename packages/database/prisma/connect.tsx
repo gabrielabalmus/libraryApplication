@@ -1,5 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+let prisma: PrismaClient;
+declare global {
+  var db: PrismaClient | undefined;
+}
+if (!global.db) {
+  global.db = new PrismaClient();
+  global.db.$connect();
+}
+prisma = global.db;
 
 export default prisma;

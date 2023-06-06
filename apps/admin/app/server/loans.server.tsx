@@ -14,6 +14,7 @@ import {
   LoanIdProps,
   EachLoanBook,
   ReaderState,
+  LoansRaportProps,
 } from "~/types/Loans.type";
 import { ErrorMessage } from "~/const";
 import {
@@ -28,7 +29,7 @@ import { sendEmail } from "./mail.server";
 import { ReservedLoanEmail } from "@/templates/ReservedLoan.email";
 import { BorrowedLoanEmail } from "@/templates/BorrowedLoan.email";
 import { CancelledLoanEmail } from "@/templates/CancelledLoan.email";
-import { addDateDays, formatShortDate } from "@/utils/common";
+import { addDateDays, formatShortDate, getCorrectYear } from "@/utils/common";
 
 export const getPaginatedLoans = async ({
   page,
@@ -233,6 +234,7 @@ const forEachLoanBook = async ({ loanBooks, loanId }: EachLoanBook) => {
       books: {
         select: {
           bookLibraryId: true,
+          bookLibrary: { select: { libraryId: true } },
         },
       },
     },
@@ -251,7 +253,7 @@ const forEachLoanBook = async ({ loanBooks, loanId }: EachLoanBook) => {
 
   let libraryId =
     loanedBooks?.books && !isEmpty(loanedBooks.books)
-      ? loanedBooks.books[0].bookLibraryId
+      ? loanedBooks.books[0].bookLibrary.libraryId
       : "";
 
   let error = false;
@@ -491,5 +493,104 @@ export const deleteLoan = async ({ loanId }: LoanIdProps) => {
     return loan;
   } catch (err) {
     throw new Error(ErrorDelete);
+  }
+};
+
+export const groupLoansRaport = async ({
+  year,
+  library,
+  status,
+}: LoansRaportProps) => {
+  try {
+    const newYear = getCorrectYear(year);
+
+    const loansRaport = await prisma.loans.aggregateRaw({
+      pipeline: [
+        {
+          $lookup: {
+            from: "LoanBooks",
+            localField: "_id",
+            foreignField: "loanId",
+            as: "loanBook",
+          },
+        },
+        {
+          $unwind: {
+            path: "$loanBook",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "BookLibraries",
+            localField: "loanBook.bookLibraryId",
+            foreignField: "_id",
+            as: "loanBook.bookLibrary",
+          },
+        },
+        {
+          $unwind: {
+            path: "$loanBook.bookLibrary",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "Libraries",
+            localField: "loanBook.bookLibrary.libraryId",
+            foreignField: "_id",
+            as: "loanBook.bookLibrary.library",
+          },
+        },
+        {
+          $unwind: {
+            path: "$loanBook.bookLibrary.library",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $project: {
+            library: "$loanBook.bookLibrary.library.name",
+            status: "$status",
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+          },
+        },
+        {
+          $match: {
+            year: newYear,
+            library: library || undefined,
+            status: status || undefined,
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            name: { $first: "$library" },
+            year: { $first: "$year" },
+            month: { $first: "$month" },
+          },
+        },
+        {
+          $group: {
+            _id: "$month",
+            total: { $sum: 1 },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            month: "$_id",
+            total: "$total",
+          },
+        },
+      ],
+    });
+
+    if (!loansRaport) throw new Error(ErrorMessage);
+
+    return loansRaport;
+  } catch (err) {
+    throw new Error(ErrorMessage);
   }
 };

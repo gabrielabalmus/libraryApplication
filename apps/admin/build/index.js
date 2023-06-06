@@ -302,69 +302,9 @@ var import_styles2 = require("@mui/material/styles"), import_jsx_dev_runtime2 = 
 // app/routes/__auth.tsx
 var auth_exports = {};
 __export(auth_exports, {
-  default: () => auth_default,
-  loader: () => loader
+  default: () => auth_default
 });
-var import_node2 = require("@remix-run/node"), import_react3 = require("@remix-run/react");
-
-// app/server/session.server.tsx
-var import_node = require("@remix-run/node");
-var { getSession, commitSession, destroySession } = (0, import_node.createCookieSessionStorage)({
-  cookie: {
-    name: "session",
-    httpOnly: !0,
-    maxAge: 60 * 60 * 24,
-    sameSite: "lax",
-    secrets: ["s3cret1"],
-    secure: !0
-  }
-}), createUserSession = async ({
-  request,
-  userId,
-  redirectTo
-}) => {
-  let session = await getUserSession(request);
-  return session.set("userId", userId), (0, import_node.redirect)(redirectTo, {
-    headers: {
-      "Set-Cookie": await commitSession(session, {
-        expires: new Date(Date.now() + 60 * 60 * 24)
-      })
-    }
-  });
-}, removeUserSession = async (request) => {
-  let session = await getUserSession(request);
-  return (0, import_node.redirect)("/login", {
-    headers: {
-      "Set-Cookie": await destroySession(session)
-    }
-  });
-};
-
-// app/server/users.server.tsx
-var import_bcryptjs = __toESM(require("bcryptjs"));
-
-// ../../packages/database/prisma/connect.tsx
-var import_client = require("@prisma/client"), prisma = new import_client.PrismaClient(), connect_default = prisma;
-
-// app/server/users.server.tsx
-var getUserSession = (request) => getSession(request.headers.get("Cookie")), getUserId = async (request) => (await getUserSession(request)).get("userId"), login = async ({ email, password }) => {
-  try {
-    let user = await connect_default.users.findFirst({
-      where: { email },
-      select: {
-        id: !0,
-        password: !0
-      }
-    });
-    if (!user)
-      throw new Error(WrongLoginData);
-    if (!await import_bcryptjs.default.compare(password, user.password))
-      throw new Error(WrongLoginData);
-    return { id: user.id };
-  } catch {
-    throw new Error(ErrorSubmit);
-  }
-};
+var import_react3 = require("@remix-run/react");
 
 // ../../packages/ui/components/Spinner/Spinner.style.tsx
 var import_CircularProgress = __toESM(require("@mui/material/CircularProgress")), import_styles3 = require("@mui/material/styles"), StyledSpinner = (0, import_styles3.styled)(import_CircularProgress.default)(
@@ -381,22 +321,22 @@ var import_jsx_dev_runtime3 = require("react/jsx-dev-runtime"), SpinnerContainer
 }, this), SpinnerContainer_default = SpinnerContainer;
 
 // app/routes/__auth.tsx
-var import_jsx_dev_runtime4 = require("react/jsx-dev-runtime"), loader = async ({ request }) => await getUserId(request) ? (0, import_node2.redirect)("/") : {}, AuthLayout = () => {
+var import_jsx_dev_runtime4 = require("react/jsx-dev-runtime"), AuthLayout = () => {
   let transition = (0, import_react3.useTransition)();
   return /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_jsx_dev_runtime4.Fragment, { children: [
     /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(import_react3.Outlet, {}, void 0, !1, {
       fileName: "app/routes/__auth.tsx",
-      lineNumber: 21,
+      lineNumber: 9,
       columnNumber: 7
     }, this),
     (transition.state === "submitting" || transition.state === "loading") && /* @__PURE__ */ (0, import_jsx_dev_runtime4.jsxDEV)(SpinnerContainer_default, {}, void 0, !1, {
       fileName: "app/routes/__auth.tsx",
-      lineNumber: 23,
+      lineNumber: 11,
       columnNumber: 44
     }, this)
   ] }, void 0, !0, {
     fileName: "app/routes/__auth.tsx",
-    lineNumber: 20,
+    lineNumber: 8,
     columnNumber: 5
   }, this);
 }, auth_default = AuthLayout;
@@ -405,8 +345,10 @@ var import_jsx_dev_runtime4 = require("react/jsx-dev-runtime"), loader = async (
 var login_exports = {};
 __export(login_exports, {
   action: () => action,
-  default: () => login_default
+  default: () => login_default,
+  loader: () => loader
 });
+var import_node3 = require("@remix-run/node");
 
 // app/components/Login/Login.helper.tsx
 var import_lodash = require("lodash");
@@ -741,11 +683,75 @@ var import_jsx_dev_runtime8 = require("react/jsx-dev-runtime"), LoginForm = ({
 }, LoginForm_default = LoginForm;
 
 // app/server/request.server.tsx
-var import_node3 = require("@remix-run/node"), badRequest = (data) => (0, import_node3.json)(data, { status: 400 }), goodRequest = (data) => (0, import_node3.json)(data, { status: 200 });
+var import_node = require("@remix-run/node"), badRequest = (data) => (0, import_node.json)(data, { status: 400 }), goodRequest = (data) => (0, import_node.json)(data, { status: 200 });
+
+// app/server/session.server.tsx
+var import_node2 = require("@remix-run/node");
+
+// app/server/users.server.tsx
+var import_bcryptjs = __toESM(require("bcryptjs"));
+
+// ../../packages/database/prisma/connect.tsx
+var import_client = require("@prisma/client"), prisma;
+global.db || (global.db = new import_client.PrismaClient(), global.db.$connect());
+prisma = global.db;
+var connect_default = prisma;
+
+// app/server/users.server.tsx
+var getUserSession = (request) => getSession(request.headers.get("Cookie")), getUserId = async (request) => (await getUserSession(request)).get("userId"), login = async ({ email, password }) => {
+  try {
+    let user = await connect_default.users.findFirst({
+      where: { email },
+      select: {
+        id: !0,
+        password: !0
+      }
+    });
+    if (!user)
+      throw new Error(WrongLoginData);
+    if (!await import_bcryptjs.default.compare(password, user.password))
+      throw new Error(WrongLoginData);
+    return { id: user.id };
+  } catch {
+    throw new Error(ErrorSubmit);
+  }
+};
+
+// app/server/session.server.tsx
+var { getSession, commitSession, destroySession } = (0, import_node2.createCookieSessionStorage)({
+  cookie: {
+    name: "session",
+    httpOnly: !0,
+    maxAge: 60 * 60 * 24,
+    sameSite: "lax",
+    secrets: ["s3cret1"],
+    secure: !0
+  }
+}), createUserSession = async ({
+  request,
+  userId,
+  redirectTo
+}) => {
+  let session = await getUserSession(request);
+  return session.set("userId", userId), (0, import_node2.redirect)(redirectTo, {
+    headers: {
+      "Set-Cookie": await commitSession(session, {
+        expires: new Date(Date.now() + 60 * 60 * 24)
+      })
+    }
+  });
+}, removeUserSession = async (request) => {
+  let session = await getUserSession(request);
+  return (0, import_node2.redirect)("/login", {
+    headers: {
+      "Set-Cookie": await destroySession(session)
+    }
+  });
+};
 
 // app/routes/__auth/login.tsx
 var import_lodash2 = require("lodash"), import_react5 = require("@remix-run/react"), import_react6 = require("react");
-var import_jsx_dev_runtime9 = require("react/jsx-dev-runtime"), action = async ({ request }) => {
+var import_jsx_dev_runtime9 = require("react/jsx-dev-runtime"), loader = async ({ request }) => await getUserId(request) ? (0, import_node3.redirect)("/") : {}, action = async ({ request }) => {
   try {
     let formData = await request.formData();
     if (formData.get("intent") === "login") {
@@ -807,7 +813,7 @@ var import_jsx_dev_runtime9 = require("react/jsx-dev-runtime"), action = async (
     !1,
     {
       fileName: "app/routes/__auth/login.tsx",
-      lineNumber: 92,
+      lineNumber: 107,
       columnNumber: 5
     },
     this
@@ -1257,12 +1263,14 @@ var import_Paper2 = __toESM(require("@mui/material/Paper"));
 var import_react12 = require("react"), import_react13 = require("@remix-run/react");
 
 // ../../packages/ui/utils/common.tsx
-var import_dayjs = __toESM(require("dayjs")), import_moment = __toESM(require("moment")), readFileAsync = (file) => new Promise((resolve, reject) => {
+var import_dayjs = __toESM(require("dayjs")), import_moment = __toESM(require("moment")), import_isBetween = __toESM(require("dayjs/plugin/isBetween"));
+import_dayjs.default.extend(import_isBetween.default);
+var readFileAsync = (file) => new Promise((resolve, reject) => {
   let reader = new FileReader();
   reader.readAsDataURL(file), reader.onload = () => {
     resolve(reader.result);
   }, reader.onerror = reject;
-}), checkIfValidDate = (date) => (0, import_dayjs.default)(date).isValid(), transformDate = (date) => date && checkIfValidDate(date) ? (0, import_dayjs.default)(date).format() : "", formatLoangDate = (date) => (0, import_moment.default)(date).format("DD MMM YYYY, HH:mm"), formatShortDate = (date) => (0, import_moment.default)(date).format("DD MMM YYYY"), addDateDays = (days) => {
+}), checkIfValidDate = (date) => (0, import_dayjs.default)(date).isValid(), transformDate = (date) => date && checkIfValidDate(date) ? (0, import_dayjs.default)(date).format() : "", getYearFromDate = (date) => date && checkIfValidDate(date) && (0, import_dayjs.default)(date).isBetween("1900", "2099", "year") && (0, import_dayjs.default)(date).get("year").toString() || (0, import_dayjs.default)().year().toString(), getCorrectYear = (year) => year && checkIfNumber(year) && year.length === 4 && (0, import_dayjs.default)(year).isBetween("1900", "2099", "year") && parseInt(year) || (0, import_dayjs.default)().year(), formatLoangDate = (date) => (0, import_moment.default)(date).format("DD MMM YYYY, HH:mm"), formatShortDate = (date) => (0, import_moment.default)(date).format("DD MMM YYYY"), addDateDays = (days) => {
   let date = new Date();
   return date.setDate(date.getDate() + days), date;
 }, checkIfNumber = (value) => /^\d+$/.test(value), checkIfEmail = (email) => /@/.test(email), toFindDuplicates = (arry) => arry.filter((item, index) => arry.indexOf(item) !== index), isValidUrl = (url) => {
@@ -1272,7 +1280,20 @@ var import_dayjs = __toESM(require("dayjs")), import_moment = __toESM(require("m
   } catch {
     return !1;
   }
-};
+}, Months = [
+  { value: 1, name: "January" },
+  { value: 2, name: "February" },
+  { value: 3, name: "March" },
+  { value: 4, name: "April" },
+  { value: 5, name: "May" },
+  { value: 6, name: "June" },
+  { value: 7, name: "July" },
+  { value: 8, name: "August" },
+  { value: 9, name: "September" },
+  { value: 10, name: "October" },
+  { value: 11, name: "November" },
+  { value: 12, name: "December" }
+];
 
 // ../../packages/ui/components/TimePicker/TimePickerContainer.tsx
 var import_TextField2 = __toESM(require("@mui/material/TextField")), import_AdapterDayjs = require("@mui/x-date-pickers/AdapterDayjs"), import_LocalizationProvider = require("@mui/x-date-pickers/LocalizationProvider"), import_TimePicker = require("@mui/x-date-pickers/TimePicker"), import_jsx_dev_runtime15 = require("react/jsx-dev-runtime"), TimePickerContainer = ({
@@ -2184,17 +2205,21 @@ var import_DatePicker = require("@mui/x-date-pickers/DatePicker"), import_Locali
   label,
   value,
   errorMessage,
-  onChange
+  onChange,
+  onKeyDown,
+  views
 }) => /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)(import_LocalizationProvider2.LocalizationProvider, { dateAdapter: import_AdapterDayjs2.AdapterDayjs, children: /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)(
   import_DatePicker.DatePicker,
   {
     label,
     value,
     onChange,
+    views,
     renderInput: (params) => /* @__PURE__ */ (0, import_jsx_dev_runtime19.jsxDEV)(
       import_TextField4.default,
       {
         ...params,
+        onKeyDown,
         error: !!errorMessage,
         variant: "standard",
         helperText: errorMessage
@@ -2203,7 +2228,7 @@ var import_DatePicker = require("@mui/x-date-pickers/DatePicker"), import_Locali
       !1,
       {
         fileName: "../../packages/ui/components/DatePicker/DatePickerContainer.tsx",
-        lineNumber: 19,
+        lineNumber: 22,
         columnNumber: 9
       },
       this
@@ -2213,13 +2238,13 @@ var import_DatePicker = require("@mui/x-date-pickers/DatePicker"), import_Locali
   !1,
   {
     fileName: "../../packages/ui/components/DatePicker/DatePickerContainer.tsx",
-    lineNumber: 14,
+    lineNumber: 16,
     columnNumber: 5
   },
   this
 ) }, void 0, !1, {
   fileName: "../../packages/ui/components/DatePicker/DatePickerContainer.tsx",
-  lineNumber: 13,
+  lineNumber: 15,
   columnNumber: 3
 }, this), DatePickerContainer_default = DatePickerContainer;
 
@@ -5157,8 +5182,67 @@ var import_jsx_dev_runtime35 = require("react/jsx-dev-runtime"), LoansDetails = 
   columnNumber: 5
 }, this), LoansDetails_default = LoansDetails;
 
-// app/components/Loans/Forms/LoansForm.tsx
-var import_Select = __toESM(require("@mui/material/Select")), import_MenuItem = __toESM(require("@mui/material/MenuItem"));
+// ../../packages/ui/components/Select/SelectContainer.tsx
+var import_FormControl = __toESM(require("@mui/material/FormControl"));
+
+// ../../packages/ui/components/Select/Select.style.tsx
+var import_Select = __toESM(require("@mui/material/Select")), import_styles14 = require("@mui/material/styles"), StandardSelect = (0, import_styles14.styled)(import_Select.default)(
+  ({ width, theme: theme2 }) => theme2.unstable_sx({
+    flex: 1,
+    maxWidth: { md: width, xs: "100%" }
+  })
+);
+
+// ../../packages/ui/components/Select/SelectContainer.tsx
+var import_MenuItem = __toESM(require("@mui/material/MenuItem")), import_InputLabel = __toESM(require("@mui/material/InputLabel")), import_FormHelperText4 = __toESM(require("@mui/material/FormHelperText")), import_jsx_dev_runtime36 = require("react/jsx-dev-runtime"), SelectContainer = ({
+  label,
+  value,
+  options,
+  errorMessage,
+  onChange,
+  width = "inherit",
+  placeholder = ""
+}) => /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_FormControl.default, { variant: "standard", error: !!errorMessage, children: [
+  label && /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_InputLabel.default, { children: label }, void 0, !1, {
+    fileName: "../../packages/ui/components/Select/SelectContainer.tsx",
+    lineNumber: 23,
+    columnNumber: 17
+  }, this),
+  /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(
+    StandardSelect,
+    {
+      value,
+      width,
+      onChange: (event) => {
+        onChange(event.target.value);
+      },
+      variant: "standard",
+      placeholder,
+      children: options.map((item, index) => /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_MenuItem.default, { value: item.value, children: item.name }, index, !1, {
+        fileName: "../../packages/ui/components/Select/SelectContainer.tsx",
+        lineNumber: 32,
+        columnNumber: 11
+      }, this))
+    },
+    void 0,
+    !1,
+    {
+      fileName: "../../packages/ui/components/Select/SelectContainer.tsx",
+      lineNumber: 24,
+      columnNumber: 7
+    },
+    this
+  ),
+  errorMessage && /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_FormHelperText4.default, { children: errorMessage }, void 0, !1, {
+    fileName: "../../packages/ui/components/Select/SelectContainer.tsx",
+    lineNumber: 37,
+    columnNumber: 24
+  }, this)
+] }, void 0, !0, {
+  fileName: "../../packages/ui/components/Select/SelectContainer.tsx",
+  lineNumber: 22,
+  columnNumber: 5
+}, this), SelectContainer_default = SelectContainer;
 
 // app/components/Loans/Loans.helper.tsx
 var import_client3 = require("@prisma/client"), import_lodash16 = require("lodash");
@@ -5195,7 +5279,7 @@ var handleLoanErrors = (formData) => {
 };
 
 // app/components/Loans/Forms/LoansForm.tsx
-var import_client4 = require("@prisma/client"), import_jsx_dev_runtime36 = require("react/jsx-dev-runtime"), LoansForm = ({ onSubmit, setLoan, loan }) => {
+var import_client4 = require("@prisma/client"), import_jsx_dev_runtime37 = require("react/jsx-dev-runtime"), LoansForm = ({ onSubmit, setLoan, loan }) => {
   let navigate = (0, import_react36.useNavigate)(), urlParams = (0, import_react36.useParams)(), [currentStatus] = (0, import_react35.useState)(
     urlParams.loanId ? loan.status : void 0
   ), [errors, setErrors] = (0, import_react35.useState)({}), handleOnSubmit = () => {
@@ -5204,68 +5288,68 @@ var import_client4 = require("@prisma/client"), import_jsx_dev_runtime36 = requi
     });
   }, filteredStatuses = LoanFilteredStatuses(
     urlParams.loanId ? currentStatus : void 0
-  ), changeStatus = (event) => {
-    setLoan((oldLoan) => ({
+  ), changeStatus = (value) => {
+    errors.status && setErrors((oldErrors) => {
+      let { status, ...rest } = oldErrors;
+      return rest;
+    }), setLoan((oldLoan) => ({
       ...oldLoan,
-      status: event.target.value
+      status: value
     }));
   };
-  return /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_Paper6.default, { className: "overview-paper", children: [
-    /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(ColumnFlex, { gap: "40px", maxWidth: "800px", children: [
-      loan.status && /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(AlignedFlex, { gap: "20px", children: [
-        /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_Typography10.default, { variant: "h3", children: "Status" }, void 0, !1, {
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(import_Paper6.default, { className: "overview-paper", children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(ColumnFlex, { gap: "40px", maxWidth: "800px", children: [
+      loan.status && /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(AlignedFlex, { gap: "20px", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(import_Typography10.default, { variant: "h3", children: "Status" }, void 0, !1, {
           fileName: "app/components/Loans/Forms/LoansForm.tsx",
-          lineNumber: 58,
+          lineNumber: 63,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(
-          import_Select.default,
+        /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(
+          SelectContainer_default,
           {
             value: loan.status,
             onChange: changeStatus,
-            variant: "standard",
-            children: filteredStatuses.map((item, index) => /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_MenuItem.default, { value: item.value, children: item.name }, index, !1, {
-              fileName: "app/components/Loans/Forms/LoansForm.tsx",
-              lineNumber: 65,
-              columnNumber: 17
-            }, this))
+            options: filteredStatuses,
+            width: "140px",
+            errorMessage: errors.status
           },
           void 0,
           !1,
           {
             fileName: "app/components/Loans/Forms/LoansForm.tsx",
-            lineNumber: 59,
+            lineNumber: 64,
             columnNumber: 13
           },
           this
         )
       ] }, void 0, !0, {
         fileName: "app/components/Loans/Forms/LoansForm.tsx",
-        lineNumber: 57,
+        lineNumber: 62,
         columnNumber: 11
       }, this),
-      loan.createdAt && /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_jsx_dev_runtime36.Fragment, { children: [
-        /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_Typography10.default, { variant: "h3", children: Details4 }, void 0, !1, {
-          fileName: "app/components/Loans/Forms/LoansForm.tsx",
-          lineNumber: 75,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(LoansDetails_default, { loan }, void 0, !1, {
+      loan.createdAt && /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(import_jsx_dev_runtime37.Fragment, { children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(import_Typography10.default, { variant: "h3", children: Details4 }, void 0, !1, {
           fileName: "app/components/Loans/Forms/LoansForm.tsx",
           lineNumber: 76,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(LoansDetails_default, { loan }, void 0, !1, {
+          fileName: "app/components/Loans/Forms/LoansForm.tsx",
+          lineNumber: 77,
           columnNumber: 13
         }, this)
       ] }, void 0, !0, {
         fileName: "app/components/Loans/Forms/LoansForm.tsx",
-        lineNumber: 74,
+        lineNumber: 75,
         columnNumber: 11
       }, this),
-      /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_Typography10.default, { variant: "h3", children: Reader }, void 0, !1, {
+      /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(import_Typography10.default, { variant: "h3", children: Reader }, void 0, !1, {
         fileName: "app/components/Loans/Forms/LoansForm.tsx",
-        lineNumber: 80,
+        lineNumber: 81,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(
         LoansReader_default,
         {
           setLoan,
@@ -5277,28 +5361,28 @@ var import_client4 = require("@prisma/client"), import_jsx_dev_runtime36 = requi
         !1,
         {
           fileName: "app/components/Loans/Forms/LoansForm.tsx",
-          lineNumber: 81,
+          lineNumber: 82,
           columnNumber: 9
         },
         this
       ),
-      /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(ColumnFlex, { gap: "10px", children: [
-        /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_Typography10.default, { variant: "h3", children: Books2 }, void 0, !1, {
-          fileName: "app/components/Loans/Forms/LoansForm.tsx",
-          lineNumber: 89,
-          columnNumber: 11
-        }, this),
-        /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_Typography10.default, { variant: "h1", children: BooksDescription }, void 0, !1, {
+      /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(ColumnFlex, { gap: "10px", children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(import_Typography10.default, { variant: "h3", children: Books2 }, void 0, !1, {
           fileName: "app/components/Loans/Forms/LoansForm.tsx",
           lineNumber: 90,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(import_Typography10.default, { variant: "h1", children: BooksDescription }, void 0, !1, {
+          fileName: "app/components/Loans/Forms/LoansForm.tsx",
+          lineNumber: 91,
           columnNumber: 11
         }, this)
       ] }, void 0, !0, {
         fileName: "app/components/Loans/Forms/LoansForm.tsx",
-        lineNumber: 88,
+        lineNumber: 89,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(
         LoansBooks_default,
         {
           setLoan,
@@ -5310,45 +5394,45 @@ var import_client4 = require("@prisma/client"), import_jsx_dev_runtime36 = requi
         !1,
         {
           fileName: "app/components/Loans/Forms/LoansForm.tsx",
-          lineNumber: 92,
+          lineNumber: 93,
           columnNumber: 9
         },
         this
       ),
-      loan.penalty && /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_jsx_dev_runtime36.Fragment, { children: [
-        /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(ColumnFlex, { gap: "10px", children: [
-          /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_Typography10.default, { variant: "h3", children: Penalty }, void 0, !1, {
-            fileName: "app/components/Loans/Forms/LoansForm.tsx",
-            lineNumber: 102,
-            columnNumber: 15
-          }, this),
-          /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(import_Typography10.default, { variant: "h1", children: PenaltyDescription }, void 0, !1, {
+      loan.penalty && /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(import_jsx_dev_runtime37.Fragment, { children: [
+        /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(ColumnFlex, { gap: "10px", children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(import_Typography10.default, { variant: "h3", children: Penalty }, void 0, !1, {
             fileName: "app/components/Loans/Forms/LoansForm.tsx",
             lineNumber: 103,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(import_Typography10.default, { variant: "h1", children: PenaltyDescription }, void 0, !1, {
+            fileName: "app/components/Loans/Forms/LoansForm.tsx",
+            lineNumber: 104,
             columnNumber: 15
           }, this)
         ] }, void 0, !0, {
           fileName: "app/components/Loans/Forms/LoansForm.tsx",
-          lineNumber: 101,
+          lineNumber: 102,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(LoansPenalty_default, { penalty: loan.penalty }, void 0, !1, {
+        /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(LoansPenalty_default, { penalty: loan.penalty }, void 0, !1, {
           fileName: "app/components/Loans/Forms/LoansForm.tsx",
-          lineNumber: 106,
+          lineNumber: 107,
           columnNumber: 13
         }, this)
       ] }, void 0, !0, {
         fileName: "app/components/Loans/Forms/LoansForm.tsx",
-        lineNumber: 100,
+        lineNumber: 101,
         columnNumber: 11
       }, this)
     ] }, void 0, !0, {
       fileName: "app/components/Loans/Forms/LoansForm.tsx",
-      lineNumber: 55,
+      lineNumber: 60,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(StyledFlexButton, { children: [
-      /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(
+    /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(StyledFlexButton, { children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(
         ButtonContainer_default,
         {
           title: "Cancel",
@@ -5359,12 +5443,12 @@ var import_client4 = require("@prisma/client"), import_jsx_dev_runtime36 = requi
         !1,
         {
           fileName: "app/components/Loans/Forms/LoansForm.tsx",
-          lineNumber: 112,
+          lineNumber: 113,
           columnNumber: 9
         },
         this
       ),
-      /* @__PURE__ */ (0, import_jsx_dev_runtime36.jsxDEV)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(
         ButtonContainer_default,
         {
           type: "submit" /* submit */,
@@ -5377,19 +5461,19 @@ var import_client4 = require("@prisma/client"), import_jsx_dev_runtime36 = requi
         !1,
         {
           fileName: "app/components/Loans/Forms/LoansForm.tsx",
-          lineNumber: 117,
+          lineNumber: 118,
           columnNumber: 9
         },
         this
       )
     ] }, void 0, !0, {
       fileName: "app/components/Loans/Forms/LoansForm.tsx",
-      lineNumber: 111,
+      lineNumber: 112,
       columnNumber: 7
     }, this)
   ] }, void 0, !0, {
     fileName: "app/components/Loans/Forms/LoansForm.tsx",
-    lineNumber: 54,
+    lineNumber: 59,
     columnNumber: 5
   }, this);
 }, LoansForm_default = LoansForm;
@@ -5669,7 +5753,8 @@ var getPaginatedLoans = async ({
     select: {
       books: {
         select: {
-          bookLibraryId: !0
+          bookLibraryId: !0,
+          bookLibrary: { select: { libraryId: !0 } }
         }
       }
     }
@@ -5678,7 +5763,7 @@ var getPaginatedLoans = async ({
   ), newBooks = loanBooks.filter((item) => !alreadyLoaned.has(item.id)).map((item) => ({
     bookLibraryId: item.id,
     loanId
-  })), libraryId = (loanedBooks == null ? void 0 : loanedBooks.books) && !(0, import_lodash17.isEmpty)(loanedBooks.books) ? loanedBooks.books[0].bookLibraryId : "", error = !1;
+  })), libraryId = (loanedBooks == null ? void 0 : loanedBooks.books) && !(0, import_lodash17.isEmpty)(loanedBooks.books) ? loanedBooks.books[0].bookLibrary.libraryId : "", error = !1;
   for (let item of newBooks) {
     if (await connect_default.loanBooks.findFirst({
       where: {
@@ -5855,10 +5940,104 @@ var getPaginatedLoans = async ({
   } catch {
     throw new Error(ErrorDelete4);
   }
+}, groupLoansRaport = async ({
+  year,
+  library,
+  status
+}) => {
+  try {
+    let newYear = getCorrectYear(year), loansRaport = await connect_default.loans.aggregateRaw({
+      pipeline: [
+        {
+          $lookup: {
+            from: "LoanBooks",
+            localField: "_id",
+            foreignField: "loanId",
+            as: "loanBook"
+          }
+        },
+        {
+          $unwind: {
+            path: "$loanBook",
+            preserveNullAndEmptyArrays: !0
+          }
+        },
+        {
+          $lookup: {
+            from: "BookLibraries",
+            localField: "loanBook.bookLibraryId",
+            foreignField: "_id",
+            as: "loanBook.bookLibrary"
+          }
+        },
+        {
+          $unwind: {
+            path: "$loanBook.bookLibrary",
+            preserveNullAndEmptyArrays: !0
+          }
+        },
+        {
+          $lookup: {
+            from: "Libraries",
+            localField: "loanBook.bookLibrary.libraryId",
+            foreignField: "_id",
+            as: "loanBook.bookLibrary.library"
+          }
+        },
+        {
+          $unwind: {
+            path: "$loanBook.bookLibrary.library",
+            preserveNullAndEmptyArrays: !0
+          }
+        },
+        {
+          $project: {
+            library: "$loanBook.bookLibrary.library.name",
+            status: "$status",
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" }
+          }
+        },
+        {
+          $match: {
+            year: newYear,
+            library: library || void 0,
+            status: status || void 0
+          }
+        },
+        {
+          $group: {
+            _id: "$_id",
+            name: { $first: "$library" },
+            year: { $first: "$year" },
+            month: { $first: "$month" }
+          }
+        },
+        {
+          $group: {
+            _id: "$month",
+            total: { $sum: 1 }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            month: "$_id",
+            total: "$total"
+          }
+        }
+      ]
+    });
+    if (!loansRaport)
+      throw new Error(ErrorMessage);
+    return loansRaport;
+  } catch {
+    throw new Error(ErrorMessage);
+  }
 };
 
 // app/routes/__app/loans/$loanId.tsx
-var import_jsx_dev_runtime37 = require("react/jsx-dev-runtime"), loader8 = async ({ request }) => {
+var import_jsx_dev_runtime38 = require("react/jsx-dev-runtime"), loader8 = async ({ request }) => {
   if (!await getUserId(request))
     return (0, import_node10.redirect)("/login");
   try {
@@ -5883,7 +6062,7 @@ var import_jsx_dev_runtime37 = require("react/jsx-dev-runtime"), loader8 = async
   } catch (error) {
     throw new Error(error.message || ErrorMessage);
   }
-}, ErrorBoundary7 = () => /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(ErrorInterface_default, {}, void 0, !1, {
+}, ErrorBoundary7 = () => /* @__PURE__ */ (0, import_jsx_dev_runtime38.jsxDEV)(ErrorInterface_default, {}, void 0, !1, {
   fileName: "app/routes/__app/loans/$loanId.tsx",
   lineNumber: 77,
   columnNumber: 10
@@ -5926,13 +6105,13 @@ var import_jsx_dev_runtime37 = require("react/jsx-dev-runtime"), loader8 = async
   let submit = (0, import_react37.useSubmit)(), data = (0, import_react37.useLoaderData)(), actionData = (0, import_react37.useActionData)(), navigate = (0, import_react37.useNavigate)(), urlParams = (0, import_react37.useParams)(), [loan, setLoan] = (0, import_react38.useState)(data.loan);
   return (0, import_react38.useEffect)(() => {
     actionData && (0, import_lodash18.isBoolean)(actionData.success) && navigate("/loans");
-  }, [actionData]), /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(ColumnFlex, { children: [
-    /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(LayoutTitle_default, { title: UpdateLoanTitle, backUrl: "/loans" }, void 0, !1, {
+  }, [actionData]), /* @__PURE__ */ (0, import_jsx_dev_runtime38.jsxDEV)(ColumnFlex, { children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime38.jsxDEV)(LayoutTitle_default, { title: UpdateLoanTitle, backUrl: "/loans" }, void 0, !1, {
       fileName: "app/routes/__app/loans/$loanId.tsx",
       lineNumber: 191,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ (0, import_jsx_dev_runtime37.jsxDEV)(LoansForm_default, { onSubmit: ({ callback }) => {
+    /* @__PURE__ */ (0, import_jsx_dev_runtime38.jsxDEV)(LoansForm_default, { onSubmit: ({ callback }) => {
       let fieldErrors = handleLoanErrors(loan);
       if (Object.values(fieldErrors).some(Boolean)) {
         callback(fieldErrors);
@@ -5975,7 +6154,7 @@ __export(readers_exports, {
 
 // app/components/Readers/Overview/ReadersOverview.tsx
 var import_Paper7 = __toESM(require("@mui/material/Paper"));
-var import_jsx_dev_runtime38 = require("react/jsx-dev-runtime"), ReadersOverview = ({
+var import_jsx_dev_runtime39 = require("react/jsx-dev-runtime"), ReadersOverview = ({
   readers,
   page,
   filter,
@@ -5984,9 +6163,9 @@ var import_jsx_dev_runtime38 = require("react/jsx-dev-runtime"), ReadersOverview
   onCityChange,
   onDelete,
   cities
-}) => /* @__PURE__ */ (0, import_jsx_dev_runtime38.jsxDEV)(import_Paper7.default, { className: "overview-paper", children: /* @__PURE__ */ (0, import_jsx_dev_runtime38.jsxDEV)(ColumnFlex, { gap: "30px", children: [
-  /* @__PURE__ */ (0, import_jsx_dev_runtime38.jsxDEV)(StyledFilters, { children: [
-    /* @__PURE__ */ (0, import_jsx_dev_runtime38.jsxDEV)(
+}) => /* @__PURE__ */ (0, import_jsx_dev_runtime39.jsxDEV)(import_Paper7.default, { className: "overview-paper", children: /* @__PURE__ */ (0, import_jsx_dev_runtime39.jsxDEV)(ColumnFlex, { gap: "30px", children: [
+  /* @__PURE__ */ (0, import_jsx_dev_runtime39.jsxDEV)(StyledFilters, { children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime39.jsxDEV)(
       InputContainer_default,
       {
         placeholder: SearchPlaceholder2,
@@ -6003,7 +6182,7 @@ var import_jsx_dev_runtime38 = require("react/jsx-dev-runtime"), ReadersOverview
       },
       this
     ),
-    /* @__PURE__ */ (0, import_jsx_dev_runtime38.jsxDEV)(
+    /* @__PURE__ */ (0, import_jsx_dev_runtime39.jsxDEV)(
       AutocompleteContainer_default,
       {
         onChange: onCityChange,
@@ -6026,7 +6205,7 @@ var import_jsx_dev_runtime38 = require("react/jsx-dev-runtime"), ReadersOverview
     lineNumber: 23,
     columnNumber: 9
   }, this),
-  /* @__PURE__ */ (0, import_jsx_dev_runtime38.jsxDEV)(
+  /* @__PURE__ */ (0, import_jsx_dev_runtime39.jsxDEV)(
     TableContainer_default,
     {
       columns: readersColumns,
@@ -6059,7 +6238,7 @@ var import_jsx_dev_runtime38 = require("react/jsx-dev-runtime"), ReadersOverview
 var import_react39 = require("@remix-run/react");
 var import_react40 = require("react"), import_lodash19 = require("lodash"), import_node11 = require("@remix-run/node");
 var import_react_router_dom2 = require("react-router-dom");
-var import_jsx_dev_runtime39 = require("react/jsx-dev-runtime"), loader9 = async ({ request }) => {
+var import_jsx_dev_runtime40 = require("react/jsx-dev-runtime"), loader9 = async ({ request }) => {
   if (!await getUserId(request))
     return (0, import_node11.redirect)("/login");
   try {
@@ -6077,7 +6256,7 @@ var import_jsx_dev_runtime39 = require("react/jsx-dev-runtime"), loader9 = async
   } catch (error) {
     throw new Error(error.message || ErrorMessage);
   }
-}, ErrorBoundary8 = () => /* @__PURE__ */ (0, import_jsx_dev_runtime39.jsxDEV)(ErrorInterface_default, {}, void 0, !1, {
+}, ErrorBoundary8 = () => /* @__PURE__ */ (0, import_jsx_dev_runtime40.jsxDEV)(ErrorInterface_default, {}, void 0, !1, {
   fileName: "app/routes/__app/readers/index.tsx",
   lineNumber: 69,
   columnNumber: 10
@@ -6148,8 +6327,8 @@ var import_jsx_dev_runtime39 = require("react/jsx-dev-runtime"), loader9 = async
       }
     );
   };
-  return /* @__PURE__ */ (0, import_jsx_dev_runtime39.jsxDEV)(ColumnFlex, { children: [
-    /* @__PURE__ */ (0, import_jsx_dev_runtime39.jsxDEV)(LayoutTitle_default, { title: Readers, children: /* @__PURE__ */ (0, import_jsx_dev_runtime39.jsxDEV)(
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime40.jsxDEV)(ColumnFlex, { children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime40.jsxDEV)(LayoutTitle_default, { title: Readers, children: /* @__PURE__ */ (0, import_jsx_dev_runtime40.jsxDEV)(
       ButtonContainer_default,
       {
         title: NewReader,
@@ -6169,7 +6348,7 @@ var import_jsx_dev_runtime39 = require("react/jsx-dev-runtime"), loader9 = async
       lineNumber: 198,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ (0, import_jsx_dev_runtime39.jsxDEV)(
+    /* @__PURE__ */ (0, import_jsx_dev_runtime40.jsxDEV)(
       ReadersOverview_default,
       {
         readers,
@@ -6206,7 +6385,7 @@ __export(create_exports3, {
   loader: () => loader10
 });
 var import_node12 = require("@remix-run/node"), import_react41 = require("@remix-run/react"), import_lodash20 = require("lodash"), import_react42 = require("react");
-var import_jsx_dev_runtime40 = require("react/jsx-dev-runtime"), loader10 = async ({ request }) => {
+var import_jsx_dev_runtime41 = require("react/jsx-dev-runtime"), loader10 = async ({ request }) => {
   if (!await getUserId(request))
     return (0, import_node12.redirect)("/login");
   try {
@@ -6262,7 +6441,7 @@ var import_jsx_dev_runtime40 = require("react/jsx-dev-runtime"), loader10 = asyn
       success: !1
     });
   }
-}, ErrorBoundary9 = () => /* @__PURE__ */ (0, import_jsx_dev_runtime40.jsxDEV)(ErrorInterface_default, {}, void 0, !1, {
+}, ErrorBoundary9 = () => /* @__PURE__ */ (0, import_jsx_dev_runtime41.jsxDEV)(ErrorInterface_default, {}, void 0, !1, {
   fileName: "app/routes/__app/books/create.tsx",
   lineNumber: 143,
   columnNumber: 10
@@ -6270,13 +6449,13 @@ var import_jsx_dev_runtime40 = require("react/jsx-dev-runtime"), loader10 = asyn
   let submit = (0, import_react41.useSubmit)(), actionData = (0, import_react41.useActionData)(), navigate = (0, import_react41.useNavigate)(), data = (0, import_react41.useLoaderData)(), [book, setBook] = (0, import_react42.useState)(initialBook), categories = data.categories, publishHouses = data.publishHouses, libraries = data.libraries, languages = data.languages;
   return (0, import_react42.useEffect)(() => {
     actionData && (0, import_lodash20.isBoolean)(actionData.success) && navigate("/books");
-  }, [actionData]), /* @__PURE__ */ (0, import_jsx_dev_runtime40.jsxDEV)(ColumnFlex, { children: [
-    /* @__PURE__ */ (0, import_jsx_dev_runtime40.jsxDEV)(LayoutTitle_default, { title: CreateBookTitle, backUrl: "/books" }, void 0, !1, {
+  }, [actionData]), /* @__PURE__ */ (0, import_jsx_dev_runtime41.jsxDEV)(ColumnFlex, { children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime41.jsxDEV)(LayoutTitle_default, { title: CreateBookTitle, backUrl: "/books" }, void 0, !1, {
       fileName: "app/routes/__app/books/create.tsx",
       lineNumber: 188,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ (0, import_jsx_dev_runtime40.jsxDEV)(
+    /* @__PURE__ */ (0, import_jsx_dev_runtime41.jsxDEV)(
       BooksForm_default,
       {
         onSubmit: ({ callback }) => {
@@ -6330,7 +6509,7 @@ __export(create_exports4, {
   loader: () => loader11
 });
 var import_node13 = require("@remix-run/node"), import_react43 = require("@remix-run/react"), import_react44 = require("react");
-var import_lodash21 = require("lodash"), import_jsx_dev_runtime41 = require("react/jsx-dev-runtime"), loader11 = async ({ request }) => {
+var import_lodash21 = require("lodash"), import_jsx_dev_runtime42 = require("react/jsx-dev-runtime"), loader11 = async ({ request }) => {
   if (!await getUserId(request))
     return (0, import_node13.redirect)("/login");
   try {
@@ -6382,7 +6561,7 @@ var import_lodash21 = require("lodash"), import_jsx_dev_runtime41 = require("rea
       success: !1
     });
   }
-}, ErrorBoundary10 = () => /* @__PURE__ */ (0, import_jsx_dev_runtime41.jsxDEV)(ErrorInterface_default, {}, void 0, !1, {
+}, ErrorBoundary10 = () => /* @__PURE__ */ (0, import_jsx_dev_runtime42.jsxDEV)(ErrorInterface_default, {}, void 0, !1, {
   fileName: "app/routes/__app/loans/create.tsx",
   lineNumber: 120,
   columnNumber: 10
@@ -6390,13 +6569,13 @@ var import_lodash21 = require("lodash"), import_jsx_dev_runtime41 = require("rea
   let submit = (0, import_react43.useSubmit)(), actionData = (0, import_react43.useActionData)(), navigate = (0, import_react43.useNavigate)(), [loan, setLoan] = (0, import_react44.useState)(initialLoan);
   return (0, import_react44.useEffect)(() => {
     actionData && (0, import_lodash21.isBoolean)(actionData.success) && navigate("/loans");
-  }, [actionData]), /* @__PURE__ */ (0, import_jsx_dev_runtime41.jsxDEV)(ColumnFlex, { children: [
-    /* @__PURE__ */ (0, import_jsx_dev_runtime41.jsxDEV)(LayoutTitle_default, { title: CreateLoanTitle, backUrl: "/loans" }, void 0, !1, {
+  }, [actionData]), /* @__PURE__ */ (0, import_jsx_dev_runtime42.jsxDEV)(ColumnFlex, { children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime42.jsxDEV)(LayoutTitle_default, { title: CreateLoanTitle, backUrl: "/loans" }, void 0, !1, {
       fileName: "app/routes/__app/loans/create.tsx",
       lineNumber: 164,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ (0, import_jsx_dev_runtime41.jsxDEV)(LoansForm_default, { onSubmit: ({ callback }) => {
+    /* @__PURE__ */ (0, import_jsx_dev_runtime42.jsxDEV)(LoansForm_default, { onSubmit: ({ callback }) => {
       let fieldErrors = handleLoanErrors(loan);
       if (Object.values(fieldErrors).some(Boolean)) {
         callback(fieldErrors);
@@ -6439,7 +6618,7 @@ __export(books_exports, {
 
 // app/components/Books/Overview/BooksOverview.tsx
 var import_Paper8 = __toESM(require("@mui/material/Paper"));
-var import_jsx_dev_runtime42 = require("react/jsx-dev-runtime"), BooksOverview = ({
+var import_jsx_dev_runtime43 = require("react/jsx-dev-runtime"), BooksOverview = ({
   books,
   page,
   filter,
@@ -6450,9 +6629,9 @@ var import_jsx_dev_runtime42 = require("react/jsx-dev-runtime"), BooksOverview =
   onDelete,
   categories,
   libraries
-}) => /* @__PURE__ */ (0, import_jsx_dev_runtime42.jsxDEV)(import_Paper8.default, { className: "overview-paper", children: /* @__PURE__ */ (0, import_jsx_dev_runtime42.jsxDEV)(ColumnFlex, { gap: "30px", children: [
-  /* @__PURE__ */ (0, import_jsx_dev_runtime42.jsxDEV)(StyledFilters, { children: [
-    /* @__PURE__ */ (0, import_jsx_dev_runtime42.jsxDEV)(
+}) => /* @__PURE__ */ (0, import_jsx_dev_runtime43.jsxDEV)(import_Paper8.default, { className: "overview-paper", children: /* @__PURE__ */ (0, import_jsx_dev_runtime43.jsxDEV)(ColumnFlex, { gap: "30px", children: [
+  /* @__PURE__ */ (0, import_jsx_dev_runtime43.jsxDEV)(StyledFilters, { children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime43.jsxDEV)(
       InputContainer_default,
       {
         placeholder: SearchPlaceholder3,
@@ -6469,8 +6648,8 @@ var import_jsx_dev_runtime42 = require("react/jsx-dev-runtime"), BooksOverview =
       },
       this
     ),
-    /* @__PURE__ */ (0, import_jsx_dev_runtime42.jsxDEV)(StyledAutocomplete, { children: [
-      /* @__PURE__ */ (0, import_jsx_dev_runtime42.jsxDEV)(
+    /* @__PURE__ */ (0, import_jsx_dev_runtime43.jsxDEV)(StyledAutocomplete, { children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime43.jsxDEV)(
         AutocompleteContainer_default,
         {
           onChange: onCategoryChange,
@@ -6488,7 +6667,7 @@ var import_jsx_dev_runtime42 = require("react/jsx-dev-runtime"), BooksOverview =
         },
         this
       ),
-      /* @__PURE__ */ (0, import_jsx_dev_runtime42.jsxDEV)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime43.jsxDEV)(
         AutocompleteContainer_default,
         {
           onChange: onLibraryChange,
@@ -6516,7 +6695,7 @@ var import_jsx_dev_runtime42 = require("react/jsx-dev-runtime"), BooksOverview =
     lineNumber: 31,
     columnNumber: 9
   }, this),
-  /* @__PURE__ */ (0, import_jsx_dev_runtime42.jsxDEV)(
+  /* @__PURE__ */ (0, import_jsx_dev_runtime43.jsxDEV)(
     TableContainer_default,
     {
       columns: booksColumns,
@@ -6549,7 +6728,7 @@ var import_jsx_dev_runtime42 = require("react/jsx-dev-runtime"), BooksOverview =
 var import_react45 = require("@remix-run/react");
 var import_react46 = require("react"), import_lodash22 = require("lodash"), import_node14 = require("@remix-run/node");
 var import_react_router_dom3 = require("react-router-dom");
-var import_jsx_dev_runtime43 = require("react/jsx-dev-runtime"), loader12 = async ({ request }) => {
+var import_jsx_dev_runtime44 = require("react/jsx-dev-runtime"), loader12 = async ({ request }) => {
   if (!await getUserId(request))
     return (0, import_node14.redirect)("/login");
   try {
@@ -6569,7 +6748,7 @@ var import_jsx_dev_runtime43 = require("react/jsx-dev-runtime"), loader12 = asyn
   } catch (error) {
     throw new Error(error.message || ErrorMessage);
   }
-}, ErrorBoundary11 = () => /* @__PURE__ */ (0, import_jsx_dev_runtime43.jsxDEV)(ErrorInterface_default, {}, void 0, !1, {
+}, ErrorBoundary11 = () => /* @__PURE__ */ (0, import_jsx_dev_runtime44.jsxDEV)(ErrorInterface_default, {}, void 0, !1, {
   fileName: "app/routes/__app/books/index.tsx",
   lineNumber: 73,
   columnNumber: 10
@@ -6650,8 +6829,8 @@ var import_jsx_dev_runtime43 = require("react/jsx-dev-runtime"), loader12 = asyn
       }
     );
   };
-  return /* @__PURE__ */ (0, import_jsx_dev_runtime43.jsxDEV)(ColumnFlex, { children: [
-    /* @__PURE__ */ (0, import_jsx_dev_runtime43.jsxDEV)(LayoutTitle_default, { title: Books, children: /* @__PURE__ */ (0, import_jsx_dev_runtime43.jsxDEV)(
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime44.jsxDEV)(ColumnFlex, { children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime44.jsxDEV)(LayoutTitle_default, { title: Books, children: /* @__PURE__ */ (0, import_jsx_dev_runtime44.jsxDEV)(
       ButtonContainer_default,
       {
         title: NewBook,
@@ -6671,7 +6850,7 @@ var import_jsx_dev_runtime43 = require("react/jsx-dev-runtime"), loader12 = asyn
       lineNumber: 225,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ (0, import_jsx_dev_runtime43.jsxDEV)(
+    /* @__PURE__ */ (0, import_jsx_dev_runtime44.jsxDEV)(
       BooksOverview_default,
       {
         books,
@@ -6712,7 +6891,7 @@ __export(loans_exports, {
 
 // app/components/Loans/Overview/LoansOverview.tsx
 var import_Paper9 = __toESM(require("@mui/material/Paper"));
-var import_jsx_dev_runtime44 = require("react/jsx-dev-runtime"), LoansOverview = ({
+var import_jsx_dev_runtime45 = require("react/jsx-dev-runtime"), LoansOverview = ({
   loans,
   page,
   filter,
@@ -6722,9 +6901,9 @@ var import_jsx_dev_runtime44 = require("react/jsx-dev-runtime"), LoansOverview =
   onStatusChange,
   onDelete,
   libraries
-}) => /* @__PURE__ */ (0, import_jsx_dev_runtime44.jsxDEV)(import_Paper9.default, { className: "overview-paper", children: /* @__PURE__ */ (0, import_jsx_dev_runtime44.jsxDEV)(ColumnFlex, { gap: "30px", children: [
-  /* @__PURE__ */ (0, import_jsx_dev_runtime44.jsxDEV)(StyledFilters, { children: [
-    /* @__PURE__ */ (0, import_jsx_dev_runtime44.jsxDEV)(
+}) => /* @__PURE__ */ (0, import_jsx_dev_runtime45.jsxDEV)(import_Paper9.default, { className: "overview-paper", children: /* @__PURE__ */ (0, import_jsx_dev_runtime45.jsxDEV)(ColumnFlex, { gap: "30px", children: [
+  /* @__PURE__ */ (0, import_jsx_dev_runtime45.jsxDEV)(StyledFilters, { children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime45.jsxDEV)(
       InputContainer_default,
       {
         placeholder: SearchPlaceholder4,
@@ -6741,8 +6920,8 @@ var import_jsx_dev_runtime44 = require("react/jsx-dev-runtime"), LoansOverview =
       },
       this
     ),
-    /* @__PURE__ */ (0, import_jsx_dev_runtime44.jsxDEV)(StyledAutocomplete, { children: [
-      /* @__PURE__ */ (0, import_jsx_dev_runtime44.jsxDEV)(
+    /* @__PURE__ */ (0, import_jsx_dev_runtime45.jsxDEV)(StyledAutocomplete, { children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime45.jsxDEV)(
         AutocompleteContainer_default,
         {
           onChange: onStatusChange,
@@ -6760,7 +6939,7 @@ var import_jsx_dev_runtime44 = require("react/jsx-dev-runtime"), LoansOverview =
         },
         this
       ),
-      /* @__PURE__ */ (0, import_jsx_dev_runtime44.jsxDEV)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime45.jsxDEV)(
         AutocompleteContainer_default,
         {
           onChange: onLibraryChange,
@@ -6788,7 +6967,7 @@ var import_jsx_dev_runtime44 = require("react/jsx-dev-runtime"), LoansOverview =
     lineNumber: 31,
     columnNumber: 9
   }, this),
-  /* @__PURE__ */ (0, import_jsx_dev_runtime44.jsxDEV)(
+  /* @__PURE__ */ (0, import_jsx_dev_runtime45.jsxDEV)(
     TableContainer_default,
     {
       columns: loansColumns,
@@ -6821,7 +7000,7 @@ var import_jsx_dev_runtime44 = require("react/jsx-dev-runtime"), LoansOverview =
 var import_react47 = require("@remix-run/react");
 var import_react48 = require("react"), import_lodash23 = require("lodash"), import_node15 = require("@remix-run/node");
 var import_react_router_dom4 = require("react-router-dom");
-var import_jsx_dev_runtime45 = require("react/jsx-dev-runtime"), loader13 = async ({ request }) => {
+var import_jsx_dev_runtime46 = require("react/jsx-dev-runtime"), loader13 = async ({ request }) => {
   if (!await getUserId(request))
     return (0, import_node15.redirect)("/login");
   try {
@@ -6840,7 +7019,7 @@ var import_jsx_dev_runtime45 = require("react/jsx-dev-runtime"), loader13 = asyn
   } catch (error) {
     throw new Error(error.message || ErrorMessage);
   }
-}, ErrorBoundary12 = () => /* @__PURE__ */ (0, import_jsx_dev_runtime45.jsxDEV)(ErrorInterface_default, {}, void 0, !1, {
+}, ErrorBoundary12 = () => /* @__PURE__ */ (0, import_jsx_dev_runtime46.jsxDEV)(ErrorInterface_default, {}, void 0, !1, {
   fileName: "app/routes/__app/loans/index.tsx",
   lineNumber: 72,
   columnNumber: 10
@@ -6921,8 +7100,8 @@ var import_jsx_dev_runtime45 = require("react/jsx-dev-runtime"), loader13 = asyn
       }
     );
   };
-  return /* @__PURE__ */ (0, import_jsx_dev_runtime45.jsxDEV)(ColumnFlex, { children: [
-    /* @__PURE__ */ (0, import_jsx_dev_runtime45.jsxDEV)(LayoutTitle_default, { title: Loans, children: /* @__PURE__ */ (0, import_jsx_dev_runtime45.jsxDEV)(
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime46.jsxDEV)(ColumnFlex, { children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime46.jsxDEV)(LayoutTitle_default, { title: Loans, children: /* @__PURE__ */ (0, import_jsx_dev_runtime46.jsxDEV)(
       ButtonContainer_default,
       {
         title: NewLoan,
@@ -6942,7 +7121,7 @@ var import_jsx_dev_runtime45 = require("react/jsx-dev-runtime"), loader13 = asyn
       lineNumber: 224,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ (0, import_jsx_dev_runtime45.jsxDEV)(
+    /* @__PURE__ */ (0, import_jsx_dev_runtime46.jsxDEV)(
       LoansOverview_default,
       {
         loans,
@@ -6974,11 +7153,164 @@ var import_jsx_dev_runtime45 = require("react/jsx-dev-runtime"), loader13 = asyn
 // app/routes/__app/index.tsx
 var app_exports2 = {};
 __export(app_exports2, {
+  ErrorBoundary: () => ErrorBoundary13,
   action: () => action14,
-  default: () => app_default2
+  default: () => app_default2,
+  loader: () => loader14
 });
 var import_node16 = require("@remix-run/node");
-var import_jsx_dev_runtime46 = require("react/jsx-dev-runtime"), action14 = async ({ request }) => {
+var import_react49 = require("react");
+var import_react50 = require("@remix-run/react");
+
+// app/components/Dashboard/Raport/DashboardRaport.tsx
+var import_Paper10 = __toESM(require("@mui/material/Paper"));
+var import_chart = require("chart.js"), import_react_chartjs_2 = require("react-chartjs-2");
+
+// app/components/Dashboard/Dashboard.const.tsx
+var Libraries4 = "Libraries", Status5 = "Status", Dashboard = "Dashboard";
+
+// app/components/Dashboard/Dashboard.style.tsx
+var import_styled_components9 = __toESM(require("styled-components")), StyledFlex = (0, import_styled_components9.default)(Flex_default)`
+  gap: 20px;
+  align-items: end;
+  @media (max-width: 900px) {
+    flex-direction: column;
+    align-items: inherit;
+  }
+`;
+
+// app/components/Dashboard/Dashboard.helper.tsx
+var RaportOptions = (year) => ({
+  plugins: {
+    legend: {
+      display: !1
+    },
+    title: {
+      display: !0,
+      text: `Loans raport for ${year}`
+    }
+  }
+});
+
+// app/components/Dashboard/Raport/DashboardRaport.tsx
+var import_jsx_dev_runtime47 = require("react/jsx-dev-runtime");
+import_chart.Chart.register(
+  import_chart.CategoryScale,
+  import_chart.LinearScale,
+  import_chart.BarElement,
+  import_chart.Title,
+  import_chart.Tooltip,
+  import_chart.Legend
+);
+var DashboardRaport = ({
+  filter,
+  raport,
+  libraries,
+  onYearChange,
+  onLibraryChange,
+  onStatusChange
+}) => {
+  let dateKeyDown = (e) => {
+    e.preventDefault();
+  };
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime47.jsxDEV)(import_Paper10.default, { className: "overview-paper", children: /* @__PURE__ */ (0, import_jsx_dev_runtime47.jsxDEV)(ColumnFlex, { gap: "30px", children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime47.jsxDEV)(StyledFlex, { children: [
+      /* @__PURE__ */ (0, import_jsx_dev_runtime47.jsxDEV)(
+        DatePickerContainer_default,
+        {
+          label: "Year",
+          value: filter.year,
+          views: ["year"],
+          onChange: onYearChange,
+          onKeyDown: dateKeyDown
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/components/Dashboard/Raport/DashboardRaport.tsx",
+          lineNumber: 47,
+          columnNumber: 11
+        },
+        this
+      ),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime47.jsxDEV)(
+        AutocompleteContainer_default,
+        {
+          onChange: onLibraryChange,
+          options: libraries,
+          value: filter.library,
+          label: Libraries4,
+          width: "200px"
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/components/Dashboard/Raport/DashboardRaport.tsx",
+          lineNumber: 54,
+          columnNumber: 11
+        },
+        this
+      ),
+      /* @__PURE__ */ (0, import_jsx_dev_runtime47.jsxDEV)(
+        AutocompleteContainer_default,
+        {
+          onChange: onStatusChange,
+          options: LoanStatuses,
+          value: filter.status,
+          label: Status5,
+          width: "200px"
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/components/Dashboard/Raport/DashboardRaport.tsx",
+          lineNumber: 61,
+          columnNumber: 11
+        },
+        this
+      )
+    ] }, void 0, !0, {
+      fileName: "app/components/Dashboard/Raport/DashboardRaport.tsx",
+      lineNumber: 46,
+      columnNumber: 9
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime47.jsxDEV)(import_react_chartjs_2.Bar, { data: raport, options: RaportOptions(filter.year) }, void 0, !1, {
+      fileName: "app/components/Dashboard/Raport/DashboardRaport.tsx",
+      lineNumber: 69,
+      columnNumber: 9
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/components/Dashboard/Raport/DashboardRaport.tsx",
+    lineNumber: 45,
+    columnNumber: 7
+  }, this) }, void 0, !1, {
+    fileName: "app/components/Dashboard/Raport/DashboardRaport.tsx",
+    lineNumber: 44,
+    columnNumber: 5
+  }, this);
+}, DashboardRaport_default = DashboardRaport;
+
+// app/routes/__app/index.tsx
+var import_jsx_dev_runtime48 = require("react/jsx-dev-runtime"), loader14 = async ({ request }) => {
+  if (!await getUserId(request))
+    return (0, import_node16.redirect)("/login");
+  try {
+    let url = new URL(request.url), year = url.searchParams.get("year") || "", library = url.searchParams.get("library") || "", status = url.searchParams.get("status") || "", [loansRaport, libraries] = await Promise.all([
+      groupLoansRaport({ year, library, status }),
+      getLibraries()
+    ]);
+    return goodRequest({
+      loansRaport,
+      libraries
+    });
+  } catch (error) {
+    throw new Error(error.message || ErrorMessage);
+  }
+}, ErrorBoundary13 = () => /* @__PURE__ */ (0, import_jsx_dev_runtime48.jsxDEV)(ErrorInterface_default, {}, void 0, !1, {
+  fileName: "app/routes/__app/index.tsx",
+  lineNumber: 57,
+  columnNumber: 10
+}, this), action14 = async ({ request }) => {
   if (!await getUserId(request))
     return (0, import_node16.redirect)("/login");
   try {
@@ -6992,14 +7324,85 @@ var import_jsx_dev_runtime46 = require("react/jsx-dev-runtime"), action14 = asyn
       success: !1
     });
   }
-}, Dashboard = () => /* @__PURE__ */ (0, import_jsx_dev_runtime46.jsxDEV)("div", { children: "Dashboard" }, void 0, !1, {
-  fileName: "app/routes/__app/index.tsx",
-  lineNumber: 35,
-  columnNumber: 10
-}, this), app_default2 = Dashboard;
+}, Dashboard2 = () => {
+  let data = (0, import_react50.useLoaderData)(), [searchParams, setSearchParams] = (0, import_react50.useSearchParams)(), year = searchParams.get("year") || "", status = searchParams.get("status") || "", library = searchParams.get("library") || "", libraries = data.libraries, loansRaport = Months.map((item) => {
+    let reportByMonth = data.loansRaport.find(
+      (raport2) => raport2.month === item.value
+    );
+    return reportByMonth ? { month: item.name, total: reportByMonth.total } : { month: item.name, total: 0 };
+  }), filterLibrary = libraries.find(
+    (item) => item.name === library
+  ), filterStatus = LoanStatuses.find(
+    (item) => item.name === status
+  ), [filter, setFilter] = (0, import_react49.useState)({
+    year: getCorrectYear(year).toString(),
+    library: (filterLibrary == null ? void 0 : filterLibrary.id) || "",
+    status: (filterStatus == null ? void 0 : filterStatus.id) || ""
+  }), raport = {
+    labels: loansRaport.map((item) => item.month),
+    datasets: [
+      {
+        data: loansRaport.map((item) => item.total),
+        backgroundColor: colorPalette_default.secondary.lighter
+      }
+    ]
+  };
+  return /* @__PURE__ */ (0, import_jsx_dev_runtime48.jsxDEV)(ColumnFlex, { children: [
+    /* @__PURE__ */ (0, import_jsx_dev_runtime48.jsxDEV)(LayoutTitle_default, { title: Dashboard }, void 0, !1, {
+      fileName: "app/routes/__app/index.tsx",
+      lineNumber: 179,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ (0, import_jsx_dev_runtime48.jsxDEV)(
+      DashboardRaport_default,
+      {
+        filter,
+        raport,
+        libraries,
+        onYearChange: (value) => {
+          let newYear = getYearFromDate(value);
+          setFilter((oldValue) => ({
+            ...oldValue,
+            year: newYear
+          }));
+          let params = {};
+          library && (params = { ...params, library }), status && (params = { ...params, status }), newYear && (params = { ...params, year: newYear }), setSearchParams(params);
+        },
+        onLibraryChange: (value) => {
+          setFilter((oldValue) => ({
+            ...oldValue,
+            library: (value == null ? void 0 : value.id) || ""
+          }));
+          let params = {};
+          year && (params = { ...params, year }), status && (params = { ...params, status }), value && (params = { ...params, library: (value == null ? void 0 : value.name) || "" }), setSearchParams(params);
+        },
+        onStatusChange: (value) => {
+          setFilter((oldValue) => ({
+            ...oldValue,
+            status: (value == null ? void 0 : value.id) || ""
+          }));
+          let params = {};
+          year && (params = { ...params, year }), library && (params = { ...params, library }), value && (params = { ...params, status: (value == null ? void 0 : value.name) || "" }), setSearchParams(params);
+        }
+      },
+      void 0,
+      !1,
+      {
+        fileName: "app/routes/__app/index.tsx",
+        lineNumber: 181,
+        columnNumber: 7
+      },
+      this
+    )
+  ] }, void 0, !0, {
+    fileName: "app/routes/__app/index.tsx",
+    lineNumber: 178,
+    columnNumber: 5
+  }, this);
+}, app_default2 = Dashboard2;
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { version: "7b9571ec", entry: { module: "/build/entry.client-Q5QGYKGC.js", imports: ["/build/_shared/chunk-RRG2ZSJO.js", "/build/_shared/chunk-Q2GWK4NB.js", "/build/_shared/chunk-ROVVSRGE.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-NM2M4KMR.js", imports: ["/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !1, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/__app": { id: "routes/__app", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/__app-MPY6URIF.js", imports: ["/build/_shared/chunk-S26LAIZG.js", "/build/_shared/chunk-E3SBBEWM.js", "/build/_shared/chunk-UNWRKYGS.js", "/build/_shared/chunk-BXRFTDIW.js", "/build/_shared/chunk-3LB2INSY.js", "/build/_shared/chunk-J4YCAMHB.js"], hasAction: !1, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/__app/books/$bookId": { id: "routes/__app/books/$bookId", parentId: "routes/__app", path: "books/:bookId", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/books/$bookId-2VTVCYIG.js", imports: ["/build/_shared/chunk-YP2T3TOH.js", "/build/_shared/chunk-JFF2OY75.js", "/build/_shared/chunk-BJOFLWAW.js", "/build/_shared/chunk-YS4H57FG.js", "/build/_shared/chunk-Q2HNFAM7.js", "/build/_shared/chunk-7LXKMVFP.js", "/build/_shared/chunk-VG7Y4ZDF.js", "/build/_shared/chunk-4RHOFEEN.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/books/create": { id: "routes/__app/books/create", parentId: "routes/__app", path: "books/create", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/books/create-LAKLNZZ4.js", imports: ["/build/_shared/chunk-YP2T3TOH.js", "/build/_shared/chunk-JFF2OY75.js", "/build/_shared/chunk-BJOFLWAW.js", "/build/_shared/chunk-YS4H57FG.js", "/build/_shared/chunk-Q2HNFAM7.js", "/build/_shared/chunk-7LXKMVFP.js", "/build/_shared/chunk-VG7Y4ZDF.js", "/build/_shared/chunk-4RHOFEEN.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/books/index": { id: "routes/__app/books/index", parentId: "routes/__app", path: "books", index: !0, caseSensitive: void 0, module: "/build/routes/__app/books/index-FSGGHBHG.js", imports: ["/build/_shared/chunk-MHR3PD5U.js", "/build/_shared/chunk-JFF2OY75.js", "/build/_shared/chunk-7HEI5WLP.js", "/build/_shared/chunk-RJBCBGO4.js", "/build/_shared/chunk-BJOFLWAW.js", "/build/_shared/chunk-YS4H57FG.js", "/build/_shared/chunk-7LXKMVFP.js", "/build/_shared/chunk-VG7Y4ZDF.js", "/build/_shared/chunk-4RHOFEEN.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/index": { id: "routes/__app/index", parentId: "routes/__app", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/__app/index-XWFVYK25.js", imports: ["/build/_shared/chunk-JKE4WBKB.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/__app/libraries/$libraryId": { id: "routes/__app/libraries/$libraryId", parentId: "routes/__app", path: "libraries/:libraryId", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/libraries/$libraryId-ZOB7R2JZ.js", imports: ["/build/_shared/chunk-2SG5YIHG.js", "/build/_shared/chunk-H7M2G7JP.js", "/build/_shared/chunk-YS4H57FG.js", "/build/_shared/chunk-UZO325TB.js", "/build/_shared/chunk-FM3SD7MT.js", "/build/_shared/chunk-Q2HNFAM7.js", "/build/_shared/chunk-7LXKMVFP.js", "/build/_shared/chunk-VG7Y4ZDF.js", "/build/_shared/chunk-4RHOFEEN.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/libraries/create": { id: "routes/__app/libraries/create", parentId: "routes/__app", path: "libraries/create", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/libraries/create-CSHWQOWG.js", imports: ["/build/_shared/chunk-2SG5YIHG.js", "/build/_shared/chunk-H7M2G7JP.js", "/build/_shared/chunk-YS4H57FG.js", "/build/_shared/chunk-UZO325TB.js", "/build/_shared/chunk-FM3SD7MT.js", "/build/_shared/chunk-Q2HNFAM7.js", "/build/_shared/chunk-7LXKMVFP.js", "/build/_shared/chunk-VG7Y4ZDF.js", "/build/_shared/chunk-4RHOFEEN.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/libraries/index": { id: "routes/__app/libraries/index", parentId: "routes/__app", path: "libraries", index: !0, caseSensitive: void 0, module: "/build/routes/__app/libraries/index-R2HVIPOQ.js", imports: ["/build/_shared/chunk-MHR3PD5U.js", "/build/_shared/chunk-RJBCBGO4.js", "/build/_shared/chunk-H7M2G7JP.js", "/build/_shared/chunk-YS4H57FG.js", "/build/_shared/chunk-FM3SD7MT.js", "/build/_shared/chunk-7LXKMVFP.js", "/build/_shared/chunk-VG7Y4ZDF.js", "/build/_shared/chunk-4RHOFEEN.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/loans/$loanId": { id: "routes/__app/loans/$loanId", parentId: "routes/__app", path: "loans/:loanId", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/loans/$loanId-UGYSCD3G.js", imports: ["/build/_shared/chunk-HVACH2VA.js", "/build/_shared/chunk-ZPAFWGOK.js", "/build/_shared/chunk-7HEI5WLP.js", "/build/_shared/chunk-RJBCBGO4.js", "/build/_shared/chunk-BJOFLWAW.js", "/build/_shared/chunk-M3PVRCIV.js", "/build/_shared/chunk-Q2HNFAM7.js", "/build/_shared/chunk-VG7Y4ZDF.js", "/build/_shared/chunk-4RHOFEEN.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/loans/create": { id: "routes/__app/loans/create", parentId: "routes/__app", path: "loans/create", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/loans/create-RXGCWVMC.js", imports: ["/build/_shared/chunk-HVACH2VA.js", "/build/_shared/chunk-ZPAFWGOK.js", "/build/_shared/chunk-7HEI5WLP.js", "/build/_shared/chunk-RJBCBGO4.js", "/build/_shared/chunk-BJOFLWAW.js", "/build/_shared/chunk-M3PVRCIV.js", "/build/_shared/chunk-Q2HNFAM7.js", "/build/_shared/chunk-VG7Y4ZDF.js", "/build/_shared/chunk-4RHOFEEN.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/loans/index": { id: "routes/__app/loans/index", parentId: "routes/__app", path: "loans", index: !0, caseSensitive: void 0, module: "/build/routes/__app/loans/index-LIC2WXEL.js", imports: ["/build/_shared/chunk-ZPAFWGOK.js", "/build/_shared/chunk-MHR3PD5U.js", "/build/_shared/chunk-7HEI5WLP.js", "/build/_shared/chunk-RJBCBGO4.js", "/build/_shared/chunk-YS4H57FG.js", "/build/_shared/chunk-7LXKMVFP.js", "/build/_shared/chunk-VG7Y4ZDF.js", "/build/_shared/chunk-4RHOFEEN.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/readers/$readerId": { id: "routes/__app/readers/$readerId", parentId: "routes/__app", path: "readers/:readerId", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/readers/$readerId-FM6QYJKH.js", imports: ["/build/_shared/chunk-XGBQRHJA.js", "/build/_shared/chunk-R5U6GGLB.js", "/build/_shared/chunk-M3PVRCIV.js", "/build/_shared/chunk-UZO325TB.js", "/build/_shared/chunk-FM3SD7MT.js", "/build/_shared/chunk-Q2HNFAM7.js", "/build/_shared/chunk-7LXKMVFP.js", "/build/_shared/chunk-VG7Y4ZDF.js", "/build/_shared/chunk-4RHOFEEN.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/readers/create": { id: "routes/__app/readers/create", parentId: "routes/__app", path: "readers/create", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/readers/create-BWNOXMUT.js", imports: ["/build/_shared/chunk-XGBQRHJA.js", "/build/_shared/chunk-R5U6GGLB.js", "/build/_shared/chunk-M3PVRCIV.js", "/build/_shared/chunk-UZO325TB.js", "/build/_shared/chunk-FM3SD7MT.js", "/build/_shared/chunk-Q2HNFAM7.js", "/build/_shared/chunk-7LXKMVFP.js", "/build/_shared/chunk-VG7Y4ZDF.js", "/build/_shared/chunk-4RHOFEEN.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/readers/index": { id: "routes/__app/readers/index", parentId: "routes/__app", path: "readers", index: !0, caseSensitive: void 0, module: "/build/routes/__app/readers/index-JADWPFYN.js", imports: ["/build/_shared/chunk-MHR3PD5U.js", "/build/_shared/chunk-RJBCBGO4.js", "/build/_shared/chunk-R5U6GGLB.js", "/build/_shared/chunk-M3PVRCIV.js", "/build/_shared/chunk-FM3SD7MT.js", "/build/_shared/chunk-7LXKMVFP.js", "/build/_shared/chunk-VG7Y4ZDF.js", "/build/_shared/chunk-4RHOFEEN.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__auth": { id: "routes/__auth", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/__auth-VLM7Z4C7.js", imports: ["/build/_shared/chunk-S26LAIZG.js", "/build/_shared/chunk-Q7FI6BBZ.js", "/build/_shared/chunk-BXRFTDIW.js", "/build/_shared/chunk-J4YCAMHB.js"], hasAction: !1, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/__auth/login": { id: "routes/__auth/login", parentId: "routes/__auth", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/__auth/login-25UOKEER.js", imports: ["/build/_shared/chunk-JKE4WBKB.js", "/build/_shared/chunk-E3SBBEWM.js", "/build/_shared/chunk-4RHOFEEN.js", "/build/_shared/chunk-3QB4YM6I.js", "/build/_shared/chunk-CZAMDIPU.js", "/build/_shared/chunk-3LB2INSY.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-UNMXUG3K.js"], hasAction: !0, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 } }, url: "/build/manifest-7B9571EC.js" };
+var assets_manifest_default = { version: "bb5640cc", entry: { module: "/build/entry.client-BC7PQSHE.js", imports: ["/build/_shared/chunk-GSHBVEWO.js", "/build/_shared/chunk-3B2IBYF3.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-SKHZ6TSB.js", imports: ["/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !1, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/__app": { id: "routes/__app", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/__app-ETQ5BAXG.js", imports: ["/build/_shared/chunk-WTQ7ZNSM.js", "/build/_shared/chunk-QQXGTXZW.js", "/build/_shared/chunk-7PKIOFRA.js", "/build/_shared/chunk-B6URHK6P.js", "/build/_shared/chunk-Q3TUDAPQ.js", "/build/_shared/chunk-2WMF5VUO.js"], hasAction: !1, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/__app/books/$bookId": { id: "routes/__app/books/$bookId", parentId: "routes/__app", path: "books/:bookId", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/books/$bookId-U52I2XPX.js", imports: ["/build/_shared/chunk-TJFUZ4CD.js", "/build/_shared/chunk-FZDZG2QZ.js", "/build/_shared/chunk-GEJQLBYA.js", "/build/_shared/chunk-2JLX4AUY.js", "/build/_shared/chunk-N6AILK7I.js", "/build/_shared/chunk-G233SAEU.js", "/build/_shared/chunk-HOAV5AQK.js", "/build/_shared/chunk-P7ZIGD3U.js", "/build/_shared/chunk-JI56O5Z6.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/books/create": { id: "routes/__app/books/create", parentId: "routes/__app", path: "books/create", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/books/create-CFYTPMRM.js", imports: ["/build/_shared/chunk-TJFUZ4CD.js", "/build/_shared/chunk-FZDZG2QZ.js", "/build/_shared/chunk-GEJQLBYA.js", "/build/_shared/chunk-2JLX4AUY.js", "/build/_shared/chunk-N6AILK7I.js", "/build/_shared/chunk-G233SAEU.js", "/build/_shared/chunk-HOAV5AQK.js", "/build/_shared/chunk-P7ZIGD3U.js", "/build/_shared/chunk-JI56O5Z6.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/books/index": { id: "routes/__app/books/index", parentId: "routes/__app", path: "books", index: !0, caseSensitive: void 0, module: "/build/routes/__app/books/index-JGWBQGI6.js", imports: ["/build/_shared/chunk-J66H7JR5.js", "/build/_shared/chunk-FZDZG2QZ.js", "/build/_shared/chunk-3JBJZKBU.js", "/build/_shared/chunk-N6V5D5WC.js", "/build/_shared/chunk-GEJQLBYA.js", "/build/_shared/chunk-2JLX4AUY.js", "/build/_shared/chunk-G233SAEU.js", "/build/_shared/chunk-HOAV5AQK.js", "/build/_shared/chunk-P7ZIGD3U.js", "/build/_shared/chunk-JI56O5Z6.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/index": { id: "routes/__app/index", parentId: "routes/__app", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/__app/index-ROFJLJFS.js", imports: ["/build/_shared/chunk-6SLQPBYM.js", "/build/_shared/chunk-7XWRBZT2.js", "/build/_shared/chunk-X7LMFJAS.js", "/build/_shared/chunk-2JLX4AUY.js", "/build/_shared/chunk-376VDJGU.js", "/build/_shared/chunk-HOAV5AQK.js", "/build/_shared/chunk-P7ZIGD3U.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/libraries/$libraryId": { id: "routes/__app/libraries/$libraryId", parentId: "routes/__app", path: "libraries/:libraryId", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/libraries/$libraryId-JQMUT6ON.js", imports: ["/build/_shared/chunk-SB37BDZN.js", "/build/_shared/chunk-H7M2G7JP.js", "/build/_shared/chunk-2JLX4AUY.js", "/build/_shared/chunk-376VDJGU.js", "/build/_shared/chunk-T3UYT2H7.js", "/build/_shared/chunk-N6AILK7I.js", "/build/_shared/chunk-G233SAEU.js", "/build/_shared/chunk-HOAV5AQK.js", "/build/_shared/chunk-P7ZIGD3U.js", "/build/_shared/chunk-JI56O5Z6.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/libraries/create": { id: "routes/__app/libraries/create", parentId: "routes/__app", path: "libraries/create", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/libraries/create-WXP3FPTX.js", imports: ["/build/_shared/chunk-SB37BDZN.js", "/build/_shared/chunk-H7M2G7JP.js", "/build/_shared/chunk-2JLX4AUY.js", "/build/_shared/chunk-376VDJGU.js", "/build/_shared/chunk-T3UYT2H7.js", "/build/_shared/chunk-N6AILK7I.js", "/build/_shared/chunk-G233SAEU.js", "/build/_shared/chunk-HOAV5AQK.js", "/build/_shared/chunk-P7ZIGD3U.js", "/build/_shared/chunk-JI56O5Z6.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/libraries/index": { id: "routes/__app/libraries/index", parentId: "routes/__app", path: "libraries", index: !0, caseSensitive: void 0, module: "/build/routes/__app/libraries/index-WX2AFIDF.js", imports: ["/build/_shared/chunk-J66H7JR5.js", "/build/_shared/chunk-N6V5D5WC.js", "/build/_shared/chunk-H7M2G7JP.js", "/build/_shared/chunk-2JLX4AUY.js", "/build/_shared/chunk-T3UYT2H7.js", "/build/_shared/chunk-G233SAEU.js", "/build/_shared/chunk-HOAV5AQK.js", "/build/_shared/chunk-P7ZIGD3U.js", "/build/_shared/chunk-JI56O5Z6.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/loans/$loanId": { id: "routes/__app/loans/$loanId", parentId: "routes/__app", path: "loans/:loanId", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/loans/$loanId-XYV7IEYT.js", imports: ["/build/_shared/chunk-JGPE7SKD.js", "/build/_shared/chunk-6SLQPBYM.js", "/build/_shared/chunk-3JBJZKBU.js", "/build/_shared/chunk-N6V5D5WC.js", "/build/_shared/chunk-GEJQLBYA.js", "/build/_shared/chunk-MQNFYAYI.js", "/build/_shared/chunk-N6AILK7I.js", "/build/_shared/chunk-P7ZIGD3U.js", "/build/_shared/chunk-JI56O5Z6.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/loans/create": { id: "routes/__app/loans/create", parentId: "routes/__app", path: "loans/create", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/loans/create-R3PSJRX3.js", imports: ["/build/_shared/chunk-JGPE7SKD.js", "/build/_shared/chunk-6SLQPBYM.js", "/build/_shared/chunk-3JBJZKBU.js", "/build/_shared/chunk-N6V5D5WC.js", "/build/_shared/chunk-GEJQLBYA.js", "/build/_shared/chunk-MQNFYAYI.js", "/build/_shared/chunk-N6AILK7I.js", "/build/_shared/chunk-P7ZIGD3U.js", "/build/_shared/chunk-JI56O5Z6.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/loans/index": { id: "routes/__app/loans/index", parentId: "routes/__app", path: "loans", index: !0, caseSensitive: void 0, module: "/build/routes/__app/loans/index-VPRSYS7F.js", imports: ["/build/_shared/chunk-6SLQPBYM.js", "/build/_shared/chunk-J66H7JR5.js", "/build/_shared/chunk-3JBJZKBU.js", "/build/_shared/chunk-N6V5D5WC.js", "/build/_shared/chunk-2JLX4AUY.js", "/build/_shared/chunk-G233SAEU.js", "/build/_shared/chunk-HOAV5AQK.js", "/build/_shared/chunk-P7ZIGD3U.js", "/build/_shared/chunk-JI56O5Z6.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/readers/$readerId": { id: "routes/__app/readers/$readerId", parentId: "routes/__app", path: "readers/:readerId", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/readers/$readerId-SBW6G7IP.js", imports: ["/build/_shared/chunk-E6MTVN4O.js", "/build/_shared/chunk-X7LMFJAS.js", "/build/_shared/chunk-R5U6GGLB.js", "/build/_shared/chunk-MQNFYAYI.js", "/build/_shared/chunk-376VDJGU.js", "/build/_shared/chunk-T3UYT2H7.js", "/build/_shared/chunk-N6AILK7I.js", "/build/_shared/chunk-G233SAEU.js", "/build/_shared/chunk-HOAV5AQK.js", "/build/_shared/chunk-P7ZIGD3U.js", "/build/_shared/chunk-JI56O5Z6.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/readers/create": { id: "routes/__app/readers/create", parentId: "routes/__app", path: "readers/create", index: void 0, caseSensitive: void 0, module: "/build/routes/__app/readers/create-PWJBD4YL.js", imports: ["/build/_shared/chunk-E6MTVN4O.js", "/build/_shared/chunk-X7LMFJAS.js", "/build/_shared/chunk-R5U6GGLB.js", "/build/_shared/chunk-MQNFYAYI.js", "/build/_shared/chunk-376VDJGU.js", "/build/_shared/chunk-T3UYT2H7.js", "/build/_shared/chunk-N6AILK7I.js", "/build/_shared/chunk-G233SAEU.js", "/build/_shared/chunk-HOAV5AQK.js", "/build/_shared/chunk-P7ZIGD3U.js", "/build/_shared/chunk-JI56O5Z6.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__app/readers/index": { id: "routes/__app/readers/index", parentId: "routes/__app", path: "readers", index: !0, caseSensitive: void 0, module: "/build/routes/__app/readers/index-TNGOKRNJ.js", imports: ["/build/_shared/chunk-J66H7JR5.js", "/build/_shared/chunk-N6V5D5WC.js", "/build/_shared/chunk-R5U6GGLB.js", "/build/_shared/chunk-MQNFYAYI.js", "/build/_shared/chunk-T3UYT2H7.js", "/build/_shared/chunk-G233SAEU.js", "/build/_shared/chunk-HOAV5AQK.js", "/build/_shared/chunk-P7ZIGD3U.js", "/build/_shared/chunk-JI56O5Z6.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !0 }, "routes/__auth": { id: "routes/__auth", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/__auth-DZWOZZVU.js", imports: ["/build/_shared/chunk-WTQ7ZNSM.js", "/build/_shared/chunk-B6URHK6P.js", "/build/_shared/chunk-2WMF5VUO.js"], hasAction: !1, hasLoader: !1, hasCatchBoundary: !1, hasErrorBoundary: !1 }, "routes/__auth/login": { id: "routes/__auth/login", parentId: "routes/__auth", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/__auth/login-PWWULOKM.js", imports: ["/build/_shared/chunk-7XWRBZT2.js", "/build/_shared/chunk-QQXGTXZW.js", "/build/_shared/chunk-JI56O5Z6.js", "/build/_shared/chunk-UZZOWYSL.js", "/build/_shared/chunk-RERRPDCV.js", "/build/_shared/chunk-Q3TUDAPQ.js", "/build/_shared/chunk-CEGYRLZN.js", "/build/_shared/chunk-NEKFOY6V.js"], hasAction: !0, hasLoader: !0, hasCatchBoundary: !1, hasErrorBoundary: !1 } }, url: "/build/manifest-BB5640CC.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var assetsBuildDirectory = "public\\build", future = { v2_meta: !1 }, publicPath = "/build/", entry = { module: entry_server_exports }, routes = {

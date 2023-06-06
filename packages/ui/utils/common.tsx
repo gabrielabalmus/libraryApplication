@@ -1,5 +1,8 @@
 import dayjs, { Dayjs } from "dayjs";
 import moment from "moment";
+import isBetween from "dayjs/plugin/isBetween";
+
+dayjs.extend(isBetween);
 
 export const readFileAsync = (file: File) => {
   return new Promise((resolve, reject) => {
@@ -21,6 +24,27 @@ export const checkIfValidDate = (date: any) => {
 
 export const transformDate = (date: Dayjs | null) => {
   return date && checkIfValidDate(date) ? dayjs(date).format() : "";
+};
+
+export const getYearFromDate = (date: Dayjs | null) => {
+  return (
+    (date &&
+      checkIfValidDate(date) &&
+      dayjs(date).isBetween("1900", "2099", "year") &&
+      dayjs(date).get("year").toString()) ||
+    dayjs().year().toString()
+  );
+};
+
+export const getCorrectYear = (year: string | null) => {
+  return (
+    (year &&
+      checkIfNumber(year) &&
+      year.length === 4 &&
+      dayjs(year).isBetween("1900", "2099", "year") &&
+      parseInt(year)) ||
+    dayjs().year()
+  );
 };
 
 export const formatLoangDate = (date: Date) => {
@@ -57,3 +81,18 @@ export const isValidUrl = (url: string) => {
     return false;
   }
 };
+
+export const Months = [
+  { value: 1, name: "January" },
+  { value: 2, name: "February" },
+  { value: 3, name: "March" },
+  { value: 4, name: "April" },
+  { value: 5, name: "May" },
+  { value: 6, name: "June" },
+  { value: 7, name: "July" },
+  { value: 8, name: "August" },
+  { value: 9, name: "September" },
+  { value: 10, name: "October" },
+  { value: 11, name: "November" },
+  { value: 12, name: "December" },
+];

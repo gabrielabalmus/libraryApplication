@@ -181,3 +181,9 @@ export interface FilteredStatuses {
   value: Status;
   name: Status;
 }
+
+export interface LoansRaportProps {
+  year: string;
+  library: string;
+  status: string;
+}

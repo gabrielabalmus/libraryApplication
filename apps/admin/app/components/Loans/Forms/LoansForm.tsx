@@ -19,8 +19,7 @@ import LoansReader from "./LoansReader";
 import LoansBooks from "./LoansBooks";
 import LoansPenalty from "./LoansPenalty";
 import LoansDetails from "./LoansDetails";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
+import Select from "@/components/Select";
 import { LoanFilteredStatuses } from "../Loans.helper";
 import { Status } from "@prisma/client";
 
@@ -43,10 +42,16 @@ const LoansForm: React.FC<LoansFormProps> = ({ onSubmit, setLoan, loan }) => {
     urlParams.loanId ? currentStatus : undefined
   );
 
-  const changeStatus = (event: SelectChangeEvent<Status>) => {
+  const changeStatus = (value: string) => {
+    if (errors.status)
+      setErrors((oldErrors) => {
+        const { status, ...rest } = oldErrors;
+        return rest;
+      });
+
     setLoan((oldLoan) => ({
       ...oldLoan,
-      status: event.target.value as Status,
+      status: value as Status,
     }));
   };
 
@@ -59,14 +64,10 @@ const LoansForm: React.FC<LoansFormProps> = ({ onSubmit, setLoan, loan }) => {
             <Select
               value={loan.status}
               onChange={changeStatus}
-              variant="standard"
-            >
-              {filteredStatuses.map((item, index) => (
-                <MenuItem key={index} value={item.value}>
-                  {item.name}
-                </MenuItem>
-              ))}
-            </Select>
+              options={filteredStatuses}
+              width="140px"
+              errorMessage={errors.status}
+            />
           </AlignedFlex>
         )}
 

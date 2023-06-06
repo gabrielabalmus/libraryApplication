@@ -9,15 +9,19 @@ const DatePickerContainer: React.FC<DatePickerProps> = ({
   value,
   errorMessage,
   onChange,
+  onKeyDown,
+  views,
 }) => (
   <LocalizationProvider dateAdapter={AdapterDayjs}>
     <DatePicker
       label={label}
       value={value}
       onChange={onChange}
+      views={views}
       renderInput={(params: TextFieldProps) => (
         <TextField
           {...params}
+          onKeyDown={onKeyDown}
           error={!!errorMessage}
           variant="standard"
           helperText={errorMessage}
