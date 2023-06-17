@@ -82,6 +82,12 @@ export const isValidUrl = (url: string) => {
   }
 };
 
+export const removeDateDays = (days: number) => {
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  return date;
+};
+
 export const Months = [
   { value: 1, name: "January" },
   { value: 2, name: "February" },
