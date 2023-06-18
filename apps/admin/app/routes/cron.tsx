@@ -32,7 +32,7 @@ const expireLoansReservedStatus = async () => {
     );
   }
 };
-// @ts-nocheck
+
 const calculateLoansPenalties = async () => {
   try {
     const lastDate = removeDateDays(30).toString();
