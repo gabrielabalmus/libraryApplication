@@ -10,6 +10,7 @@ import Box, { BoxProps } from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Divider, { DividerProps } from "@mui/material/Divider";
 import { DrawerType } from "./Menu.type";
+import styled from "styled-components";
 
 export const StyledAppBar = MuiStyled(AppBar)<AppBarProps>(({ theme }) =>
   theme.unstable_sx({
@@ -34,7 +35,6 @@ export const StyledMainBox = MuiStyled(Box)<BoxProps>(({ theme }) =>
   theme.unstable_sx({
     backgroundColor: collorPalette.grey.lighter,
     flex: 1,
-    p: 3,
     width: {
       sm: `calc(100% - ${menuWidth}px)`,
     },

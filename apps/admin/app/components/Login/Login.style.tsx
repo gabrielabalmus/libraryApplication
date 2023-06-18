@@ -6,7 +6,7 @@ import Alert, { AlertProps } from "@mui/material/Alert";
 
 export const StyledPaper = MuiStyled(Paper)<PaperProps>(({ theme }) =>
   theme.unstable_sx({
-    width: { xs: "100%", sm: "260px" },
+    width: { sm: "260px" },
     border: `10px solid ${collorPalette.primary.lighter}`,
     padding: { xs: 4, sm: 6 },
     flexDirection: "column",

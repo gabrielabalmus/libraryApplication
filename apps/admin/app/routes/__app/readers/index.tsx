@@ -1,4 +1,3 @@
-import { ColumnFlex } from "@/components/Flex";
 import LayoutTitle from "~/components/LayoutTitle";
 import ReadersOverview from "~/components/Readers/Overview";
 import {
@@ -33,6 +32,7 @@ import { getUserId } from "~/server/users.server";
 import { getCities } from "~/server/cities.server";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
 import { FilterState } from "~/types/Readers.type";
+import Container from "@mui/material/Container";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -194,7 +194,7 @@ const PaginatedReaders: React.FC = () => {
   };
 
   return (
-    <ColumnFlex>
+    <Container>
       <LayoutTitle title={Readers}>
         <Button
           title={NewReader}
@@ -213,7 +213,7 @@ const PaginatedReaders: React.FC = () => {
         onDelete={handleDelete}
         cities={cities}
       />
-    </ColumnFlex>
+    </Container>
   );
 };
 

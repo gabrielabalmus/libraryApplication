@@ -1,4 +1,3 @@
-import { ColumnFlex } from "@/components/Flex";
 import LayoutTitle from "~/components/LayoutTitle";
 import LoansOverview from "~/components/Loans/Overview";
 import {
@@ -34,6 +33,7 @@ import { getUserId } from "~/server/users.server";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
 import { FilterState } from "~/types/Loans.type";
 import { getLibraries } from "~/server/libraries.server";
+import Container from "@mui/material/Container";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -220,7 +220,7 @@ const PaginatedLoans: React.FC = () => {
   };
 
   return (
-    <ColumnFlex>
+    <Container>
       <LayoutTitle title={Loans}>
         <Button
           title={NewLoan}
@@ -240,7 +240,7 @@ const PaginatedLoans: React.FC = () => {
         onDelete={handleDelete}
         libraries={libraries}
       />
-    </ColumnFlex>
+    </Container>
   );
 };
 

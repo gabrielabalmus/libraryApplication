@@ -1,4 +1,3 @@
-import { ColumnFlex } from "@/components/Flex";
 import LayoutTitle from "~/components/LayoutTitle";
 import BooksOverview from "~/components/Books/Overview";
 import {
@@ -34,6 +33,7 @@ import { getCategories } from "~/server/categories.server";
 import { FilterState } from "~/types/Books.type";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
 import { getLibraries } from "~/server/libraries.server";
+import Container from "@mui/material/Container";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -221,7 +221,7 @@ const PaginatedBooks: React.FC = () => {
   };
 
   return (
-    <ColumnFlex>
+    <Container>
       <LayoutTitle title={Books}>
         <Button
           title={NewBook}
@@ -242,7 +242,7 @@ const PaginatedBooks: React.FC = () => {
         categories={categories}
         libraries={libraries}
       />
-    </ColumnFlex>
+    </Container>
   );
 };
 

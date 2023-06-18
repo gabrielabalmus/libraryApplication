@@ -1,37 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
-import {
-  space,
-  color,
-  layout,
-  flexbox,
-  position,
-  SpaceProps,
-  FlexboxProps,
-  LayoutProps,
-  ColorProps,
-  PositionProps,
-  BorderRadiusProps,
-} from 'styled-system';
+import styled from "styled-components";
+import { ColumnFlex } from "../Flex";
 
-export interface ContainerProps
-  extends SpaceProps,
-    FlexboxProps,
-    LayoutProps,
-    ColorProps,
-    BorderRadiusProps,
-    PositionProps {
-  children: React.ReactNode;
-}
-
-const Container = styled.div<ContainerProps>`
-  box-sizing: border-box;
-  min-width: 0;
-  ${space}
-  ${flexbox}
-  ${layout}
-  ${color}
-  ${position}
+const Container = styled(ColumnFlex)`
+  padding: 24px;
 `;
 
 export default Container;

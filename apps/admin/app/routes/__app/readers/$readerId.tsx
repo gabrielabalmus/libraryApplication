@@ -1,4 +1,3 @@
-import { ColumnFlex } from "@/components/Flex";
 import {
   ActionArgs,
   ActionFunction,
@@ -30,6 +29,7 @@ import { getCities } from "~/server/cities.server";
 import { getSingleReader, updateReader } from "~/server/readers.server";
 import { badRequest, goodRequest } from "~/server/request.server";
 import { getUserId } from "~/server/users.server";
+import Container from "@mui/material/Container";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -171,7 +171,7 @@ const UpdateReader: React.FC = () => {
   };
 
   return (
-    <ColumnFlex>
+    <Container>
       <LayoutTitle title={UpdateReaderTitle} backUrl="/readers" />
       <ReadersForm
         onSubmit={handleOnSubmit}
@@ -179,7 +179,7 @@ const UpdateReader: React.FC = () => {
         reader={reader}
         cities={cities}
       />
-    </ColumnFlex>
+    </Container>
   );
 };
 

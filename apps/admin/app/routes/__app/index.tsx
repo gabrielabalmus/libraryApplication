@@ -21,9 +21,9 @@ import { Months, getCorrectYear, getYearFromDate } from "@/utils/common";
 import DashboardRaport from "~/components/Dashboard/Raport/DashboardRaport";
 import { LoanStatuses } from "~/components/Loans/Loans.const";
 import collorPalette from "@/theme/colorPalette";
-import { ColumnFlex } from "@/components/Flex";
 import LayoutTitle from "~/components/LayoutTitle";
 import { Dashboard as DashboardTitle } from "~/components/Dashboard/Dashboard.const";
+import Container from "@mui/material/Container";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -175,7 +175,7 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <ColumnFlex>
+    <Container>
       <LayoutTitle title={DashboardTitle} />
 
       <DashboardRaport
@@ -186,7 +186,7 @@ const Dashboard: React.FC = () => {
         onLibraryChange={handleLibraryChange}
         onStatusChange={handleStatusChange}
       />
-    </ColumnFlex>
+    </Container>
   );
 };
 

@@ -1,4 +1,3 @@
-import { ColumnFlex } from "@/components/Flex";
 import {
   ActionArgs,
   ActionFunction,
@@ -32,6 +31,7 @@ import { getSingleLoan, updateLoan } from "~/server/loans.server";
 import { getBookBySku } from "~/server/books.server";
 import { handleLoanErrors } from "~/components/Loans/Loans.helper";
 import { Status } from "@prisma/client";
+import Container from "@mui/material/Container";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -187,10 +187,10 @@ const UpdateLoan: React.FC = () => {
   };
 
   return (
-    <ColumnFlex>
+    <Container>
       <LayoutTitle title={UpdateLoanTitle} backUrl="/loans" />
       <LoansForm onSubmit={handleOnSubmit} setLoan={setLoan} loan={loan} />
-    </ColumnFlex>
+    </Container>
   );
 };
 

@@ -1,4 +1,3 @@
-import { ColumnFlex } from "@/components/Flex";
 import {
   ActionArgs,
   ActionFunction,
@@ -30,6 +29,7 @@ import { getCities } from "~/server/cities.server";
 import { getSingleLibrary, updateLibrary } from "~/server/libraries.server";
 import { badRequest, goodRequest } from "~/server/request.server";
 import { getUserId } from "~/server/users.server";
+import Container from "@mui/material/Container";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -174,7 +174,7 @@ const UpdateLibrary: React.FC = () => {
   };
 
   return (
-    <ColumnFlex>
+    <Container>
       <LayoutTitle title={UpdateLibraryTitle} backUrl="/libraries" />
       <LibrariesForm
         onSubmit={handleOnSubmit}
@@ -182,7 +182,7 @@ const UpdateLibrary: React.FC = () => {
         library={library}
         cities={cities}
       />
-    </ColumnFlex>
+    </Container>
   );
 };
 

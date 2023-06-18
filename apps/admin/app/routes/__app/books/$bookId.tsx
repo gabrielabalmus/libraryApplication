@@ -1,4 +1,3 @@
-import { ColumnFlex } from "@/components/Flex";
 import {
   ActionArgs,
   ActionFunction,
@@ -35,6 +34,7 @@ import { getLibraries } from "~/server/libraries.server";
 import { getImage, uploadImage } from "~/server/media.server";
 import { getLanguages } from "~/server/languages.server";
 import { isValidUrl } from "@/utils/common";
+import Container from "@mui/material/Container";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -67,13 +67,13 @@ export const loader = async ({ request }: LoaderArgs) => {
 
     if (book.image) book.image = await getImage(book.image);
 
-      return goodRequest({
-        book,
-        categories,
-        publishHouses,
-        libraries,
-        languages,
-      });
+    return goodRequest({
+      book,
+      categories,
+      publishHouses,
+      libraries,
+      languages,
+    });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -218,7 +218,7 @@ const UpdateBook: React.FC = () => {
   };
 
   return (
-    <ColumnFlex>
+    <Container>
       <LayoutTitle title={UpdateBookTitle} backUrl="/books" />
       <BooksForm
         onSubmit={handleOnSubmit}
@@ -229,7 +229,7 @@ const UpdateBook: React.FC = () => {
         publishHouses={publishHouses}
         languages={languages}
       />
-    </ColumnFlex>
+    </Container>
   );
 };
 

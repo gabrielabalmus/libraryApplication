@@ -1,4 +1,3 @@
-import { ColumnFlex } from "@/components/Flex";
 import LayoutTitle from "~/components/LayoutTitle";
 import LibrariesOverview from "~/components/Libraries/Overview";
 import {
@@ -36,6 +35,7 @@ import { getUserId } from "~/server/users.server";
 import { getCities } from "~/server/cities.server";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
 import { FilterState } from "~/types/Libraries.type";
+import Container from "@mui/material/Container";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -197,7 +197,7 @@ const PaginatedLibraries: React.FC = () => {
   };
 
   return (
-    <ColumnFlex>
+    <Container>
       <LayoutTitle title={Libraries}>
         <Button
           title={NewLibrary}
@@ -216,7 +216,7 @@ const PaginatedLibraries: React.FC = () => {
         onDelete={handleDelete}
         cities={cities}
       />
-    </ColumnFlex>
+    </Container>
   );
 };
 

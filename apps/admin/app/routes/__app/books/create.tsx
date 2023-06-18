@@ -1,4 +1,3 @@
-import { ColumnFlex } from "@/components/Flex";
 import {
   ActionArgs,
   ActionFunction,
@@ -33,6 +32,7 @@ import { createBook } from "~/server/books.server";
 import { getLibraries } from "~/server/libraries.server";
 import { uploadImage } from "~/server/media.server";
 import { getLanguages } from "~/server/languages.server";
+import Container from "@mui/material/Container";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -184,7 +184,7 @@ const CreateBook: React.FC = () => {
   };
 
   return (
-    <ColumnFlex>
+    <Container>
       <LayoutTitle title={CreateBookTitle} backUrl="/books" />
       <BooksForm
         onSubmit={handleOnSubmit}
@@ -195,7 +195,7 @@ const CreateBook: React.FC = () => {
         libraries={libraries}
         languages={languages}
       />
-    </ColumnFlex>
+    </Container>
   );
 };
 
