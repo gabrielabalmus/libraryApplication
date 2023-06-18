@@ -15,15 +15,12 @@ import { ColumnFlex } from "@/components/Flex";
 import TimePicker from "@/components/TimePicker";
 import { Dayjs } from "dayjs";
 import { Details, ScheduleTitle } from "../Libraries.const";
-import {
-  StyledFlexButton,
-  StyledTitle,
-  StyledTypography,
-} from "../Libraries.style";
+import { StyledFlexButton, StyledTypography } from "../Libraries.style";
 import { AlignedFlex } from "@/components/Flex/Flex";
 import Autocomplete from "@/components/Autocomplete";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
 import { StyledColumnFlex, StyleFlex } from "~/components/Books/Books.style";
+import Typography from "@mui/material/Typography";
 
 const LibrariesForm: React.FC<LibrariesFormProps> = ({
   onSubmit,
@@ -92,101 +89,103 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
   return (
     <Paper className="overview-paper">
       <StyleFlex>
-        <StyledColumnFlex>
-          <StyledTitle variant="h3">{Details}</StyledTitle>
+        <ColumnFlex gap="40px">
+          <Typography variant="h3">{Details}</Typography>
+          <StyledColumnFlex>
+            <Input
+              label="Name*"
+              errorMessage={errors.name}
+              value={library.name}
+              onChange={(value: string) =>
+                handleInputChange(value, LibraryValue.name)
+              }
+            />
+            <Autocomplete
+              label="City*"
+              onChange={(value: AutocompleteOptions | null) =>
+                handleInputChange(value?.id || "", LibraryValue.city)
+              }
+              errorMessage={errors.city}
+              options={cities}
+              value={library.city}
+            />
+            <Input
+              label="Address*"
+              errorMessage={errors.address}
+              value={library.address}
+              onChange={(value: string) =>
+                handleInputChange(value, LibraryValue.address)
+              }
+              multiline
+            />
+            <Input
+              label="Phone*"
+              errorMessage={errors.phone}
+              value={library.phone}
+              onChange={(value: string) =>
+                handleInputChange(value, LibraryValue.phone)
+              }
+            />
+          </StyledColumnFlex>
+        </ColumnFlex>
 
-          <Input
-            label="Name*"
-            errorMessage={errors.name}
-            value={library.name}
-            onChange={(value: string) =>
-              handleInputChange(value, LibraryValue.name)
-            }
-          />
-          <Autocomplete
-            label="City*"
-            onChange={(value: AutocompleteOptions | null) =>
-              handleInputChange(value?.id || "", LibraryValue.city)
-            }
-            errorMessage={errors.city}
-            options={cities}
-            value={library.city}
-          />
-          <Input
-            label="Address*"
-            errorMessage={errors.address}
-            value={library.address}
-            onChange={(value: string) =>
-              handleInputChange(value, LibraryValue.address)
-            }
-            multiline
-          />
-          <Input
-            label="Phone*"
-            errorMessage={errors.phone}
-            value={library.phone}
-            onChange={(value: string) =>
-              handleInputChange(value, LibraryValue.phone)
-            }
-          />
-        </StyledColumnFlex>
-
-        <StyledColumnFlex>
-          <StyledTitle
+        <ColumnFlex gap="40px">
+          <Typography
             variant="h3"
             sx={{
               marginTop: { sm: "30px", md: "0" },
             }}
           >
             {ScheduleTitle}
-          </StyledTitle>
+          </Typography>
+          <StyledColumnFlex>
+            <AlignedFlex>
+              <StyledTypography variant="h1">Monday-Friday:</StyledTypography>
 
-          <AlignedFlex>
-            <StyledTypography variant="h1">Monday-Friday:</StyledTypography>
+              <ColumnFlex gap="20px">
+                <TimePicker
+                  label="From*"
+                  errorMessage={errors.schedule?.mondayFriday?.from}
+                  value={library.schedule.mondayFriday.from}
+                  onChange={(value) =>
+                    handleMondayFriday(value, ScheduleTimeValue.from)
+                  }
+                />
+                <TimePicker
+                  label="To*"
+                  errorMessage={errors.schedule?.mondayFriday?.to}
+                  value={library.schedule.mondayFriday.to}
+                  onChange={(value) =>
+                    handleMondayFriday(value, ScheduleTimeValue.to)
+                  }
+                />
+              </ColumnFlex>
+            </AlignedFlex>
 
-            <ColumnFlex gap="20px">
-              <TimePicker
-                label="From*"
-                errorMessage={errors.schedule?.mondayFriday?.from}
-                value={library.schedule.mondayFriday.from}
-                onChange={(value) =>
-                  handleMondayFriday(value, ScheduleTimeValue.from)
-                }
-              />
-              <TimePicker
-                label="To*"
-                errorMessage={errors.schedule?.mondayFriday?.to}
-                value={library.schedule.mondayFriday.to}
-                onChange={(value) =>
-                  handleMondayFriday(value, ScheduleTimeValue.to)
-                }
-              />
-            </ColumnFlex>
-          </AlignedFlex>
+            <AlignedFlex>
+              <StyledTypography variant="h1">Saturday:</StyledTypography>
 
-          <AlignedFlex>
-            <StyledTypography variant="h1">Saturday:</StyledTypography>
-
-            <ColumnFlex gap="20px">
-              <TimePicker
-                label="From*"
-                value={library.schedule.saturday.from}
-                errorMessage={errors.schedule?.saturday?.from}
-                onChange={(value) =>
-                  handleSaturday(value, ScheduleTimeValue.from)
-                }
-              />
-              <TimePicker
-                label="To*"
-                value={library.schedule.saturday.to}
-                errorMessage={errors.schedule?.saturday?.to}
-                onChange={(value) =>
-                  handleSaturday(value, ScheduleTimeValue.to)
-                }
-              />
-            </ColumnFlex>
-          </AlignedFlex>
-        </StyledColumnFlex>
+              <ColumnFlex gap="20px">
+                <TimePicker
+                  label="From*"
+                  value={library.schedule.saturday.from}
+                  errorMessage={errors.schedule?.saturday?.from}
+                  onChange={(value) =>
+                    handleSaturday(value, ScheduleTimeValue.from)
+                  }
+                />
+                <TimePicker
+                  label="To*"
+                  value={library.schedule.saturday.to}
+                  errorMessage={errors.schedule?.saturday?.to}
+                  onChange={(value) =>
+                    handleSaturday(value, ScheduleTimeValue.to)
+                  }
+                />
+              </ColumnFlex>
+            </AlignedFlex>
+          </StyledColumnFlex>
+        </ColumnFlex>
       </StyleFlex>
 
       <StyledFlexButton>

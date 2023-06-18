@@ -22,5 +22,8 @@ export const StyledIconButton = MuiStyled(IconButton)<IconButtonProps>(
 );
 
 export const StyledHeaderFlex = styled(SpaceBetweenCenterFlex)`
-  margin: 15px 0 25px 0;
+  margin-bottom: 25px;
+  @media (max-width: 600px) {
+    margin-top: 8px;
+  }
 `;

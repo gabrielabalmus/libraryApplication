@@ -3,12 +3,6 @@ import { styled as MuiStyled } from "@mui/material/styles";
 import styled from "styled-components";
 import Flex from "@/components/Flex";
 
-export const StyledTitle = MuiStyled(Typography)<TypographyProps>(({ theme }) =>
-  theme.unstable_sx({
-    marginBottom: "20px",
-  })
-);
-
 export const StyledTypography = MuiStyled(Typography)<TypographyProps>(
   ({ theme }) =>
     theme.unstable_sx({

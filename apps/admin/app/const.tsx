@@ -44,11 +44,19 @@ export const theme = createTheme({
         },
       },
     },
+    MuiContainer: {
+      styleOverrides: {
+        root: ({ theme }) =>
+          theme.unstable_sx({
+            padding: { xs: "16px", sm: "24px" },
+          }),
+      },
+    },
     MuiInputBase: {
       styleOverrides: {
         input: {
           "&:-webkit-autofill": {
-            "WebkitBoxShadow": "0 0 0 100px #fff inset",
+            WebkitBoxShadow: "0 0 0 100px #fff inset",
           },
           "&:focus": {
             backgroundColor: "inherit",
