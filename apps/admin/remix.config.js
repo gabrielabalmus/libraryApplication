@@ -4,6 +4,6 @@ module.exports = {
   ignoredRouteFiles: ["**/.*"],
   watchPaths: ['../../packages'],
   browserBuildDirectory: "public/build",
-  serverBuildDirectory: "build",
   publicPath: "/build/",
+  serverBuildPath: "build/index.js",
 };
