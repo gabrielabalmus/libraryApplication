@@ -29,6 +29,7 @@ const LoansReader: React.FC<LoansReaderProps> = ({
   loan,
   error,
   setError,
+  disabled = false,
 }) => {
   const fetcher = useFetcher();
   const urlParams = useParams();
@@ -80,21 +81,24 @@ const LoansReader: React.FC<LoansReaderProps> = ({
 
   return (
     <ColumnFlex gap="20px">
-      <StyledSearch>
-        <Input
-          value={search}
-          placeholder={ReaderPlaceholder}
-          onChange={onEmailChange}
-          errorMessage={error.reader || searchError}
-          width="350px"
-        />
-        <Button
-          type={ButtonType.button}
-          title={Add}
-          variant={ButtonVariant.contained}
-          onClick={onReaderSearch}
-        />
-      </StyledSearch>
+      {!disabled && (
+        <StyledSearch>
+          <Input
+            value={search}
+            placeholder={ReaderPlaceholder}
+            onChange={onEmailChange}
+            errorMessage={error.reader || searchError}
+            width="350px"
+          />
+
+          <Button
+            type={ButtonType.button}
+            title={Add}
+            variant={ButtonVariant.contained}
+            onClick={onReaderSearch}
+          />
+        </StyledSearch>
+      )}
 
       {reader && (
         <StyledTableColumn>

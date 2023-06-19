@@ -22,14 +22,14 @@ export const fromSingleLoanResponse = (loan: LoanResponse): LoanState => {
   };
 
   const books = loan.books.map((loandBook) => {
-    const { id, book, library, SKU, place, deleted } = loandBook.bookLibrary;
+    const { id, book, SKU, libraryId, place, deleted } = loandBook.bookLibrary;
 
     return {
       id,
       name: book.name,
-      library: library.name,
-      city: library.city.name,
+      category: book.category.name,
       sku: SKU,
+      library: libraryId,
       place,
       deleted,
     };
@@ -38,6 +38,9 @@ export const fromSingleLoanResponse = (loan: LoanResponse): LoanState => {
   const transformedLoan: LoanState = {
     number: loan.number,
     status: loan.status,
+    city: loan.cityId,
+    library: loan.libraryId,
+    libraryInfo: loan.library,
     reader,
     books,
     createdAt: formatLoangDate(loan.createdAt),

@@ -154,7 +154,7 @@ const Dashboard: React.FC = () => {
 
     if (year) params = { ...params, year };
     if (status) params = { ...params, status };
-    if (value) params = { ...params, library: value?.name || "" };
+    if (value) params = { ...params, library: value.name };
 
     setSearchParams(params);
   };
@@ -169,7 +169,7 @@ const Dashboard: React.FC = () => {
 
     if (year) params = { ...params, year };
     if (library) params = { ...params, library };
-    if (value) params = { ...params, status: value?.name || "" };
+    if (value) params = { ...params, status: value.name };
 
     setSearchParams(params);
   };

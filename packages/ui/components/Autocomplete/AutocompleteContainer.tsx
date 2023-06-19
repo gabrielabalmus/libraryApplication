@@ -10,6 +10,7 @@ const AutocompleteContainer: React.FC<AutocompleteContainerProps> = ({
   onChange,
   width = "inherit",
   placeholder = "",
+  disabled = false,
 }) => {
   const handleOnChange = (event: any, value: any) => {
     onChange(value);
@@ -26,6 +27,7 @@ const AutocompleteContainer: React.FC<AutocompleteContainerProps> = ({
       getOptionLabel={(option: any) => option.name}
       value={selectedValue}
       onChange={handleOnChange}
+      disabled={disabled}
       renderInput={(params) => (
         <TextField
           {...params}

@@ -42,7 +42,12 @@ const LoansForm: React.FC<LoansFormProps> = ({ onSubmit, setLoan, loan }) => {
     urlParams.loanId ? currentStatus : undefined
   );
 
+  const disabled =
+    currentStatus === Status.RETURNED || currentStatus === Status.CANCELLED;
+
   const changeStatus = (value: string) => {
+    if (disabled) return;
+
     if (errors.status)
       setErrors((oldErrors) => {
         const { status, ...rest } = oldErrors;
@@ -67,6 +72,7 @@ const LoansForm: React.FC<LoansFormProps> = ({ onSubmit, setLoan, loan }) => {
               options={filteredStatuses}
               width="140px"
               errorMessage={errors.status}
+              disabled={disabled}
             />
           </AlignedFlex>
         )}
@@ -84,6 +90,7 @@ const LoansForm: React.FC<LoansFormProps> = ({ onSubmit, setLoan, loan }) => {
           loan={loan}
           error={errors}
           setError={setErrors}
+          disabled={disabled || currentStatus === Status.BORROWED}
         />
 
         <ColumnFlex gap="10px">
@@ -95,6 +102,7 @@ const LoansForm: React.FC<LoansFormProps> = ({ onSubmit, setLoan, loan }) => {
           loan={loan}
           error={errors}
           setError={setErrors}
+          disabled={disabled || currentStatus === Status.BORROWED}
         />
 
         {loan.penalty && (
@@ -120,10 +128,7 @@ const LoansForm: React.FC<LoansFormProps> = ({ onSubmit, setLoan, loan }) => {
           title={urlParams.loanId ? "Update" : "Create"}
           variant={ButtonVariant.contained}
           onClick={handleOnSubmit}
-          disabled={
-            currentStatus === Status.RETURNED ||
-            currentStatus === Status.CANCELLED
-          }
+          disabled={disabled}
         />
       </StyledFlexButton>
     </Paper>

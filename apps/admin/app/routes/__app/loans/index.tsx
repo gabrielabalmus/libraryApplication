@@ -186,7 +186,7 @@ const PaginatedLoans: React.FC = () => {
 
     if (search) params = { ...params, search };
     if (status) params = { ...params, status };
-    if (value) params = { ...params, library: value?.name || "" };
+    if (value) params = { ...params, library: value.name };
 
     setSearchParams(params);
   };
@@ -201,7 +201,7 @@ const PaginatedLoans: React.FC = () => {
 
     if (search) params = { ...params, search };
     if (library) params = { ...params, library };
-    if (value) params = { ...params, status: value?.name || "" };
+    if (value) params = { ...params, status: value.name };
 
     setSearchParams(params);
   };

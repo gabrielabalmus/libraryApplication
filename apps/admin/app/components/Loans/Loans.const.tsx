@@ -49,6 +49,8 @@ export const BookPlaceholder = "Book sku";
 export const MandatoryBookSku = "You have to insert book sku";
 export const DuplicatedBook = "You already have this book in the loan";
 export const DeletedBook = "This book no longer exists";
+export const BookNoLibrary = "This book belongs to another library";
+export const NoLibraryExists = "This library no longer exists";
 export const NoBook = "We didn't find any available book with this sku";
 export const SameLibrary = "Books must belong to the same library";
 
@@ -66,14 +68,15 @@ export const readerColumns = [
 export const bookColumns = [
   { name: "name", value: "Name" },
   { name: "sku", value: "Sku" },
-  { name: "library", value: "Library" },
-  { name: "city", value: "City" },
+  { name: "category", value: "Category" },
   { name: "place", value: "Place" },
 ];
 
 export const initialLoan: LoanState = {
   status: PrismaStatus.BORROWED,
   reader: null,
+  city: "",
+  library: "",
   books: [],
 };
 

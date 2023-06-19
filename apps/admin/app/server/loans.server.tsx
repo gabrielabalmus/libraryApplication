@@ -23,13 +23,17 @@ import {
 } from "~/transformers/loans.transformer";
 import prisma from "prisma";
 import { Status } from "@prisma/client";
-import { isEmpty } from "lodash";
 import { LoanFilteredStatuses } from "~/components/Loans/Loans.helper";
 import { sendEmail } from "./mail.server";
 import { ReservedLoanEmail } from "@/templates/ReservedLoan.email";
 import { BorrowedLoanEmail } from "@/templates/BorrowedLoan.email";
 import { CancelledLoanEmail } from "@/templates/CancelledLoan.email";
-import { addDateDays, formatShortDate, getCorrectYear } from "@/utils/common";
+import {
+  addDateDays,
+  checkArraysAreEqual,
+  formatShortDate,
+  getCorrectYear,
+} from "@/utils/common";
 
 export const getPaginatedLoans = async ({
   page,
@@ -169,6 +173,14 @@ export const getSingleLoan = async ({ loanId }: LoanIdProps) => {
       },
       select: {
         number: true,
+        cityId: true,
+        libraryId: true,
+        library: {
+          select: {
+            name: true,
+            deleted: true,
+          },
+        },
         reader: {
           select: {
             id: true,
@@ -187,14 +199,14 @@ export const getSingleLoan = async ({ loanId }: LoanIdProps) => {
                 book: {
                   select: {
                     name: true,
+                    category: {
+                      select: {
+                        name: true,
+                      },
+                    },
                   },
                 },
-                library: {
-                  select: {
-                    name: true,
-                    city: { select: { name: true } },
-                  },
-                },
+                libraryId: true,
                 SKU: true,
                 place: true,
                 deleted: true,
@@ -218,7 +230,11 @@ export const getSingleLoan = async ({ loanId }: LoanIdProps) => {
   }
 };
 
-const forEachLoanBook = async ({ loanBooks, loanId }: EachLoanBook) => {
+const forEachLoanBook = async ({
+  loanBooks,
+  loanId,
+  libraryId,
+}: EachLoanBook) => {
   await prisma.loanBooks.deleteMany({
     where: {
       loanId,
@@ -226,90 +242,73 @@ const forEachLoanBook = async ({ loanBooks, loanId }: EachLoanBook) => {
     },
   });
 
-  const loanedBooks = await prisma.loans.findFirst({
+  const alreadyBooked = await prisma.loanBooks.findMany({
     where: {
-      id: loanId,
+      loanId,
     },
     select: {
-      books: {
-        select: {
-          bookLibraryId: true,
-          bookLibrary: { select: { libraryId: true } },
-        },
-      },
+      bookLibraryId: true,
     },
   });
 
-  const alreadyLoaned = new Set(
-    loanedBooks?.books.map((item) => item.bookLibraryId)
-  );
+  if (!alreadyBooked) throw new Error(ErrorMessage);
 
-  const newBooks = loanBooks
-    .filter((item) => !alreadyLoaned.has(item.id))
-    .map((item) => ({
-      bookLibraryId: item.id,
-      loanId,
-    }));
+  const alreadyBookedList = alreadyBooked.map((item) => item.bookLibraryId);
+  const loanBooksList = loanBooks.map((item) => item.id);
 
-  let libraryId =
-    loanedBooks?.books && !isEmpty(loanedBooks.books)
-      ? loanedBooks.books[0].bookLibrary.libraryId
-      : "";
+  if (checkArraysAreEqual(alreadyBookedList, loanBooksList)) return;
+
+  const bookLibraries = await prisma.bookLibraries.findMany({
+    where: {
+      id: { in: loanBooks.map((item) => item.id) },
+      libraryId,
+      NOT: [
+        {
+          loanBooks: {
+            some: {
+              loan: { status: { in: [Status.BORROWED, Status.RESERVED] } },
+            },
+          },
+        },
+      ],
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!bookLibraries) throw new Error(ErrorMessage);
 
   let error = false;
 
-  for (const item of newBooks) {
-    const alreadyLoaned = await prisma.loanBooks.findFirst({
-      where: {
-        bookLibraryId: item.bookLibraryId,
-        loan: { status: { in: [Status.BORROWED, Status.RESERVED] } },
-      },
-      select: {
-        id: true,
-      },
-    });
+  const bookLibrariesList = bookLibraries.map((item) => item.id);
+  const loanBooksList2 = loanBooks
+    .filter((item) => !alreadyBookedList.includes(item.id))
+    .map((item) => item.id);
 
-    if (alreadyLoaned) {
-      error = true;
-      continue;
-    }
+  if (!checkArraysAreEqual(bookLibrariesList, loanBooksList2)) error = true;
 
-    const libraryBook = await prisma.bookLibraries.findFirst({
-      where: {
-        id: item.bookLibraryId,
-        deleted: false,
-      },
-      select: {
-        libraryId: true,
-      },
-    });
+  const newLoanBooks = bookLibraries.map((item) => ({
+    bookLibraryId: item.id,
+    loanId,
+  }));
 
-    if (!libraryBook) {
-      error = true;
-      continue;
-    }
+  const createdLoanBooks = await prisma.loanBooks.createMany({
+    data: newLoanBooks,
+  });
 
-    if (!libraryId) {
-      libraryId = libraryBook.libraryId;
-    } else if (libraryId !== libraryBook.libraryId) {
-      error = true;
-      continue;
-    }
-
-    const createdLoanBooks = await prisma.loanBooks.create({
-      data: item,
-    });
-
-    if (!createdLoanBooks) {
-      error = true;
-      continue;
-    }
-  }
+  if (!createdLoanBooks) error = true;
 
   if (error) throw new Error(ErrorMessage);
 };
 
-export const createLoan = async ({ reader, books, status }: LoanState) => {
+export const createLoan = async ({
+  reader,
+  city,
+  library,
+  books,
+  status,
+}: LoanState) => {
   try {
     const statusesOrder = LoanFilteredStatuses();
 
@@ -333,6 +332,8 @@ export const createLoan = async ({ reader, books, status }: LoanState) => {
       data: {
         number,
         status,
+        cityId: city,
+        libraryId: library,
         readerId: (reader as ReaderState).id,
         borrowedAt: status === Status.BORROWED ? new Date() : undefined,
       },
@@ -340,7 +341,11 @@ export const createLoan = async ({ reader, books, status }: LoanState) => {
 
     if (!loan) throw new Error(ErrorCreate);
 
-    await forEachLoanBook({ loanBooks: books, loanId: loan.id });
+    await forEachLoanBook({
+      loanBooks: books,
+      loanId: loan.id,
+      libraryId: loan.libraryId,
+    });
 
     if (status === Status.RESERVED) {
       const byDate = addDateDays(2);
@@ -381,6 +386,8 @@ export const createLoan = async ({ reader, books, status }: LoanState) => {
 export const updateLoan = async ({
   loanId,
   reader,
+  city,
+  library,
   books,
   status,
 }: LoanState & { loanId: string }) => {
@@ -420,6 +427,8 @@ export const updateLoan = async ({
       },
       data: {
         status,
+        cityId: city,
+        libraryId: library,
         readerId: (reader as ReaderState).id,
         borrowedAt:
           status === Status.BORROWED && status !== currentLoan.status
@@ -435,7 +444,7 @@ export const updateLoan = async ({
 
     if (!loan) throw new Error(ErrorUpdate);
 
-    await forEachLoanBook({ loanBooks: books, loanId });
+    await forEachLoanBook({ loanBooks: books, loanId, libraryId: library });
 
     if (status === Status.BORROWED && status !== currentLoan.status) {
       const byDate = addDateDays(30);

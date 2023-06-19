@@ -451,14 +451,14 @@ export const getBookBySku = async ({ sku }: BookBySkuProps) => {
         book: {
           select: {
             name: true,
+            category: {
+              select: {
+                name: true,
+              },
+            },
           },
         },
-        library: {
-          select: {
-            name: true,
-            city: { select: { name: true } },
-          },
-        },
+        libraryId: true,
         SKU: true,
         place: true,
         deleted: true,

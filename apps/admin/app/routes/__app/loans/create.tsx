@@ -26,6 +26,8 @@ import { createLoan } from "~/server/loans.server";
 import { isBoolean, isString } from "lodash";
 import { Status } from "@prisma/client";
 import Container from "@mui/material/Container";
+import { getLibraries } from "~/server/libraries.server";
+import { getCities } from "~/server/cities.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -38,6 +40,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     const url = new URL(request.url);
     const email = url.searchParams.get("email") || "";
     const sku = url.searchParams.get("sku") || "";
+    const city = url.searchParams.get("city");
 
     if (email) {
       const reader = await getReaderByEmail({ email });
@@ -49,7 +52,14 @@ export const loader = async ({ request }: LoaderArgs) => {
       return goodRequest({ book });
     }
 
-    return {};
+    if (city) {
+      const libraries = await getLibraries(city);
+      return goodRequest({ libraries });
+    }
+
+    const cities = await getCities();
+
+    return goodRequest({ cities });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -69,10 +79,18 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
     if (intent === "create") {
       const status = formData.get("status");
+      const library = formData.get("library");
+      const city = formData.get("city");
       const reader = formData.get("reader");
       const books = formData.get("books");
 
-      if (!isString(status) || !isString(reader) || !isString(books)) {
+      if (
+        !isString(status) ||
+        !isString(city) ||
+        !isString(library) ||
+        !isString(reader) ||
+        !isString(books)
+      ) {
         return badRequest({
           message: ErrorCreate,
           success: false,
@@ -84,6 +102,8 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
       const fields = {
         status: status as Status,
+        city,
+        library,
         reader: objectReader,
         books: objectBooks,
       };
@@ -144,9 +164,11 @@ const CreateLoan: React.FC = () => {
     const stringBooks = JSON.stringify(loan.books);
     const stringPenalty = JSON.stringify(loan.penalty);
 
+    const { libraryInfo, ...rest } = loan;
+
     submit(
       {
-        ...loan,
+        ...rest,
         reader: stringReader,
         books: stringBooks,
         penalty: stringPenalty,

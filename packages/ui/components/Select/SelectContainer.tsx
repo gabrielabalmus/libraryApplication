@@ -13,6 +13,7 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
   onChange,
   width = "inherit",
   placeholder = "",
+  disabled = false,
 }) => {
   const handleOnChange = (event: any) => {
     onChange(event.target.value);
@@ -27,6 +28,7 @@ const SelectContainer: React.FC<SelectContainerProps> = ({
         onChange={handleOnChange}
         variant="standard"
         placeholder={placeholder}
+        disabled={disabled}
       >
         {options.map((item, index) => (
           <MenuItem key={index} value={item.value}>

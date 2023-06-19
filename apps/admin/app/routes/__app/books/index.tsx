@@ -187,7 +187,7 @@ const PaginatedBooks: React.FC = () => {
 
     if (search) params = { ...params, search };
     if (library) params = { ...params, library };
-    if (value) params = { ...params, category: value?.name || "" };
+    if (value) params = { ...params, category: value.name };
 
     setSearchParams(params);
   };
@@ -202,7 +202,7 @@ const PaginatedBooks: React.FC = () => {
 
     if (search) params = { ...params, search };
     if (category) params = { ...params, category };
-    if (value) params = { ...params, library: value?.name || "" };
+    if (value) params = { ...params, library: value.name };
 
     setSearchParams(params);
   };

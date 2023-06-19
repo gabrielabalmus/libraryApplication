@@ -16,6 +16,7 @@ import {
   fromSingleLibraryResponse,
 } from "~/transformers/libraries.transformer";
 import prisma from "prisma";
+import { Status } from "@prisma/client";
 
 export const getPaginatedLibraries = async ({
   page,
@@ -221,6 +222,14 @@ export const deleteLibrary = async ({ libraryId }: LibraryIdProps) => {
             },
           },
         },
+        loans: {
+          updateMany: {
+            where: { status: Status.RESERVED },
+            data: {
+              status: Status.CANCELLED,
+            },
+          },
+        },
       },
     });
 
@@ -232,12 +241,16 @@ export const deleteLibrary = async ({ libraryId }: LibraryIdProps) => {
   }
 };
 
-export const getLibraries = async () => {
+export const getLibraries = async (city?: string) => {
   try {
     const libraries = await prisma.libraries.findMany({
       select: {
         id: true,
         name: true,
+      },
+      where: {
+        cityId: city || undefined,
+        deleted: false,
       },
     });
 

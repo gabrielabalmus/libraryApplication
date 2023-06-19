@@ -102,3 +102,7 @@ export const Months = [
   { value: 11, name: "November" },
   { value: 12, name: "December" },
 ];
+
+export const checkArraysAreEqual = (array1: any[], array2: any[]) =>
+  array1.length === array2.length &&
+  array1.some((item: any) => array2.includes(item));

@@ -40,13 +40,13 @@ export const fromSingleBookResponse = (book: BookResponse): BookState => ({
 });
 
 export const fromBookBySku = (bookBySku: BookBySkuResponse): BookBySkuState => {
-  const { id, book, library, SKU, place, deleted } = bookBySku;
+  const { id, book, SKU, libraryId, place, deleted } = bookBySku;
 
   return {
     id,
     name: book.name,
-    library: library.name,
-    city: library.city.name,
+    category: book.category.name,
+    library: libraryId,
     sku: SKU,
     place,
     deleted,

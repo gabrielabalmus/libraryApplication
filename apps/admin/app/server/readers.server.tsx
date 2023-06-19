@@ -255,23 +255,6 @@ export const deleteReader = async ({ readerId }: ReaderIdProps) => {
   }
 };
 
-export const getReaderLoans = async ({ readerId }: ReaderIdProps) => {
-  try {
-    const readerLoans = await prisma.loans.findMany({
-      where: { readerId },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!readerLoans) throw new Error(ErrorMessage);
-
-    return readerLoans;
-  } catch (err) {
-    throw new Error(ErrorMessage);
-  }
-};
-
 export const getReaderByEmail = async ({ email }: ReaderByEmailProps) => {
   try {
     if (!email) return null;

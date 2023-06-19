@@ -12,18 +12,18 @@ export interface LoansResponse {
 
 export interface BookResponse {
   name: string;
+  category: CategoryResponse;
 }
 
-export interface LibraryResponse {
+export interface CategoryResponse {
   name: string;
-  city: { name: string };
 }
 
 export interface BookByLibraryResponse {
   id: string;
   book: BookResponse;
-  library: LibraryResponse;
   SKU: string;
+  libraryId: string;
   place: string;
   deleted: boolean;
 }
@@ -41,9 +41,17 @@ export interface ReaderResponse {
   deleted: boolean;
 }
 
+export interface LibraryInfoState {
+  name: string;
+  deleted: boolean;
+}
+
 export interface LoanResponse {
   number: string;
   reader: ReaderResponse;
+  cityId: string;
+  libraryId: string;
+  library: LibraryInfoState;
   books: BookLibraryResponse[];
   status: Status;
   penalty: Penalty | null;
@@ -65,8 +73,8 @@ export interface BookLibraryState {
   id: string;
   name: string;
   sku: string;
+  category: string;
   library: string;
-  city: string;
   place: string;
   deleted: boolean;
 }
@@ -74,6 +82,9 @@ export interface BookLibraryState {
 export interface LoanState {
   number?: string;
   reader: ReaderState | null;
+  city: string;
+  library: string;
+  libraryInfo?: LibraryInfoState;
   books: BookLibraryState[];
   status: Status;
   penalty?: Penalty;
@@ -89,6 +100,8 @@ export interface ReaderByEmailProps {
 export interface ErrorState {
   reader?: string;
   books?: string;
+  city?: string;
+  library?: string;
   status?: string;
 }
 
@@ -109,6 +122,7 @@ export interface LoansReaderProps {
   setLoan: Dispatch<SetStateAction<LoanState>>;
   error: ErrorState;
   setError: Dispatch<SetStateAction<ErrorState>>;
+  disabled?: boolean;
 }
 
 export interface LoansDetailsProps {
@@ -168,6 +182,7 @@ export interface FilterState {
 export interface EachLoanBook {
   loanBooks: BookLibraryState[];
   loanId: string;
+  libraryId: string;
 }
 
 export interface LoansBooksProps {
@@ -175,6 +190,7 @@ export interface LoansBooksProps {
   setLoan: Dispatch<SetStateAction<LoanState>>;
   error: ErrorState;
   setError: Dispatch<SetStateAction<ErrorState>>;
+  disabled?: boolean;
 }
 
 export interface FilteredStatuses {

@@ -5,11 +5,15 @@ import { RequiredField } from "~/const";
 
 export const handleLoanErrors = (formData: LoanState) => {
   let errors: ErrorState = {};
-  const { reader, books, status } = formData;
+  const { reader, city, library, books, status } = formData;
 
   if (isEmpty(reader)) errors.reader = RequiredField;
 
   if (isEmpty(books)) errors.books = RequiredField;
+
+  if (isEmpty(city)) errors.city = RequiredField;
+
+  if (isEmpty(library)) errors.library = RequiredField;
 
   if (isEmpty(status)) errors.status = RequiredField;
 

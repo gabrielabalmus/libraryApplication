@@ -13,6 +13,7 @@ export interface AutocompleteContainerProps {
   errorMessage?: string;
   width?: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export interface AutocompleteOptions {

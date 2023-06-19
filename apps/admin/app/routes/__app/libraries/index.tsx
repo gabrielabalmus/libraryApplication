@@ -178,7 +178,7 @@ const PaginatedLibraries: React.FC = () => {
     let params: URLSearchParamsInit = {};
 
     if (search) params = { ...params, search };
-    if (value) params = { ...params, city: value?.name || "" };
+    if (value) params = { ...params, city: value.name };
 
     setSearchParams(params);
   };

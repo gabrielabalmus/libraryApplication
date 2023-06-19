@@ -50,6 +50,7 @@ model Libraries {
   schedule      LibrarySchedule
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+  loans         Loans[]
 }
 
 model Books {
@@ -106,6 +107,7 @@ model Cities {
   value     String      @unique
   libraries Libraries[]
   readers   Readers[]
+  loans     Loans[]
 }
 
 model Readers {
@@ -142,6 +144,10 @@ model Loans {
   readerId   String      @db.ObjectId
   reader     Readers     @relation(fields: [readerId], references: [id])
   books      LoanBooks[]
+  cityId     String      @db.ObjectId
+  city       Cities      @relation(fields: [cityId], references: [id])
+  libraryId  String      @db.ObjectId
+  library    Libraries   @relation(fields: [libraryId], references: [id])
   penalty    Penalty?
   borrowedAt DateTime?
   returnedAt DateTime?

@@ -32,6 +32,8 @@ import { getBookBySku } from "~/server/books.server";
 import { handleLoanErrors } from "~/components/Loans/Loans.helper";
 import { Status } from "@prisma/client";
 import Container from "@mui/material/Container";
+import { getCities } from "~/server/cities.server";
+import { getLibraries } from "~/server/libraries.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -45,6 +47,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     const loanId = url.pathname.split("/").pop();
     const email = url.searchParams.get("email") || "";
     const sku = url.searchParams.get("sku") || "";
+    const city = url.searchParams.get("city");
 
     if (email) {
       const reader = await getReaderByEmail({ email });
@@ -56,6 +59,12 @@ export const loader = async ({ request }: LoaderArgs) => {
       return goodRequest({ book });
     }
 
+    if (city) {
+      const libraries = await getLibraries(city);
+
+      return goodRequest({ libraries });
+    }
+
     if (!isString(loanId)) {
       return badRequest({
         message: ErrorGetSingle,
@@ -63,11 +72,16 @@ export const loader = async ({ request }: LoaderArgs) => {
       });
     }
 
-    const loan = await getSingleLoan({
-      loanId,
-    });
+    const [loan, cities] = await Promise.all([
+      await getSingleLoan({
+        loanId,
+      }),
+      getCities(),
+    ]);
 
-    return goodRequest({ loan });
+    const libraries = await getLibraries(loan.city);
+
+    return goodRequest({ loan, cities, libraries });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -91,6 +105,8 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
     if (intent === "update") {
       const status = formData.get("status");
+      const library = formData.get("library");
+      const city = formData.get("city");
       const reader = formData.get("reader");
       const books = formData.get("books");
 
@@ -99,6 +115,8 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
       if (
         !isString(loanId) ||
+        !isString(city) ||
+        !isString(library) ||
         !isString(status) ||
         !isString(reader) ||
         !isString(books)
@@ -114,6 +132,8 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
       const fields = {
         status: status as Status,
+        city,
+        library,
         reader: objectReader,
         books: objectBooks,
       };
@@ -171,9 +191,11 @@ const UpdateLoan: React.FC = () => {
     const stringBooks = JSON.stringify(loan.books);
     const stringPenalty = JSON.stringify(loan.penalty);
 
+    const { libraryInfo, ...rest } = loan;
+
     submit(
       {
-        ...loan,
+        ...rest,
         reader: stringReader,
         books: stringBooks,
         penalty: stringPenalty,

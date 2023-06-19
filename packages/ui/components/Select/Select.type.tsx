@@ -12,6 +12,7 @@ export interface SelectContainerProps {
   errorMessage?: string;
   width?: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export interface SelectOptions {
