@@ -1,10 +1,10 @@
 {
-  "name": "admin",
+  "name": "library",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "build": "remix build",
-    "dev": "remix dev --port 3000",
+    "dev": "remix dev --port 3001",
     "start": "remix-serve build"
   },
   "dependencies": {

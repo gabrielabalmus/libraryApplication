@@ -1,4 +1,8 @@
-import { ReservedLoanProps } from "./templates.type";
+export interface ReservedLoanProps {
+  reader: string;
+  byDate: string;
+  number: string;
+}
 
 export const ReservedLoanEmail = ({
   reader,

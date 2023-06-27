@@ -1,0 +1,26 @@
+{
+  "extends": "../../packages/tsconfig/remix.json",
+  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./app/*"],
+      "@/components/*": ["../../packages/ui/components/*"],
+      "@/templates/*": ["../../packages/ui/templates/*"],
+      "@/utils/*": ["../../packages/ui/utils/*"],
+      "@/theme/*": ["../../packages/ui/theme/*"],
+      "prisma": ["../../packages/database/prisma"],
+    },
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2019"],
+    "strict": true,
+    "target": "ES2019",
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node"
+  }
+}

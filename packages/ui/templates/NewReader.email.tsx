@@ -1,4 +1,7 @@
-import { NewReaderProps } from "./templates.type";
+export interface NewReaderProps {
+  reader: string;
+  password: string;
+}
 
 export const NewReaderEmail = ({ reader, password }: NewReaderProps) => `<html>
 <head>

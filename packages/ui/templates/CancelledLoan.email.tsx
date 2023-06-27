@@ -1,4 +1,7 @@
-import { CancelledLoanProps } from "./templates.type";
+export interface CancelledLoanProps {
+  reader: string;
+  number: string;
+}
 
 export const CancelledLoanEmail = ({
   reader,

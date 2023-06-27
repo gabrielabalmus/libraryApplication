@@ -1,4 +1,8 @@
-import { BorrowedLoanProps } from "./templates.type";
+export interface BorrowedLoanProps {
+  reader: string;
+  byDate: string;
+  number: string;
+}
 
 export const BorrowedLoanEmail = ({
   reader,

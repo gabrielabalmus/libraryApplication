@@ -2,7 +2,7 @@ import { getSession } from "./session.server";
 import { LoginState } from "~/types/Login.type";
 import bcrypt from "bcryptjs";
 import prisma from "prisma";
-import { ErrorSubmit, WrongLoginData } from "~/const";
+import { ErrorSubmit, WrongLoginData } from "~/components/Login/Login.const";
 
 export const getUserSession = (request: Request) => {
   return getSession(request.headers.get("Cookie"));

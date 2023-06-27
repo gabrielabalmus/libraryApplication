@@ -6,7 +6,7 @@ import {
 } from "@remix-run/node";
 import { handleLoginErrors } from "~/components/Login/Login.helper";
 import LoginForm from "~/components/Login/Form";
-import { ErrorMessage, ErrorSubmit } from "~/const";
+import { ErrorMessage } from "~/const";
 import { badRequest } from "~/server/request.server";
 import { createUserSession } from "~/server/session.server";
 import { getUserId, login } from "~/server/users.server";
@@ -14,7 +14,7 @@ import { isString } from "lodash";
 import { useActionData, useSubmit } from "@remix-run/react";
 import { LoginState, LoginSubmitProps } from "~/types/Login.type";
 import { useEffect, useState } from "react";
-import { initialLogin } from "~/components/Login/Login.const";
+import { ErrorSubmit, initialLogin } from "~/components/Login/Login.const";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);

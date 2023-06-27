@@ -9,6 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev:admin": "turbo run dev --scope=admin",
+    "dev:library": "turbo run dev --scope=library",
     "dev": "turbo run dev --parallel",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:generate": "prisma generate",
