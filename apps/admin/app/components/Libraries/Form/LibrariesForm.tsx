@@ -89,7 +89,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
   return (
     <Paper className="overview-paper">
       <StyleFlex>
-        <ColumnFlex gap="40px">
+        <ColumnFlex gap="40px" flex="1">
           <Typography variant="h3">{Details}</Typography>
           <StyledColumnFlex>
             <Input

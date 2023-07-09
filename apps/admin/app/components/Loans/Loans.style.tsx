@@ -79,6 +79,14 @@ export const StyleFlex = styled(Flex)`
   }
 `;
 
+export const StyleColumnFlex = styled(Flex)`
+  gap: 20px;
+  @media (max-width: 950px) {
+    flex-direction: column;
+  }
+`;
+
+
 export const DateColumnFlex = styled(ColumnFlex)`
   gap: 10px;
   background-color: ${collorPalette.grey.lighter};

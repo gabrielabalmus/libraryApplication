@@ -52,7 +52,7 @@ export const DeletedBook = "This book no longer exists";
 export const BookNoLibrary = "This book belongs to another library";
 export const NoLibraryExists = "This library no longer exists";
 export const NoBook = "We didn't find any available book with this sku";
-export const SameLibrary = "Books must belong to the same library";
+export const SameLibrary = "Book must belong to the library";
 
 export const BooksDescription = "Books must belong to a single library";
 export const PenaltyDescription =

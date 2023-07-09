@@ -235,12 +235,14 @@ const forEachLoanBook = async ({
   loanId,
   libraryId,
 }: EachLoanBook) => {
-  await prisma.loanBooks.deleteMany({
+  const deleteLoans = await prisma.loanBooks.deleteMany({
     where: {
       loanId,
       bookLibraryId: { notIn: loanBooks.map((item) => item.id) },
     },
   });
+
+  if (!deleteLoans) throw new Error(ErrorMessage);
 
   const alreadyBooked = await prisma.loanBooks.findMany({
     where: {
@@ -262,6 +264,7 @@ const forEachLoanBook = async ({
     where: {
       id: { in: loanBooks.map((item) => item.id) },
       libraryId,
+      deleted: false,
       NOT: [
         {
           loanBooks: {
@@ -281,12 +284,13 @@ const forEachLoanBook = async ({
 
   let error = false;
 
+  // check if new added books are same as conditioned books from query
   const bookLibrariesList = bookLibraries.map((item) => item.id);
-  const loanBooksList2 = loanBooks
+  const newLoanBooksList = loanBooks
     .filter((item) => !alreadyBookedList.includes(item.id))
     .map((item) => item.id);
 
-  if (!checkArraysAreEqual(bookLibrariesList, loanBooksList2)) error = true;
+  if (!checkArraysAreEqual(bookLibrariesList, newLoanBooksList)) error = true;
 
   const newLoanBooks = bookLibraries.map((item) => ({
     bookLibraryId: item.id,

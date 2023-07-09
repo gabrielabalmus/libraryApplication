@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "remix build",
-    "dev": "remix dev --port 3000",
+    "dev": "remix dev",
     "start": "remix-serve build"
   },
   "dependencies": {

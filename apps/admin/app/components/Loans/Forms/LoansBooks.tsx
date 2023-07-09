@@ -12,6 +12,7 @@ import {
   StyledSearch,
   StyledFormHelperText,
   StyledIconButton,
+  StyleColumnFlex,
 } from "../Loans.style";
 import { useFetcher, useLoaderData, useParams } from "@remix-run/react";
 import { isEmpty, isEqual, isNull } from "lodash";
@@ -89,7 +90,9 @@ const LoansBooks: React.FC<LoansBooksProps> = ({
       return;
     }
 
-    const duplicate = books.find((item) => item.sku === search);
+    const duplicate = books.find(
+      (item) => !item.deleted && item.sku === search
+    );
 
     if (duplicate) {
       setSearchError(DuplicatedBook);
@@ -181,33 +184,47 @@ const LoansBooks: React.FC<LoansBooksProps> = ({
 
   return (
     <ColumnFlex gap="20px">
-      <Autocomplete
-        onChange={onCityChange}
-        options={cities}
-        value={loan.city}
-        placeholder={"City*"}
-        errorMessage={error.city}
-        width="200px"
-        disabled={disabled}
-      />
       {loan.libraryInfo?.deleted ? (
-        <Typography variant="h2">
-          This loan belonged to <b>{loan.libraryInfo.name}</b>, but this library
-          no longer exists
-        </Typography>
-      ) : (
-        loan.city && (
+        <ColumnFlex gap="20px">
           <Autocomplete
-            onChange={onLibraryChange}
-            options={libraries}
-            value={loan.library}
-            errorMessage={error.library}
-            placeholder={"Library*"}
+            onChange={onCityChange}
+            options={cities}
+            value={loan.city}
+            placeholder="City*"
+            errorMessage={error.city}
             width="200px"
             disabled={disabled}
           />
-        )
+          <Typography variant="h2">
+            This loan belonged to <b>{loan.libraryInfo.name}</b>, but this
+            library no longer exists
+          </Typography>
+        </ColumnFlex>
+      ) : (
+        <StyleColumnFlex>
+          <Autocomplete
+            onChange={onCityChange}
+            options={cities}
+            value={loan.city}
+            placeholder="City*"
+            errorMessage={error.city}
+            width="200px"
+            disabled={disabled}
+          />
+          {loan.city && (
+            <Autocomplete
+              onChange={onLibraryChange}
+              options={libraries}
+              value={loan.library}
+              errorMessage={error.library}
+              placeholder="Library*"
+              width="200px"
+              disabled={disabled}
+            />
+          )}
+        </StyleColumnFlex>
       )}
+
       {loan.library && (
         <>
           {!disabled && (

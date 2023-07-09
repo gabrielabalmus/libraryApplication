@@ -8,12 +8,6 @@ import { useNavigate, useLocation } from "@remix-run/react";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { MenuList } from "./Menu.const";
 
-export const handleMenuIndex = (pathName: string) => {
-  return MenuList.findIndex(
-    (item) => item.url.split("/")[1] === pathName.split("/")[1]
-  );
-};
-
 export const menuItems = (onLogoutClick: () => void) => {
   const navigate = useNavigate();
 
@@ -47,7 +41,7 @@ export const menuItems = (onLogoutClick: () => void) => {
             <LogoutIcon />
           </ListItemIcon>
 
-          <ListItemText primary={"Logout"} />
+          <ListItemText primary="Logout" />
         </StyledItemButton>
       </ListItem>
     </StyledMenuList>

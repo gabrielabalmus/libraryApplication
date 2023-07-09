@@ -11,6 +11,7 @@ import {
   BookState,
   EachBookLibrary,
   BookBySkuProps,
+  BookLibrariesState,
 } from "~/types/Books.type";
 import {
   fromBookBySku,
@@ -19,8 +20,6 @@ import {
 } from "~/transformers/books.transformer";
 import prisma from "prisma";
 import { ErrorMessage } from "~/const";
-import { isEmpty } from "lodash";
-import { toFindDuplicates } from "@/utils/common";
 
 export const getPaginatedBooks = async ({
   page,
@@ -170,15 +169,42 @@ const forEachBookLibrary = async ({
   bookId,
 }: EachBookLibrary) => {
   const idList: string[] = [];
-  const skuList: string[] = [];
 
-  bookLibraries.forEach((item) => {
-    if (item.id) idList.push(item.id);
-
-    if (item.sku) skuList.push(item.sku);
+  const skuList = await prisma.bookLibraries.findMany({
+    where: {
+      bookId: { not: bookId },
+      SKU: { in: bookLibraries.map((item) => item.sku) },
+      deleted: false,
+    },
+    select: {
+      SKU: true,
+    },
   });
 
-  const skuDuplicates = toFindDuplicates(skuList);
+  if (!skuList) throw new Error(ErrorMessage);
+
+  const filterBookLibraries = bookLibraries.reduce(
+    (previousValue: BookLibrariesState[], currentValue: BookLibrariesState) => {
+      const duplicateSku = previousValue.find(
+        (item) => item.sku === currentValue.sku
+      );
+
+      const skuAlreadyExists = skuList.find(
+        (item) => item.SKU === currentValue.sku
+      );
+
+      if (duplicateSku || skuAlreadyExists) return previousValue;
+
+      if (currentValue.id) idList.push(currentValue.id);
+
+      return [...previousValue, currentValue];
+    },
+    []
+  );
+
+  let error = false;
+
+  if (filterBookLibraries.length !== bookLibraries.length) error = true;
 
   const deleteBookLibraries = await prisma.bookLibraries.updateMany({
     where: {
@@ -195,26 +221,8 @@ const forEachBookLibrary = async ({
 
   if (!deleteBookLibraries) throw new Error(ErrorMessage);
 
-  let error = false;
-
-  for (const item of bookLibraries) {
+  for (const item of filterBookLibraries) {
     if (item.id) {
-      const bookBySKU = await prisma.bookLibraries.findFirst({
-        where: {
-          SKU: item.sku,
-          deleted: false,
-          id: { not: item.id },
-        },
-        select: {
-          id: true,
-        },
-      });
-
-      if (bookBySKU && !isEmpty(skuDuplicates)) {
-        error = true;
-        continue;
-      }
-
       const updatedBookLibrary = await prisma.bookLibraries.updateMany({
         where: {
           id: item.id,
@@ -230,24 +238,8 @@ const forEachBookLibrary = async ({
 
       if (!updatedBookLibrary) {
         error = true;
-        continue;
       }
 
-      continue;
-    }
-
-    const bookBySKU = await prisma.bookLibraries.findFirst({
-      where: {
-        SKU: item.sku,
-        deleted: false,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (bookBySKU) {
-      error = true;
       continue;
     }
 
@@ -262,7 +254,6 @@ const forEachBookLibrary = async ({
 
     if (!createdBookLibrary) {
       error = true;
-      continue;
     }
   }
 
