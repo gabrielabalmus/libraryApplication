@@ -1,7 +1,7 @@
 import Typography, { TypographyProps } from "@mui/material/Typography";
 import { styled as MuiStyled } from "@mui/material/styles";
 import styled from "styled-components";
-import Flex from "@/components/Flex";
+import Flex, { ColumnFlex } from "@/components/Flex";
 
 export const StyledTypography = MuiStyled(Typography)<TypographyProps>(
   ({ theme }) =>
@@ -23,4 +23,10 @@ export const StyledFlexButton = styled(Flex)`
     flex-direction: column;
     align-items: center;
   }
+`;
+
+export const StyledColumnFlex = styled(ColumnFlex)`
+  gap: 40px;
+  flex: 1;
+  width: 100%;
 `;

@@ -7,12 +7,18 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+// @ts-ignore
 import GlobalStyle from "@/theme/globalStyle.css";
 import { theme } from "@/theme/theme";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 
 export const links: LinksFunction = () => {
   return [
+    {
+      rel: "icon",
+      href: "/favicon.ico",
+      type: "image/x-icon",
+    },
     { rel: "stylesheet", href: GlobalStyle },
     {
       rel: "stylesheet",
@@ -23,7 +29,7 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
-  title: "Library",
+  title: "One library",
   viewport: "width=device-width,initial-scale=1",
 });
 

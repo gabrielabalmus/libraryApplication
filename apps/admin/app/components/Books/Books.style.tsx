@@ -20,7 +20,6 @@ export const StyledColumnFlex = styled(ColumnFlex)`
 
 export const StyleFlex = styled(Flex)`
   gap: 50px;
-  max-width: 750px;
   @media (max-width: 900px) {
     gap: 20px;
     flex-direction: column;
@@ -29,7 +28,6 @@ export const StyleFlex = styled(Flex)`
 
 export const UnitsFlex = styled(Flex)`
   gap: 20px;
-  max-width: 710px;
   background-color: ${collorPalette.grey.lightest};
   padding: 20px;
   border-radius: 10px;

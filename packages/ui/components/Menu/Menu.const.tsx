@@ -6,7 +6,7 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import HomeWorkIcon from "@mui/icons-material/HomeWork";
 
 export const menuWidth = 240;
-export const menuTitle = "Online library";
+export const menuTitle = "One library";
 
 export const MenuList: MenuListType[] = [
   {

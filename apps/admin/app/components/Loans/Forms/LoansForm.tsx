@@ -22,6 +22,7 @@ import LoansDetails from "./LoansDetails";
 import Select from "@/components/Select";
 import { LoanFilteredStatuses } from "../Loans.helper";
 import { Status } from "@prisma/client";
+import { StyledColumnReverse } from "../Loans.style";
 
 const LoansForm: React.FC<LoansFormProps> = ({ onSubmit, setLoan, loan }) => {
   const navigate = useNavigate();
@@ -62,20 +63,28 @@ const LoansForm: React.FC<LoansFormProps> = ({ onSubmit, setLoan, loan }) => {
 
   return (
     <Paper className="overview-paper">
-      <ColumnFlex gap="40px" maxWidth="800px">
-        {loan.status && (
-          <AlignedFlex gap="20px">
-            <Typography variant="h3">Status</Typography>
-            <Select
-              value={loan.status}
-              onChange={changeStatus}
-              options={filteredStatuses}
-              width="140px"
-              errorMessage={errors.status}
-              disabled={disabled}
-            />
-          </AlignedFlex>
-        )}
+      <ColumnFlex gap="40px">
+        <StyledColumnReverse>
+          {loan.status && (
+            <AlignedFlex gap="20px">
+              <Typography variant="h3">Status</Typography>
+              <Select
+                value={loan.status}
+                onChange={changeStatus}
+                options={filteredStatuses}
+                width="140px"
+                errorMessage={errors.status}
+                disabled={disabled}
+              />
+            </AlignedFlex>
+          )}
+
+          {loan.number && (
+            <AlignedFlex gap="20px">
+              <Typography variant="h3">Number {loan.number}</Typography>
+            </AlignedFlex>
+          )}
+        </StyledColumnReverse>
 
         {loan.createdAt && (
           <>

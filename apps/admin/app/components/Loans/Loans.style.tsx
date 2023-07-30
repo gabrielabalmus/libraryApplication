@@ -1,4 +1,4 @@
-import Flex, { ColumnFlex } from "@/components/Flex";
+import Flex, { ColumnFlex, SpaceBetweenFlex } from "@/components/Flex";
 import collorPalette from "@/theme/colorPalette";
 import styled from "styled-components";
 import { styled as MuiStyled } from "@mui/material/styles";
@@ -86,7 +86,6 @@ export const StyleColumnFlex = styled(Flex)`
   }
 `;
 
-
 export const DateColumnFlex = styled(ColumnFlex)`
   gap: 10px;
   background-color: ${collorPalette.grey.lighter};
@@ -101,3 +100,10 @@ export const StyledTypography = MuiStyled(Typography)<TypographyProps>(
       },
     })
 );
+
+export const StyledColumnReverse = styled(SpaceBetweenFlex)`
+  gap: 40px;
+  @media (max-width: 900px) {
+    flex-direction: column-reverse;
+  }
+`;

@@ -15,11 +15,15 @@ import { ColumnFlex } from "@/components/Flex";
 import TimePicker from "@/components/TimePicker";
 import { Dayjs } from "dayjs";
 import { Details, ScheduleTitle } from "../Libraries.const";
-import { StyledFlexButton, StyledTypography } from "../Libraries.style";
+import {
+  StyledColumnFlex,
+  StyledFlexButton,
+  StyledTypography,
+} from "../Libraries.style";
 import { AlignedFlex } from "@/components/Flex/Flex";
 import Autocomplete from "@/components/Autocomplete";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
-import { StyledColumnFlex, StyleFlex } from "~/components/Books/Books.style";
+import { StyleFlex } from "~/components/Books/Books.style";
 import Typography from "@mui/material/Typography";
 
 const LibrariesForm: React.FC<LibrariesFormProps> = ({
@@ -89,9 +93,9 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
   return (
     <Paper className="overview-paper">
       <StyleFlex>
-        <ColumnFlex gap="40px" flex="1">
+        <StyledColumnFlex>
           <Typography variant="h3">{Details}</Typography>
-          <StyledColumnFlex>
+          <ColumnFlex gap="20px">
             <Input
               label="Name*"
               errorMessage={errors.name}
@@ -126,10 +130,10 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
                 handleInputChange(value, LibraryValue.phone)
               }
             />
-          </StyledColumnFlex>
-        </ColumnFlex>
+          </ColumnFlex>
+        </StyledColumnFlex>
 
-        <ColumnFlex gap="40px">
+        <StyledColumnFlex>
           <Typography
             variant="h3"
             sx={{
@@ -138,7 +142,7 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
           >
             {ScheduleTitle}
           </Typography>
-          <StyledColumnFlex>
+          <ColumnFlex gap="20px">
             <AlignedFlex>
               <StyledTypography variant="h1">Monday-Friday:</StyledTypography>
 
@@ -184,8 +188,8 @@ const LibrariesForm: React.FC<LibrariesFormProps> = ({
                 />
               </ColumnFlex>
             </AlignedFlex>
-          </StyledColumnFlex>
-        </ColumnFlex>
+          </ColumnFlex>
+        </StyledColumnFlex>
       </StyleFlex>
 
       <StyledFlexButton>

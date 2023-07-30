@@ -2,25 +2,26 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
-import { menuItems } from "./Menu.helper";
 import Typography from "@mui/material/Typography";
 import {
   StyledAppBar,
   StyledDrawer,
   StyledIconButton,
   StyledMainBox,
-} from "./Menu.style";
-import { menuTitle, menuWidth } from "./Menu.const";
+} from "./AppBar.style";
+import { appBarTitle } from "./AppBar.const";
 import Flex from "@/components/Flex";
-import { MenuContainerProps } from "./Menu.type";
+import { AppBarContainerProps } from "./AppBar.type";
+import { appBarItems } from "./AppBar.helper";
+import collorPalette from "@/theme/colorPalette";
 
-const MenuContainer: React.FC<MenuContainerProps> = ({
+const AppBarContainer: React.FC<AppBarContainerProps> = ({
   onLogoutClick,
   children,
 }) => {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
-  const handleMenuToggle = () => {
+  const handleAppBarToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
@@ -28,39 +29,26 @@ const MenuContainer: React.FC<MenuContainerProps> = ({
     <Flex>
       <StyledAppBar position="fixed">
         <Toolbar>
-          <StyledIconButton onClick={handleMenuToggle}>
+          <StyledIconButton onClick={handleAppBarToggle}>
             <MenuIcon />
           </StyledIconButton>
 
-          <Typography variant="h5">{menuTitle}</Typography>
+          <Typography variant="h4" color={collorPalette.white} fontWeight={500}>
+            {appBarTitle}
+          </Typography>
         </Toolbar>
       </StyledAppBar>
 
-      <Box
-        component="nav"
-        sx={{
-          width: { sm: menuWidth },
-          flexShrink: { sm: 0 },
-        }}
-      >
+      <Box component="nav">
         <StyledDrawer
           variant="temporary"
           open={mobileOpen}
-          onClose={handleMenuToggle}
+          onClose={handleAppBarToggle}
           ModalProps={{
             keepMounted: true,
           }}
-          display={{ xs: "block", sm: "none" }}
         >
-          {menuItems(onLogoutClick)}
-        </StyledDrawer>
-
-        <StyledDrawer
-          variant="permanent"
-          display={{ xs: "none", sm: "block" }}
-          open
-        >
-          {menuItems(onLogoutClick)}
+          {appBarItems(onLogoutClick)}
         </StyledDrawer>
       </Box>
 
@@ -72,4 +60,4 @@ const MenuContainer: React.FC<MenuContainerProps> = ({
   );
 };
 
-export default MenuContainer;
+export default AppBarContainer;
