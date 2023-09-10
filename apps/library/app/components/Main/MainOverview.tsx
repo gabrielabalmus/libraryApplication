@@ -5,6 +5,7 @@ import {
   StyledImageWrapper,
   StyledTypography,
   StyledColumn,
+  StyledHeading,
 } from "./Main.style";
 import { CenteredColumnFlex, ColumnFlex } from "@/components/Flex";
 import { Typography } from "@mui/material";
@@ -13,8 +14,16 @@ const MainOverview: React.FC = () => {
   return (
     <>
       <StyledImageWrapper>
-        <StyledImagex src="/main-wallpaper.jpg" />
+        <StyledHeading>
+          <Typography variant="h6">
+            Your Source for Learning and Discovery
+          </Typography>
+          <Typography variant="h3">Where Words Come to Life</Typography>
+        </StyledHeading>
+
+        <StyledImagex src="/main_wallpaper.jpg" />
       </StyledImageWrapper>
+
       <Container>
         <Paper className="overview-paper">
           <ColumnFlex gap="50px">

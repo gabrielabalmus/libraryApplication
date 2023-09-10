@@ -6,11 +6,13 @@ import ListItemButton, {
 import { menuWidth } from "./Menu.const";
 import AppBar, { AppBarProps } from "@mui/material/AppBar";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
-import Box, { BoxProps } from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Divider, { DividerProps } from "@mui/material/Divider";
 import { DrawerType } from "./Menu.type";
+import { ColumnFlex } from "../Flex";
 import styled from "styled-components";
+import { ToolbarProps } from "@mui/material";
+import Toolbar from "@mui/material/Toolbar";
 
 export const StyledAppBar = MuiStyled(AppBar)<AppBarProps>(({ theme }) =>
   theme.unstable_sx({
@@ -31,13 +33,9 @@ export const StyledIconButton = MuiStyled(IconButton)<IconButtonProps>(
     })
 );
 
-export const StyledMainBox = MuiStyled(Box)<BoxProps>(({ theme }) =>
+export const StyledToolbar = MuiStyled(Toolbar)<ToolbarProps>(({ theme }) =>
   theme.unstable_sx({
-    backgroundColor: collorPalette.grey.lighter,
-    flex: 1,
-    width: {
-      sm: `calc(100% - ${menuWidth}px)`,
-    },
+    minHeight: { xs: "20px", sm: "50px" },
   })
 );
 
@@ -77,13 +75,9 @@ export const StyledDrawer = MuiStyled(Drawer)<DrawerType>(
     })
 );
 
-export const StyledMenuList = MuiStyled("div")(({ theme }) =>
-  theme.unstable_sx({
-    display: "flex",
-    flexDirection: "column",
-    height: "100%",
-  })
-);
+export const StyledMenuList = styled(ColumnFlex)`
+  height: 100%;
+`;
 
 export const StyledDivider = MuiStyled(Divider)<DividerProps>(({ theme }) =>
   theme.unstable_sx({

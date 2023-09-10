@@ -5,10 +5,12 @@ import ListItemButton, {
 } from "@mui/material/ListItemButton";
 import AppBar, { AppBarProps } from "@mui/material/AppBar";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
-import Box, { BoxProps } from "@mui/material/Box";
 import Drawer, { DrawerProps } from "@mui/material/Drawer";
 import Divider, { DividerProps } from "@mui/material/Divider";
 import { appBarWidth } from "./AppBar.const";
+import { ColumnFlex } from "../Flex";
+import styled from "styled-components";
+import Toolbar, { ToolbarProps } from "@mui/material/Toolbar";
 
 export const StyledAppBar = MuiStyled(AppBar)<AppBarProps>(({ theme }) =>
   theme.unstable_sx({
@@ -23,16 +25,6 @@ export const StyledIconButton = MuiStyled(IconButton)<IconButtonProps>(
       mr: 2,
       color: collorPalette.white,
     })
-);
-
-export const StyledMainBox = MuiStyled(Box)<BoxProps>(({ theme }) =>
-  theme.unstable_sx({
-    backgroundColor: collorPalette.grey.lighter,
-    flex: 1,
-    width: {
-      sm: `calc(100% - ${appBarWidth}px`,
-    },
-  })
 );
 
 export const StyledItemButton = MuiStyled(ListItemButton)<ListItemButtonProps>(
@@ -69,11 +61,13 @@ export const StyledDrawer = MuiStyled(Drawer)<DrawerProps>(({ theme }) =>
   })
 );
 
-export const StyledAppBarList = MuiStyled("div")(({ theme }) =>
+export const StyledAppBarList = styled(ColumnFlex)`
+  height: 100%;
+`;
+
+export const StyledToolbar = MuiStyled(Toolbar)<ToolbarProps>(({ theme }) =>
   theme.unstable_sx({
-    display: "flex",
-    flexDirection: "column",
-    height: "100%",
+    minHeight: { xs: "20px" },
   })
 );
 

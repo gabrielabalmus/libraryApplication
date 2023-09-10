@@ -79,6 +79,16 @@ export const theme = createTheme({
         fontSize: 16,
       },
     },
+    h6: {
+      color: collorPalette.black,
+      fontWeight: 600,
+      [breakpoints.up("xs")]: {
+        fontSize: 28,
+      },
+      [breakpoints.up("sm")]: {
+        fontSize: 40,
+      },
+    },
     h5: {
       color: collorPalette.black,
       fontWeight: 600,

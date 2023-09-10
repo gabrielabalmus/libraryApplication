@@ -1,0 +1,1 @@
+export const ErrorGetLibraries = "There was a problem in receiving libraries";

@@ -3,12 +3,7 @@ import Box from "@mui/material/Box";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import {
-  StyledAppBar,
-  StyledDrawer,
-  StyledIconButton,
-  StyledMainBox,
-} from "./AppBar.style";
+import { StyledAppBar, StyledDrawer, StyledIconButton } from "./AppBar.style";
 import { appBarTitle } from "./AppBar.const";
 import Flex from "@/components/Flex";
 import { AppBarContainerProps } from "./AppBar.type";
@@ -52,10 +47,10 @@ const AppBarContainer: React.FC<AppBarContainerProps> = ({
         </StyledDrawer>
       </Box>
 
-      <StyledMainBox component="main">
+      <Box component="main">
         <Toolbar />
         {children}
-      </StyledMainBox>
+      </Box>
     </Flex>
   );
 };

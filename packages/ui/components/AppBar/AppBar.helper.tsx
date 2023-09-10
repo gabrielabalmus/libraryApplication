@@ -2,11 +2,11 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Toolbar from "@mui/material/Toolbar";
 import {
   StyledDivider,
   StyledItemButton,
   StyledAppBarList,
+  StyledToolbar,
 } from "./AppBar.style";
 import { useNavigate, useLocation } from "@remix-run/react";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -20,7 +20,7 @@ export const appBarItems = (onLogoutClick: () => void) => {
 
   return (
     <StyledAppBarList>
-      <Toolbar />
+      <StyledToolbar />
 
       <List>
         {AppBarList.map((item, index) => (

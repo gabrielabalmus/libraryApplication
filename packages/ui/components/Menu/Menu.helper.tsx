@@ -2,8 +2,12 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Toolbar from "@mui/material/Toolbar";
-import { StyledDivider, StyledItemButton, StyledMenuList } from "./Menu.style";
+import {
+  StyledDivider,
+  StyledItemButton,
+  StyledMenuList,
+  StyledToolbar,
+} from "./Menu.style";
 import { useNavigate, useLocation } from "@remix-run/react";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { MenuList } from "./Menu.const";
@@ -16,7 +20,7 @@ export const menuItems = (onLogoutClick: () => void) => {
 
   return (
     <StyledMenuList>
-      <Toolbar />
+      <StyledToolbar />
 
       <List>
         {MenuList.map((item, index) => (
