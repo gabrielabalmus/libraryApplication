@@ -2,13 +2,17 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import { StyledAppBar, StyledDrawer, StyledIconButton } from "./AppBar.style";
+import {
+  StyledAppBar,
+  StyledDrawer,
+  StyledIconButton,
+  StyledLink,
+  StyledTitle,
+} from "./AppBar.style";
 import { appBarTitle } from "./AppBar.const";
 import Flex from "@/components/Flex";
 import { AppBarContainerProps } from "./AppBar.type";
 import { appBarItems } from "./AppBar.helper";
-import collorPalette from "@/theme/colorPalette";
 
 const AppBarContainer: React.FC<AppBarContainerProps> = ({
   onLogoutClick,
@@ -28,9 +32,9 @@ const AppBarContainer: React.FC<AppBarContainerProps> = ({
             <MenuIcon />
           </StyledIconButton>
 
-          <Typography variant="h4" color={collorPalette.white} fontWeight={500}>
-            {appBarTitle}
-          </Typography>
+          <StyledLink to="/">
+            <StyledTitle variant="h4">{appBarTitle}</StyledTitle>
+          </StyledLink>
         </Toolbar>
       </StyledAppBar>
 

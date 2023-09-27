@@ -5,8 +5,7 @@ import { InputFieldProps } from "./Input.type";
 export const StandardInput = MuiStyled(TextField)<InputFieldProps>(
   ({ width, theme }) =>
     theme.unstable_sx({
-      flex: 1,
+      width: "100%",
       maxWidth: { md: width },
-      width: { xs: "100%" },
     })
 );

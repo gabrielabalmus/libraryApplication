@@ -1,14 +1,17 @@
 import Paper from "@mui/material/Paper";
-import { ContactOverviewProps } from "~/types/contact.type";
-import { StyledBox, StyledTitle } from "./Contact.style";
+import { ContactOverviewProps } from "~/types/Contact.type";
+import { StyledBox, StyledTitle, StyledMainTitle } from "./Contact.style";
 import Grid from "@mui/material/Grid";
 import { Typography } from "@mui/material";
 import { ColumnFlex } from "@/components/Flex";
 import moment from "moment";
+import { ContactTitle } from "./Contact.const";
 
 const ContactOverview: React.FC<ContactOverviewProps> = ({ libraries }) => {
   return (
     <Paper className="overview-paper">
+      <StyledMainTitle variant="h4">{ContactTitle}</StyledMainTitle>
+
       <Grid container spacing={3}>
         {libraries.map((item) => {
           return (

@@ -5,6 +5,7 @@ import {
   PaginatedLoans,
 } from "~/types/Loans.type";
 import { formatLoangDate } from "@/utils/common";
+import { round } from "lodash";
 
 export const fromPaginatedLoansResponse = (
   loans: LoansResponse[]
@@ -46,7 +47,11 @@ export const fromSingleLoanResponse = (loan: LoanResponse): LoanState => {
     createdAt: formatLoangDate(loan.createdAt),
   };
 
-  if (loan.penalty) transformedLoan.penalty = loan.penalty;
+  if (loan.penalty) {
+    const amount = round(loan.penalty.amount, 2);
+
+    transformedLoan.penalty = { ...loan.penalty, amount };
+  }
 
   if (loan.borrowedAt)
     transformedLoan.borrowedAt = formatLoangDate(loan.borrowedAt);

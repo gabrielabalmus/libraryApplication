@@ -11,11 +11,12 @@ import { appBarWidth } from "./AppBar.const";
 import { ColumnFlex } from "../Flex";
 import styled from "styled-components";
 import Toolbar, { ToolbarProps } from "@mui/material/Toolbar";
+import { Link } from "@remix-run/react";
+import Typography, { TypographyProps } from "@mui/material/Typography";
 
 export const StyledAppBar = MuiStyled(AppBar)<AppBarProps>(({ theme }) =>
   theme.unstable_sx({
-    boxShadow: "none",
-    backgroundColor: collorPalette.primary.base,
+    backgroundColor: collorPalette.white,
   })
 );
 
@@ -23,26 +24,30 @@ export const StyledIconButton = MuiStyled(IconButton)<IconButtonProps>(
   ({ theme }) =>
     theme.unstable_sx({
       mr: 2,
-      color: collorPalette.white,
+      color: collorPalette.black,
     })
 );
+
+export const StyledLink = styled(Link)`
+  text-decoration: none;
+`;
 
 export const StyledItemButton = MuiStyled(ListItemButton)<ListItemButtonProps>(
   ({ theme }) =>
     theme.unstable_sx({
       "& .MuiListItemIcon-root": {
-        color: collorPalette.white,
+        color: collorPalette.black,
         paddingLeft: "10px",
       },
       "& .MuiListItemText-root .MuiTypography-root": {
-        color: collorPalette.white,
+        color: collorPalette.black,
         fontSize: { xs: 16, sm: 17 },
       },
       "&.Mui-selected": {
-        backgroundColor: collorPalette.primary.light,
+        backgroundColor: collorPalette.primary.lighter,
       },
       "&.Mui-selected:hover": {
-        backgroundColor: collorPalette.primary.light,
+        backgroundColor: collorPalette.primary.lighter,
       },
       "&:hover": {
         backgroundColor: "transparent",
@@ -55,9 +60,16 @@ export const StyledDrawer = MuiStyled(Drawer)<DrawerProps>(({ theme }) =>
     "& .MuiDrawer-paper": {
       boxSizing: "border-box",
       width: `${appBarWidth}px`,
-      backgroundColor: collorPalette.primary.base,
+      backgroundColor: collorPalette.white,
       border: "none",
     },
+  })
+);
+
+export const StyledTitle = MuiStyled(Typography)<TypographyProps>(({ theme }) =>
+  theme.unstable_sx({
+    color: collorPalette.black,
+    fontWeight: 600,
   })
 );
 
@@ -74,6 +86,6 @@ export const StyledToolbar = MuiStyled(Toolbar)<ToolbarProps>(({ theme }) =>
 export const StyledDivider = MuiStyled(Divider)<DividerProps>(({ theme }) =>
   theme.unstable_sx({
     marginTop: "auto",
-    borderColor: collorPalette.white,
+    borderColor: collorPalette.grey.light,
   })
 );

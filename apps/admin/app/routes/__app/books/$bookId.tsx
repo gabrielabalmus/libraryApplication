@@ -31,7 +31,7 @@ import { getCategories } from "~/server/categories.server";
 import { getPublishHouses } from "~/server/publishHouses.server";
 import { getSingleBook, updateBook } from "~/server/books.server";
 import { getLibraries } from "~/server/libraries.server";
-import { getImage, uploadImage } from "~/server/media.server";
+import { uploadImage } from "~/server/media.server";
 import { getLanguages } from "~/server/languages.server";
 import { isValidUrl } from "@/utils/common";
 import Container from "@mui/material/Container";
@@ -64,8 +64,6 @@ export const loader = async ({ request }: LoaderArgs) => {
         getLibraries(),
         getLanguages(),
       ]);
-
-    if (book.image) book.image = await getImage(book.image);
 
     return goodRequest({
       book,

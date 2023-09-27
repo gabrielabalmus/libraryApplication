@@ -114,7 +114,6 @@ export const getPaginatedBooks = async ({
           id: true,
           name: true,
           author: true,
-          description: true,
           category: {
             select: {
               name: true,

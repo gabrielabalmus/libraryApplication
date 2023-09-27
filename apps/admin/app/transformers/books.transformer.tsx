@@ -1,3 +1,4 @@
+import { getImage } from "~/server/media.server";
 import {
   BookLibrariesResponse,
   BookLibrariesState,
@@ -29,15 +30,22 @@ export const fromBookLibraries = (
     place: item.place,
   }));
 
-export const fromSingleBookResponse = (book: BookResponse): BookState => ({
-  ...book,
-  pagesNumber: book.pagesNumber.toString(),
-  releaseYear: book.releaseYear.toString(),
-  category: book.category.id,
-  publishHouse: book.publishHouse.id,
-  language: book.language.id,
-  bookLibraries: fromBookLibraries(book.bookLibraries),
-});
+export const fromSingleBookResponse = async (
+  book: BookResponse
+): Promise<BookState> => {
+  const image = await getImage(book.image);
+
+  return {
+    ...book,
+    pagesNumber: book.pagesNumber.toString(),
+    releaseYear: book.releaseYear.toString(),
+    category: book.category.id,
+    image,
+    publishHouse: book.publishHouse.id,
+    language: book.language.id,
+    bookLibraries: fromBookLibraries(book.bookLibraries),
+  };
+};
 
 export const fromBookBySku = (bookBySku: BookBySkuResponse): BookBySkuState => {
   const { id, book, SKU, libraryId, place, deleted } = bookBySku;

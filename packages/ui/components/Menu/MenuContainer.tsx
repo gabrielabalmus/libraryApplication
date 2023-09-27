@@ -4,7 +4,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import { menuItems } from "./Menu.helper";
 import Typography from "@mui/material/Typography";
-import { StyledAppBar, StyledDrawer, StyledIconButton } from "./Menu.style";
+import { StyledAppBar, StyledDrawer, StyledIconButton, StyledMainBox } from "./Menu.style";
 import { menuTitle, menuWidth } from "./Menu.const";
 import Flex from "@/components/Flex";
 import { MenuContainerProps } from "./Menu.type";
@@ -59,10 +59,10 @@ const MenuContainer: React.FC<MenuContainerProps> = ({
         </StyledDrawer>
       </Box>
 
-      <Box component="main">
+      <StyledMainBox component="main">
         <Toolbar />
         {children}
-      </Box>
+      </StyledMainBox>
     </Flex>
   );
 };

@@ -11,7 +11,7 @@ import Divider, { DividerProps } from "@mui/material/Divider";
 import { DrawerType } from "./Menu.type";
 import { ColumnFlex } from "../Flex";
 import styled from "styled-components";
-import { ToolbarProps } from "@mui/material";
+import { Box, BoxProps, ToolbarProps } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 
 export const StyledAppBar = MuiStyled(AppBar)<AppBarProps>(({ theme }) =>
@@ -19,7 +19,7 @@ export const StyledAppBar = MuiStyled(AppBar)<AppBarProps>(({ theme }) =>
     width: { sm: `calc(100% - ${menuWidth}px)` },
     boxShadow: "none",
     backgroundColor: collorPalette.white,
-    borderBottom: "3px solid #F2F2F2",
+    borderBottom: `3px solid ${collorPalette.grey.lighter}`,
     ml: { sm: `${menuWidth}px` },
   })
 );
@@ -65,7 +65,7 @@ export const StyledItemButton = MuiStyled(ListItemButton)<ListItemButtonProps>(
 export const StyledDrawer = MuiStyled(Drawer)<DrawerType>(
   ({ theme, display }) =>
     theme.unstable_sx({
-      display: display,
+      display,
       "& .MuiDrawer-paper": {
         boxSizing: "border-box",
         width: menuWidth,
@@ -83,5 +83,11 @@ export const StyledDivider = MuiStyled(Divider)<DividerProps>(({ theme }) =>
   theme.unstable_sx({
     marginTop: "auto",
     borderColor: collorPalette.white,
+  })
+);
+
+export const StyledMainBox = MuiStyled(Box)<BoxProps>(({ theme }) =>
+  theme.unstable_sx({
+    width: { sm: `calc(100% - ${menuWidth}px)` },
   })
 );

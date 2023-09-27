@@ -12,6 +12,18 @@ export const StyledBox = MuiStyled(Box)<BoxProps>(({ theme }) =>
   })
 );
 
+export const StyledMainTitle = MuiStyled(Typography)<TypographyProps>(
+  ({ theme }) =>
+    theme.unstable_sx({
+      color: collorPalette.black,
+      fontWeight: 600,
+      marginBottom: "40px",
+      textAlign: "center",
+      paddingBottom: "20px",
+      borderBottom: `1px solid ${collorPalette.grey.light}`
+    })
+);
+
 export const StyledTitle = MuiStyled(Typography)<TypographyProps>(({ theme }) =>
   theme.unstable_sx({
     padding: "10px",

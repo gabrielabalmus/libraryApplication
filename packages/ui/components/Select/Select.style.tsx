@@ -5,7 +5,7 @@ import { SelectFieldProps } from "./Select.type";
 export const StandardSelect = MuiStyled(Select)<SelectFieldProps>(
   ({ width, theme }) =>
     theme.unstable_sx({
-      flex: 1,
+      width: "100%",
       maxWidth: { md: width, xs: "100%" },
     })
 );

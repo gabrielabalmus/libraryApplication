@@ -1,69 +1,59 @@
-import LayoutTitle from "~/components/LayoutTitle";
 import BooksOverview from "~/components/Books/Overview";
-import {
-  ErrorDelete,
-  Books,
-  NewBook,
-  SuccessDelete,
-} from "~/components/Books/Books.const";
-import Button from "@/components/Button";
-import { ButtonVariant } from "@/components/Button/Button.type";
-import {
-  useLoaderData,
-  useLocation,
-  useNavigate,
-  useSubmit,
-} from "@remix-run/react";
-import { getPaginatedBooks, deleteBook } from "~/server/books.server";
-import { badRequest, goodRequest } from "~/server/request.server";
+import { useLoaderData } from "@remix-run/react";
+import { getPaginatedBooks } from "~/server/books.server";
+import { goodRequest } from "~/server/request.server";
 import { ErrorMessage } from "~/const";
 import { useCallback, useState } from "react";
-import { debounce, isString } from "lodash";
-import {
-  ActionArgs,
-  ActionFunction,
-  LoaderArgs,
-  redirect,
-} from "@remix-run/node";
+import { debounce } from "lodash";
+import { LoaderArgs } from "@remix-run/node";
 import { checkIfNumber } from "@/utils/common";
 import { useSearchParams, URLSearchParamsInit } from "react-router-dom";
 import ErrorInterface from "~/components/ErrorInterface";
-import { getUserId } from "~/server/users.server";
 import { getCategories } from "~/server/categories.server";
+import { getPublishHouses } from "~/server/publishHouses.server";
+import { getLanguages } from "~/server/languages.server";
+import { getLibraries } from "~/server/libraries.server";
 import { FilterState } from "~/types/Books.type";
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
-import { getLibraries } from "~/server/libraries.server";
+
 import Container from "@mui/material/Container";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const userId = await getUserId(request);
-
-  if (!userId) {
-    return redirect("/login");
-  }
-
   try {
     const url = new URL(request.url);
     const page = url.searchParams.get("page");
     const search = url.searchParams.get("search") || "";
     const category = url.searchParams.get("category") || "";
     const library = url.searchParams.get("library") || "";
+    const publishHouse = url.searchParams.get("publishHouse") || "";
+    const language = url.searchParams.get("language") || "";
 
     let pageNumber = 1;
     if (page && checkIfNumber(page)) pageNumber = parseInt(page);
 
-    const [books, categories, libraries] = await Promise.all([
-      getPaginatedBooks({
-        page: pageNumber,
-        search,
-        category,
-        library,
-      }),
-      getCategories(),
-      getLibraries(),
-    ]);
+    const [books, categories, libraries, publishHouses, languages] =
+      await Promise.all([
+        getPaginatedBooks({
+          page: pageNumber,
+          search,
+          category,
+          library,
+          publishHouse,
+          language,
+        }),
+        getCategories(),
+        getLibraries(),
+        getPublishHouses(),
+        getLanguages(),
+      ]);
 
-    return goodRequest({ books, categories, libraries });
+    return goodRequest({
+      books,
+      categories,
+      libraries,
+      publishHouses,
+      languages,
+    });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
@@ -73,53 +63,8 @@ export const ErrorBoundary = () => {
   return <ErrorInterface />;
 };
 
-export const action: ActionFunction = async ({ request }: ActionArgs) => {
-  const userId = await getUserId(request);
-
-  if (!userId) {
-    return redirect("/login");
-  }
-
-  try {
-    const formData = await request.formData();
-
-    const intent = formData.get("intent");
-
-    if (intent === "delete") {
-      const bookId = formData.get("bookId");
-
-      if (!isString(bookId)) {
-        return badRequest({
-          message: ErrorDelete,
-          success: false,
-        });
-      }
-
-      await deleteBook({ bookId });
-
-      return goodRequest({
-        message: SuccessDelete,
-        success: true,
-      });
-    }
-
-    return badRequest({
-      message: ErrorMessage,
-      success: false,
-    });
-  } catch (error: any) {
-    return badRequest({
-      message: error.message || ErrorMessage,
-      success: false,
-    });
-  }
-};
-
 const PaginatedBooks: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const data = useLoaderData();
-  const submit = useSubmit();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -127,6 +72,8 @@ const PaginatedBooks: React.FC = () => {
   const search = searchParams.get("search") || "";
   const category = searchParams.get("category") || "";
   const library = searchParams.get("library") || "";
+  const publishHouse = searchParams.get("publishHouse") || "";
+  const language = searchParams.get("language") || "";
 
   let pageNumber = 1;
   if (page && checkIfNumber(page)) pageNumber = parseInt(page);
@@ -134,6 +81,8 @@ const PaginatedBooks: React.FC = () => {
   const books = data.books;
   const categories = data.categories;
   const libraries = data.libraries;
+  const publishHouses = data.publishHouses;
+  const languages = data.languages;
 
   const filterCategory = categories.find(
     (item: AutocompleteOptions) => item.name === category
@@ -143,21 +92,29 @@ const PaginatedBooks: React.FC = () => {
     (item: AutocompleteOptions) => item.name === library
   );
 
+  const filterPublishHouse = publishHouses.find(
+    (item: AutocompleteOptions) => item.name === publishHouse
+  );
+
+  const filterLanguage = languages.find(
+    (item: AutocompleteOptions) => item.name === language
+  );
+
   const [filter, setFilter] = useState<FilterState>({
     search,
     category: filterCategory?.id || "",
     library: filterLibrary?.id || "",
+    publishHouse: filterPublishHouse?.id || "",
+    language: filterLanguage?.id || "",
   });
-
-  const handleCreateBook = () => {
-    navigate(`${location.pathname}/create`);
-  };
 
   const handleChangePage = (pageNumber: number) => {
     let params: URLSearchParamsInit = {};
 
     if (search) params = { ...params, search };
     if (library) params = { ...params, library };
+    if (publishHouse) params = { ...params, publishHouse };
+    if (language) params = { ...params, language };
     if (category) params = { ...params, category: category };
 
     setSearchParams({ ...params, page: pageNumber.toString() });
@@ -170,10 +127,12 @@ const PaginatedBooks: React.FC = () => {
       if (value) params = { ...params, search: value };
       if (category) params = { ...params, category };
       if (library) params = { ...params, library };
+      if (publishHouse) params = { ...params, publishHouse };
+      if (language) params = { ...params, language };
 
       setSearchParams(params);
     }, 500),
-    [category, library]
+    [category, library, publishHouse]
   );
 
   const handleSearchChange = (value: string) => {
@@ -191,6 +150,8 @@ const PaginatedBooks: React.FC = () => {
 
     if (search) params = { ...params, search };
     if (library) params = { ...params, library };
+    if (publishHouse) params = { ...params, publishHouse };
+    if (language) params = { ...params, language };
     if (value) params = { ...params, category: value.name };
 
     setSearchParams(params);
@@ -206,34 +167,49 @@ const PaginatedBooks: React.FC = () => {
 
     if (search) params = { ...params, search };
     if (category) params = { ...params, category };
+    if (publishHouse) params = { ...params, publishHouse };
+    if (language) params = { ...params, language };
     if (value) params = { ...params, library: value.name };
 
     setSearchParams(params);
   };
 
-  const handleDelete = (id: string) => {
-    submit(
-      {
-        bookId: id,
-        intent: "delete",
-      },
-      {
-        method: "delete",
-        action: `/books${location.search}`,
-      }
-    );
+  const handlePublishHouseChange = (value: AutocompleteOptions | null) => {
+    setFilter((oldValue: FilterState) => ({
+      ...oldValue,
+      publishHouse: value?.id || "",
+    }));
+
+    let params: URLSearchParamsInit = {};
+
+    if (search) params = { ...params, search };
+    if (category) params = { ...params, category };
+    if (library) params = { ...params, library };
+    if (language) params = { ...params, language };
+    if (value) params = { ...params, publishHouse: value.name };
+
+    setSearchParams(params);
+  };
+
+  const handleLanguageChange = (value: AutocompleteOptions | null) => {
+    setFilter((oldValue: FilterState) => ({
+      ...oldValue,
+      language: value?.id || "",
+    }));
+
+    let params: URLSearchParamsInit = {};
+
+    if (search) params = { ...params, search };
+    if (category) params = { ...params, category };
+    if (library) params = { ...params, library };
+    if (publishHouse) params = { ...params, publishHouse };
+    if (value) params = { ...params, language: value.name };
+
+    setSearchParams(params);
   };
 
   return (
     <Container>
-      <LayoutTitle title={Books}>
-        <Button
-          title={NewBook}
-          variant={ButtonVariant.contained}
-          onClick={handleCreateBook}
-        />
-      </LayoutTitle>
-
       <BooksOverview
         books={books}
         page={pageNumber}
@@ -242,9 +218,12 @@ const PaginatedBooks: React.FC = () => {
         onSearchChange={handleSearchChange}
         onCategoryChange={handleCategoryChange}
         onLibraryChange={handleLibraryChange}
-        onDelete={handleDelete}
+        onPublishHouseChange={handlePublishHouseChange}
+        onLanguageChange={handleLanguageChange}
         categories={categories}
         libraries={libraries}
+        publishHouses={publishHouses}
+        languages={languages}
       />
     </Container>
   );

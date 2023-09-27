@@ -152,10 +152,13 @@ const PaginatedLoans: React.FC = () => {
   };
 
   const handleChangePage = (pageNumber: number) => {
-    setSearchParams((oldSearchParams: URLSearchParams) => ({
-      ...oldSearchParams,
-      page: pageNumber.toString(),
-    }));
+    let params: URLSearchParamsInit = {};
+
+    if (search) params = { ...params, search };
+    if (library) params = { ...params, library };
+    if (status) params = { ...params, status };
+
+    setSearchParams({ ...params, page: pageNumber.toString() });
   };
 
   const debounceSearchChange = useCallback(

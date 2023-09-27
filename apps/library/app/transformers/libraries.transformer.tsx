@@ -1,4 +1,4 @@
-import { Libraries, LibrariesResponse } from "~/types/contact.type";
+import { Libraries, LibrariesResponse } from "~/types/Contact.type";
 
 export const fromLibrariesResponse = (
   libraries: LibrariesResponse[]
