@@ -6,27 +6,33 @@ import {
   StyledDivider,
   StyledItemButton,
   StyledAppBarList,
-  StyledToolbar,
 } from "./AppBar.style";
 import { useNavigate, useLocation } from "@remix-run/react";
 import LogoutIcon from "@mui/icons-material/Logout";
+import LoginIcon from "@mui/icons-material/Login";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import DensitySmallIcon from "@mui/icons-material/DensitySmall";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import LockIcon from "@mui/icons-material/Lock";
 import { AppBarList } from "./AppBar.const";
 
-export const appBarItems = (onLogoutClick: () => void) => {
+export const appBarItems = (
+  onLogoutClick: () => void,
+  isAuthenticated: boolean
+) => {
   const navigate = useNavigate();
 
   const location = useLocation();
   const pathName = location.pathname;
+  const pathString = pathName.split("/")[1];
 
   return (
     <StyledAppBarList>
-      <StyledToolbar />
-
       <List>
         {AppBarList.map((item, index) => (
           <ListItem key={index} disablePadding>
             <StyledItemButton
-              selected={item.url.split("/")[1] === pathName.split("/")[1]}
+              selected={item.url.split("/")[1] === pathString}
               onClick={() => navigate(item.url)}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
@@ -39,15 +45,87 @@ export const appBarItems = (onLogoutClick: () => void) => {
 
       <StyledDivider />
 
-      <ListItem disablePadding>
-        <StyledItemButton onClick={() => onLogoutClick()}>
-          <ListItemIcon>
-            <LogoutIcon />
-          </ListItemIcon>
+      <List>
+        {isAuthenticated ? (
+          <>
+            <ListItem disablePadding>
+              <StyledItemButton
+                selected={"account" === pathString}
+                onClick={() => navigate("/account")}
+              >
+                <ListItemIcon>
+                  <AccountCircleIcon />
+                </ListItemIcon>
 
-          <ListItemText primary="Logout" />
-        </StyledItemButton>
-      </ListItem>
+                <ListItemText primary="My account" />
+              </StyledItemButton>
+            </ListItem>
+
+            <ListItem disablePadding>
+              <StyledItemButton
+                selected={"change-password" === pathString}
+                onClick={() => navigate("/change-password")}
+              >
+                <ListItemIcon>
+                  <LockIcon />
+                </ListItemIcon>
+
+                <ListItemText primary="Change password" />
+              </StyledItemButton>
+            </ListItem>
+
+            <ListItem disablePadding>
+              <StyledItemButton
+                selected={"loans" === pathString}
+                onClick={() => navigate("/loans")}
+              >
+                <ListItemIcon>
+                  <DensitySmallIcon />
+                </ListItemIcon>
+
+                <ListItemText primary="My loans" />
+              </StyledItemButton>
+            </ListItem>
+
+            <ListItem disablePadding>
+              <StyledItemButton onClick={() => onLogoutClick()}>
+                <ListItemIcon>
+                  <LogoutIcon />
+                </ListItemIcon>
+
+                <ListItemText primary="Logout" />
+              </StyledItemButton>
+            </ListItem>
+          </>
+        ) : (
+          <>
+            <ListItem disablePadding>
+              <StyledItemButton
+                selected={"login" === pathString}
+                onClick={() => navigate("/login")}
+              >
+                <ListItemIcon>
+                  <LoginIcon />
+                </ListItemIcon>
+
+                <ListItemText primary="Login" />
+              </StyledItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <StyledItemButton
+                selected={"signup" === pathString}
+                onClick={() => navigate("/signup")}
+              >
+                <ListItemIcon>
+                  <PersonAddIcon />
+                </ListItemIcon>
+
+                <ListItemText primary="Sign up" />
+              </StyledItemButton>
+            </ListItem>
+          </>
+        )}
+      </List>
     </StyledAppBarList>
   );
 };

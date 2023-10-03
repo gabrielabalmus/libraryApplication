@@ -1,31 +1,27 @@
 import {
   Outlet,
-  useActionData,
+  useLoaderData,
   useNavigation,
   useSubmit,
 } from "@remix-run/react";
+import { LoaderArgs } from "@remix-run/node";
 import Spinner from "@/components/Spinner";
 import AppBar from "@/components/AppBar";
-import { useEffect, useState } from "react";
-import { isBoolean } from "lodash";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import { AlertDataState } from "~/types/Session.type";
+import { getReaderId } from "~/server/readers.server";
+import { goodRequest } from "~/server/request.server";
+
+export const loader = async ({ request }: LoaderArgs) => {
+  const userId = await getReaderId(request);
+
+  return goodRequest({
+    isAuthenticated: !!userId,
+  });
+};
 
 const AppLayout: React.FC = () => {
   const navigation = useNavigation();
   const submit = useSubmit();
-  const actionData = useActionData();
-
-  const [alertData, setAlertData] = useState<AlertDataState>();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (actionData && actionData.message && isBoolean(actionData.success)) {
-      setAlertData(actionData);
-      setIsOpen(true);
-    }
-  }, [actionData]);
+  const loaderData = useLoaderData();
 
   const handleLogout = () => {
     submit(
@@ -37,30 +33,15 @@ const AppLayout: React.FC = () => {
     );
   };
 
-  const handleAlertClose = () => {
-    setIsOpen(false);
-  };
-
   return (
-    <AppBar onLogoutClick={handleLogout}>
+    <AppBar
+      onLogoutClick={handleLogout}
+      isAuthenticated={loaderData?.isAuthenticated || false}
+    >
       <Outlet />
 
       {(navigation.state === "submitting" ||
         navigation.state === "loading") && <Spinner />}
-
-      <Snackbar
-        open={isOpen}
-        autoHideDuration={3000}
-        onClose={handleAlertClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert
-          onClose={handleAlertClose}
-          severity={alertData?.success ? "success" : "error"}
-        >
-          {alertData?.message}
-        </Alert>
-      </Snackbar>
     </AppBar>
   );
 };

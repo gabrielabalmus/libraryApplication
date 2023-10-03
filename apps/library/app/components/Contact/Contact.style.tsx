@@ -17,10 +17,9 @@ export const StyledMainTitle = MuiStyled(Typography)<TypographyProps>(
     theme.unstable_sx({
       color: collorPalette.black,
       fontWeight: 600,
-      marginBottom: "40px",
+      padding: "15px 20px",
+      backgroundColor: collorPalette.primary.lightest,
       textAlign: "center",
-      paddingBottom: "20px",
-      borderBottom: `1px solid ${collorPalette.grey.light}`
     })
 );
 

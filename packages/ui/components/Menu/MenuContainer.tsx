@@ -4,7 +4,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import { menuItems } from "./Menu.helper";
 import Typography from "@mui/material/Typography";
-import { StyledAppBar, StyledDrawer, StyledIconButton, StyledMainBox } from "./Menu.style";
+import {
+  StyledAppBar,
+  StyledDrawer,
+  StyledIconButton,
+  StyledMainBox,
+} from "./Menu.style";
 import { menuTitle, menuWidth } from "./Menu.const";
 import Flex from "@/components/Flex";
 import { MenuContainerProps } from "./Menu.type";
@@ -46,6 +51,7 @@ const MenuContainer: React.FC<MenuContainerProps> = ({
             keepMounted: true,
           }}
           display={{ xs: "block", sm: "none" }}
+          BackdropProps={{ invisible: true }}
         >
           {menuItems(onLogoutClick)}
         </StyledDrawer>
@@ -54,6 +60,7 @@ const MenuContainer: React.FC<MenuContainerProps> = ({
           variant="permanent"
           display={{ xs: "none", sm: "block" }}
           open
+          BackdropProps={{ invisible: true }}
         >
           {menuItems(onLogoutClick)}
         </StyledDrawer>

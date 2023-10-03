@@ -1,27 +1,27 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import { CreateSession } from "~/types/Session.type";
-import { getUserSession } from "./users.server";
+import { getReaderSession } from "./readers.server";
 
 export const { getSession, commitSession, destroySession } =
   createCookieSessionStorage({
     cookie: {
-      name: "admin_session",
+      name: "library_session",
       httpOnly: true,
       maxAge: 60 * 60 * 24,
       sameSite: "lax",
-      secrets: [process.env.ADMIN_COOKIE_SECRET || ""],
+      secrets: [process.env.LIBRARY_COOKIE_SECRET || ""],
       secure: true,
     },
   });
 
-export const createUserSession = async ({
+export const createReaderSession = async ({
   request,
-  userId,
+  readerId,
   redirectTo,
 }: CreateSession) => {
-  const session = await getUserSession(request);
+  const session = await getReaderSession(request);
 
-  session.set("userId", userId);
+  session.set("readerId", readerId);
 
   return redirect(redirectTo, {
     headers: {
@@ -30,10 +30,10 @@ export const createUserSession = async ({
   });
 };
 
-export const removeUserSession = async (request: Request) => {
-  const session = await getUserSession(request);
+export const removeReaderSession = async (request: Request) => {
+  const session = await getReaderSession(request);
 
-  return redirect("/login", {
+  return redirect("/", {
     headers: {
       "Set-Cookie": await destroySession(session),
     },

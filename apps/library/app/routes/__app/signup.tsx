@@ -4,73 +4,49 @@ import {
   LoaderArgs,
   redirect,
 } from "@remix-run/node";
-import {
-  useActionData,
-  useLoaderData,
-  useNavigate,
-  useParams,
-  useSubmit,
-} from "@remix-run/react";
-import { isBoolean, isString } from "lodash";
+import { useActionData, useLoaderData, useSubmit } from "@remix-run/react";
+import { isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
-import LayoutTitle from "~/components/LayoutTitle";
 import ReadersForm from "~/components/Readers/Form";
 import {
-  UpdateReaderTitle,
-  ErrorUpdate,
-  SuccessUpdate,
-  ErrorGetSingle,
+  ErrorCreate,
+  initialReader,
+  SuccessCreate,
 } from "~/components/Readers/Readers.const";
 import { handleReaderErrors } from "~/components/Readers/Readers.helper";
-import { ReadersSubmitProps, ReaderState } from "~/types/Readers.type";
+import {
+  AlertDataState,
+  ReadersSubmitProps,
+  ReaderState,
+} from "~/types/Readers.type";
 import { ErrorMessage } from "~/const";
 import { getCities } from "~/server/cities.server";
-import { getSingleReader, updateReader } from "~/server/readers.server";
+import { createReader, getReaderId } from "~/server/readers.server";
 import { badRequest, goodRequest } from "~/server/request.server";
-import { getUserId } from "~/server/users.server";
 import Container from "@mui/material/Container";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const userId = await getUserId(request);
+  const readerId = await getReaderId(request);
 
-  if (!userId) {
-    return redirect("/login");
+  if (readerId) {
+    return redirect("/account");
   }
 
   try {
-    const url = new URL(request.url);
-    const readerId = url.pathname.split("/").pop();
+    const cities = await getCities();
 
-    if (!isString(readerId)) {
-      return badRequest({
-        message: ErrorGetSingle,
-        success: false,
-      });
-    }
-
-    const [reader, cities] = await Promise.all([
-      getSingleReader({
-        readerId,
-      }),
-      getCities(),
-    ]);
-
-    return goodRequest({ reader, cities });
+    return goodRequest({ cities });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
 };
 
-export const ErrorBoundary = () => {
-  return <ErrorInterface />;
-};
-
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
-  const userId = await getUserId(request);
+  const readerId = await getReaderId(request);
 
-  if (!userId) {
-    return redirect("/login");
+  if (readerId) {
+    return redirect("/account");
   }
 
   try {
@@ -78,47 +54,45 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
     const intent = formData.get("intent");
 
-    if (intent === "update") {
+    if (intent === "create") {
       const name = formData.get("name");
       const city = formData.get("city");
       const address = formData.get("address");
       const email = formData.get("email");
+      const password = formData.get("password");
       const phone = formData.get("phone");
       const birthdate = formData.get("birthdate");
 
-      const url = new URL(request.url);
-      const readerId = url.pathname.split("/").pop();
-
       if (
-        !isString(readerId) ||
         !isString(name) ||
         !isString(city) ||
         !isString(address) ||
         !isString(email) ||
+        !isString(password) ||
         !isString(phone) ||
         !isString(birthdate)
       ) {
         return badRequest({
-          message: ErrorUpdate,
+          message: ErrorCreate,
           success: false,
         });
       }
 
-      const fields = { name, city, address, email, phone, birthdate };
+      const fields = { name, city, address, email, password, phone, birthdate };
 
       const fieldErrors = handleReaderErrors(fields);
 
       if (Object.values(fieldErrors).some(Boolean)) {
         return badRequest({
-          message: ErrorUpdate,
+          message: ErrorCreate,
           success: false,
         });
       }
 
-      await updateReader({ ...fields, readerId });
+      await createReader(fields);
 
       return goodRequest({
-        message: SuccessUpdate,
+        message: SuccessCreate,
         success: true,
       });
     }
@@ -135,19 +109,23 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
   }
 };
 
-const UpdateReader: React.FC = () => {
+export const ErrorBoundary = () => {
+  return <ErrorInterface />;
+};
+
+const Signup: React.FC = () => {
   const submit = useSubmit();
   const actionData = useActionData();
-  const navigate = useNavigate();
   const data = useLoaderData();
-  const urlParams = useParams();
 
-  const [reader, setReader] = useState<ReaderState>(data.reader);
+  const [reader, setReader] = useState<ReaderState>(initialReader);
+  const [messageData, setMessageData] = useState<AlertDataState>();
 
   const cities = data.cities;
 
   useEffect(() => {
-    if (actionData && isBoolean(actionData.success)) navigate("/readers");
+    if (actionData && actionData.message && actionData.success === false)
+      setMessageData(actionData);
   }, [actionData]);
 
   const handleOnSubmit = ({ callback }: ReadersSubmitProps) => {
@@ -161,26 +139,26 @@ const UpdateReader: React.FC = () => {
     submit(
       {
         ...reader,
-        intent: "update",
+        intent: "create",
       },
       {
         method: "post",
-        action: `/readers/${urlParams.readerId}`,
+        action: "/signup",
       }
     );
   };
 
   return (
     <Container>
-      <LayoutTitle title={UpdateReaderTitle} backUrl="/readers" />
       <ReadersForm
         onSubmit={handleOnSubmit}
         setReader={setReader}
         reader={reader}
         cities={cities}
+        messageData={messageData}
       />
     </Container>
   );
 };
 
-export default UpdateReader;
+export default Signup;

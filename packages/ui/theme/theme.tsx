@@ -17,6 +17,13 @@ export const theme = createTheme({
           }),
       },
     },
+    MuiListItemIcon: {
+      styleOverrides: {
+        root: {
+          minWidth: "50px",
+        },
+      },
+    },
     MuiButton: {
       defaultProps: {
         disableRipple: true,

@@ -1,7 +1,7 @@
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import {
-  StyledImagex,
+  StyledImage,
   StyledImageWrapper,
   StyledTypography,
   StyledColumn,
@@ -21,7 +21,7 @@ const MainOverview: React.FC = () => {
           <Typography variant="h3">Where Words Come to Life</Typography>
         </StyledHeading>
 
-        <StyledImagex src="/main_wallpaper.jpg" />
+        <StyledImage src="/main_wallpaper.jpg" />
       </StyledImageWrapper>
 
       <Container>

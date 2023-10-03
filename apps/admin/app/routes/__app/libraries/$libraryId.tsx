@@ -15,7 +15,7 @@ import { isBoolean, isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
-import LibrariesForm from "~/components/Libraries/Form/LibrariesForm";
+import LibrariesForm from "~/components/Libraries/Form";
 import {
   UpdateLibraryTitle,
   ErrorUpdate,

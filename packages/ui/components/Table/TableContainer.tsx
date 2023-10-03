@@ -74,7 +74,7 @@ const PaginatedTableContainer: React.FC<TableProps> = ({
 
           {rows.length === 0 && (
             <EmptyBodyRow>
-              <TableCell colSpan={12} align="center">
+              <TableCell colSpan={6} align="center">
                 No data
               </TableCell>
             </EmptyBodyRow>

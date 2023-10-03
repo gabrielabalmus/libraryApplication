@@ -32,7 +32,7 @@ export const login = async ({ email, password }: LoginState) => {
     if (!isCorrectPassword) throw new Error(WrongLoginData);
 
     return { id: user.id };
-  } catch (err) {
-    throw new Error(ErrorSubmit);
+  } catch (err: any) {
+    throw new Error(err.message || ErrorSubmit);
   }
 };

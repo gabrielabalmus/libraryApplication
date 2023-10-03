@@ -15,8 +15,17 @@ export const StyledFilter = styled(ColumnFlex)`
   background-color: ${collorPalette.primary.lightest};
   padding: 20px;
   flex: 0 0 auto;
+  border: 1px solid ${collorPalette.primary.lightest};
   @media (max-width: 900px) {
     width: auto;
+  }
+`;
+
+export const StyledColumnFlex = styled(ColumnFlex)`
+  flex: 1;
+  gap: 30px;
+  @media (min-width: 900px) {
+    margin-top: 20px;
   }
 `;
 

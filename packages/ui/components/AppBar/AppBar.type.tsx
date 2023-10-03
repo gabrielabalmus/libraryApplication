@@ -8,5 +8,6 @@ export interface AppBarListType {
 
 export interface AppBarContainerProps {
   onLogoutClick: () => void;
+  isAuthenticated: boolean;
   children: ReactNode;
 }

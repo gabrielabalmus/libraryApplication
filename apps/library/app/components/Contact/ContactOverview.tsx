@@ -10,7 +10,9 @@ import { ContactTitle } from "./Contact.const";
 const ContactOverview: React.FC<ContactOverviewProps> = ({ libraries }) => {
   return (
     <Paper className="overview-paper">
-      <StyledMainTitle variant="h4">{ContactTitle}</StyledMainTitle>
+      <StyledMainTitle variant="h4" marginBottom="40px">
+        {ContactTitle}
+      </StyledMainTitle>
 
       <Grid container spacing={3}>
         {libraries.map((item) => {

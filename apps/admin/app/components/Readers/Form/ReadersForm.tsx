@@ -81,7 +81,6 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
               onChange={(value: string) =>
                 handleInputChange(value, ReaderValue.email)
               }
-              multiline
             />
             <Autocomplete
               label="City*"

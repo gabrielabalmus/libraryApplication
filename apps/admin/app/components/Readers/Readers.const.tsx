@@ -17,8 +17,6 @@ export const SuccessDelete = "Reader deleted successfuly";
 export const ErrorUpdate = "There was a problem in updating the reader";
 export const SuccessUpdate = "Reader updated successfully";
 
-export const ErrorImageUpload = "Error on upload. Try again!";
-
 export const SearchPlaceholder = "Search for name, email or phone";
 
 export const Details = "Details";

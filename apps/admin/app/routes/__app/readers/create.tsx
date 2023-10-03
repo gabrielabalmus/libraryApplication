@@ -14,7 +14,7 @@ import { isBoolean, isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import LayoutTitle from "~/components/LayoutTitle";
-import ReadersForm from "~/components/Readers/Form/ReadersForm";
+import ReadersForm from "~/components/Readers/Form";
 import {
   CreateReaderTitle,
   ErrorCreate,

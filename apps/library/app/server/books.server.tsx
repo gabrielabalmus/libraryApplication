@@ -12,7 +12,7 @@ export const getPaginatedBooks = async ({
   language,
 }: PaginatedBooksProps) => {
   try {
-    const skip = (page > 1 && (page - 1) * 12) || undefined;
+    const skip = (page > 1 && (page - 1) * 6) || undefined;
 
     const books = await prisma.$transaction(async (db) => {
       const count = await db.books.count({
@@ -60,7 +60,7 @@ export const getPaginatedBooks = async ({
 
       const data = await db.books.findMany({
         skip,
-        take: 12,
+        take: 6,
         where: {
           deleted: false,
           OR: [

@@ -3,12 +3,12 @@ import { goodRequest } from "~/server/request.server";
 import { ErrorMessage } from "~/const";
 import ErrorInterface from "~/components/ErrorInterface";
 import Container from "@mui/material/Container";
-import { getLibraries } from "~/server/libraries.server";
+import { getAllLibraries } from "~/server/libraries.server";
 import ContactOverview from "~/components/Contact";
 
 export const loader = async () => {
   try {
-    const libraries = await getLibraries();
+    const libraries = await getAllLibraries();
 
     return goodRequest({ libraries });
   } catch (error: any) {

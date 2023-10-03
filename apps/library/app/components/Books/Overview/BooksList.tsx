@@ -1,8 +1,7 @@
 import { BooksListProps } from "~/types/Books.type";
-import { ColumnFlex } from "@/components/Flex";
 import Input from "@/components/Input";
 import { SearchPlaceholder } from "../Books.const";
-import { StyledImage } from "../Books.style";
+import { StyledColumnFlex, StyledImage } from "../Books.style";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TablePagination from "@mui/material/TablePagination";
@@ -23,7 +22,7 @@ const BooksList: React.FC<BooksListProps> = ({
   };
 
   return (
-    <ColumnFlex gap="30px">
+    <StyledColumnFlex>
       <Input
         placeholder={SearchPlaceholder}
         onChange={onSearchChange}
@@ -43,14 +42,25 @@ const BooksList: React.FC<BooksListProps> = ({
         ))}
       </Grid>
 
+      {books.data.length === 0 && (
+        <Typography
+          align="center"
+          variant="h1"
+          fontWeight="400"
+          marginTop="50px"
+        >
+          No data
+        </Typography>
+      )}
+
       <TablePagination
         component="div"
         count={books.count}
-        rowsPerPage={12}
+        rowsPerPage={6}
         page={page - 1}
         onPageChange={handleChangePage}
       />
-    </ColumnFlex>
+    </StyledColumnFlex>
   );
 };
 

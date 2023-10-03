@@ -4,51 +4,36 @@ import {
   LoaderArgs,
   redirect,
 } from "@remix-run/node";
-import {
-  useActionData,
-  useLoaderData,
-  useNavigate,
-  useParams,
-  useSubmit,
-} from "@remix-run/react";
+import { useActionData, useLoaderData, useSubmit } from "@remix-run/react";
 import { isBoolean, isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
-import LayoutTitle from "~/components/LayoutTitle";
 import ReadersForm from "~/components/Readers/Form";
-import {
-  UpdateReaderTitle,
-  ErrorUpdate,
-  SuccessUpdate,
-  ErrorGetSingle,
-} from "~/components/Readers/Readers.const";
+import { ErrorUpdate, SuccessUpdate } from "~/components/Readers/Readers.const";
 import { handleReaderErrors } from "~/components/Readers/Readers.helper";
-import { ReadersSubmitProps, ReaderState } from "~/types/Readers.type";
+import {
+  AlertDataState,
+  ReadersSubmitProps,
+  ReaderState,
+} from "~/types/Readers.type";
 import { ErrorMessage } from "~/const";
 import { getCities } from "~/server/cities.server";
-import { getSingleReader, updateReader } from "~/server/readers.server";
+import {
+  updateReader,
+  getReaderId,
+  getSingleReader,
+} from "~/server/readers.server";
 import { badRequest, goodRequest } from "~/server/request.server";
-import { getUserId } from "~/server/users.server";
 import Container from "@mui/material/Container";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const userId = await getUserId(request);
+  const readerId = await getReaderId(request);
 
-  if (!userId) {
+  if (!readerId) {
     return redirect("/login");
   }
 
   try {
-    const url = new URL(request.url);
-    const readerId = url.pathname.split("/").pop();
-
-    if (!isString(readerId)) {
-      return badRequest({
-        message: ErrorGetSingle,
-        success: false,
-      });
-    }
-
     const [reader, cities] = await Promise.all([
       getSingleReader({
         readerId,
@@ -56,20 +41,16 @@ export const loader = async ({ request }: LoaderArgs) => {
       getCities(),
     ]);
 
-    return goodRequest({ reader, cities });
+    return goodRequest({ reader, cities, readerId });
   } catch (error: any) {
     throw new Error(error.message || ErrorMessage);
   }
 };
 
-export const ErrorBoundary = () => {
-  return <ErrorInterface />;
-};
-
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
-  const userId = await getUserId(request);
+  const readerId = await getReaderId(request);
 
-  if (!userId) {
+  if (!readerId) {
     return redirect("/login");
   }
 
@@ -86,11 +67,7 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
       const phone = formData.get("phone");
       const birthdate = formData.get("birthdate");
 
-      const url = new URL(request.url);
-      const readerId = url.pathname.split("/").pop();
-
       if (
-        !isString(readerId) ||
         !isString(name) ||
         !isString(city) ||
         !isString(address) ||
@@ -135,19 +112,23 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
   }
 };
 
-const UpdateReader: React.FC = () => {
+export const ErrorBoundary = () => {
+  return <ErrorInterface />;
+};
+
+const Account: React.FC = () => {
   const submit = useSubmit();
   const actionData = useActionData();
-  const navigate = useNavigate();
   const data = useLoaderData();
-  const urlParams = useParams();
 
   const [reader, setReader] = useState<ReaderState>(data.reader);
+  const [messageData, setMessageData] = useState<AlertDataState>();
 
   const cities = data.cities;
 
   useEffect(() => {
-    if (actionData && isBoolean(actionData.success)) navigate("/readers");
+    if (actionData && actionData.message && isBoolean(actionData.success))
+      setMessageData(actionData);
   }, [actionData]);
 
   const handleOnSubmit = ({ callback }: ReadersSubmitProps) => {
@@ -164,23 +145,24 @@ const UpdateReader: React.FC = () => {
         intent: "update",
       },
       {
-        method: "post",
-        action: `/readers/${urlParams.readerId}`,
+        method: "put",
+        action: "/account",
       }
     );
   };
 
   return (
     <Container>
-      <LayoutTitle title={UpdateReaderTitle} backUrl="/readers" />
       <ReadersForm
         onSubmit={handleOnSubmit}
         setReader={setReader}
         reader={reader}
         cities={cities}
+        messageData={messageData}
+        readerId={data.readerId}
       />
     </Container>
   );
 };
 
-export default UpdateReader;
+export default Account;

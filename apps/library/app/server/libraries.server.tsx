@@ -1,8 +1,9 @@
 import prisma from "prisma";
 import { ErrorGetLibraries } from "~/components/Contact/Contact.const";
+import { ErrorMessage } from "~/const";
 import { fromLibrariesResponse } from "~/transformers/libraries.transformer";
 
-export const getLibraries = async () => {
+export const getAllLibraries = async () => {
   try {
     const libraries = await prisma.libraries.findMany({
       where: {
@@ -29,5 +30,26 @@ export const getLibraries = async () => {
     return fromLibrariesResponse(libraries);
   } catch (err) {
     throw new Error(ErrorGetLibraries);
+  }
+};
+
+export const getLibraries = async (city?: string) => {
+  try {
+    const libraries = await prisma.libraries.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+      where: {
+        cityId: city || undefined,
+        deleted: false,
+      },
+    });
+
+    if (!libraries) throw new Error(ErrorMessage);
+
+    return libraries;
+  } catch (err) {
+    throw new Error(ErrorMessage);
   }
 };

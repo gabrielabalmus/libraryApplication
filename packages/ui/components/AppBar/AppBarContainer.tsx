@@ -16,6 +16,7 @@ import { appBarItems } from "./AppBar.helper";
 
 const AppBarContainer: React.FC<AppBarContainerProps> = ({
   onLogoutClick,
+  isAuthenticated,
   children,
 }) => {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
@@ -46,8 +47,9 @@ const AppBarContainer: React.FC<AppBarContainerProps> = ({
           ModalProps={{
             keepMounted: true,
           }}
+          BackdropProps={{ invisible: true }}
         >
-          {appBarItems(onLogoutClick)}
+          {appBarItems(onLogoutClick, isAuthenticated)}
         </StyledDrawer>
       </Box>
 

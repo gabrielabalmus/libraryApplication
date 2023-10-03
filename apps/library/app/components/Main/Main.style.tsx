@@ -2,14 +2,14 @@ import { CenteredColumnFlex, ColumnFlex } from "@/components/Flex";
 import styled from "styled-components";
 import collorPalette from "@/theme/colorPalette";
 import { styled as MuiStyled } from "@mui/material/styles";
-import { Typography, TypographyProps } from "@mui/material";
+import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
 
 export const StyledImageWrapper = styled.div`
   height: calc(100vh - 65px);
   position: relative;
 `;
 
-export const StyledImagex = styled.img`
+export const StyledImage = styled.img`
   object-fit: cover;
   width: 100%;
   height: 100%;
@@ -54,4 +54,18 @@ export const StyledTypography = MuiStyled(Typography)<TypographyProps>(
       lineHeight: "25px",
       width: "80%",
     })
+);
+
+export const StyledBox = MuiStyled(Box)<BoxProps>(({ theme }) =>
+  theme.unstable_sx({
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: { xs: "200px", sm: "400px" },
+    bgcolor: collorPalette.white,
+    border: `2px solid ${collorPalette.white}`,
+    boxShadow: 24,
+    p: 4,
+  })
 );
