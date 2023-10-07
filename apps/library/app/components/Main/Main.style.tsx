@@ -1,6 +1,6 @@
 import { CenteredColumnFlex, ColumnFlex } from "@/components/Flex";
 import styled from "styled-components";
-import collorPalette from "@/theme/colorPalette";
+import colorPalette from "@/theme/colorPalette";
 import { styled as MuiStyled } from "@mui/material/styles";
 import { Box, BoxProps, Typography, TypographyProps } from "@mui/material";
 
@@ -16,7 +16,7 @@ export const StyledImage = styled.img`
 `;
 
 export const StyledColumn = styled(CenteredColumnFlex)`
-  background-color: ${collorPalette.primary.lightest};
+  background-color: ${colorPalette.primary.lightest};
   padding: 20px;
   border-radius: 5px;
 `;
@@ -56,15 +56,15 @@ export const StyledTypography = MuiStyled(Typography)<TypographyProps>(
     })
 );
 
-export const StyledBox = MuiStyled(Box)<BoxProps>(({ theme }) =>
+export const StyledModalBox = MuiStyled(Box)<BoxProps>(({ theme }) =>
   theme.unstable_sx({
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: { xs: "200px", sm: "400px" },
-    bgcolor: collorPalette.white,
-    border: `2px solid ${collorPalette.white}`,
+    bgcolor: colorPalette.white,
+    border: `2px solid ${colorPalette.white}`,
     boxShadow: 24,
     p: 4,
   })

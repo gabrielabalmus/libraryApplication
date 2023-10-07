@@ -14,6 +14,7 @@ export interface PaginatedBooksProps {
   library: string;
   publishHouse: string;
   language: string;
+  city: string;
 }
 
 export interface CountPaginatedBooks {
@@ -31,10 +32,13 @@ export interface BooksOverviewProps {
   onLibraryChange: (value: AutocompleteOptions | null) => void;
   onLanguageChange: (value: AutocompleteOptions | null) => void;
   onPublishHouseChange: (value: AutocompleteOptions | null) => void;
+  onCityChange: (value: AutocompleteOptions | null) => void;
+  onBookSelect: (bookId: string) => void;
   categories: AutocompleteOptions[];
   libraries: AutocompleteOptions[];
   publishHouses: AutocompleteOptions[];
   languages: AutocompleteOptions[];
+  cities: AutocompleteOptions[];
 }
 
 export interface BooksFilterProps {
@@ -43,10 +47,12 @@ export interface BooksFilterProps {
   onLibraryChange: (value: AutocompleteOptions | null) => void;
   onLanguageChange: (value: AutocompleteOptions | null) => void;
   onPublishHouseChange: (value: AutocompleteOptions | null) => void;
+  onCityChange: (value: AutocompleteOptions | null) => void;
   categories: AutocompleteOptions[];
   libraries: AutocompleteOptions[];
   publishHouses: AutocompleteOptions[];
   languages: AutocompleteOptions[];
+  cities: AutocompleteOptions[];
 }
 
 export interface FilterState {
@@ -55,36 +61,64 @@ export interface FilterState {
   library: string;
   publishHouse: string;
   language: string;
+  city: string;
 }
 
 export interface BookLibrariesResponse {
   id: string;
-  libraryId: string;
+  library: { name: string; id: string };
   SKU: string;
   place: string;
-}
-
-export interface BookResponse {
-  name: string;
-  author: string;
-  description: string;
-  image: string;
-  pagesNumber: number;
-  category: { id: string };
-  publishHouse: { id: string };
-  releaseYear: number;
-  language: { id: string };
-  bookLibraries: BookLibrariesResponse[];
 }
 
 export interface BookLibrariesState {
   id: string;
   library: string;
+  libraryId: string;
   sku: string;
   place: string;
 }
 
-export interface BookState {
+export interface BooksListProps {
+  books: CountPaginatedBooks;
+  onSearchChange: (value: string) => void;
+  onPageChange: (page: number) => void;
+  onBookSelect: (bookId: string) => void;
+  page: number;
+  filter: FilterState;
+}
+
+export interface BookFilterState {
+  library: string;
+  city: string;
+}
+
+export interface SingleBookProps {
+  bookId: string;
+  page: number;
+  city: string;
+  library: string;
+}
+
+export interface SingleBookResponse {
+  name: string;
+  author: string;
+  description: string;
+  image: string;
+  pagesNumber: number;
+  category: { name: string };
+  publishHouse: { name: string };
+  releaseYear: number;
+  language: { name: string };
+}
+
+export interface BookResponse {
+  data: SingleBookResponse;
+  count: number;
+  bookLibraries: BookLibrariesResponse[];
+}
+
+export interface SingleBookState {
   name: string;
   author: string;
   description: string;
@@ -94,13 +128,21 @@ export interface BookState {
   publishHouse: string;
   releaseYear: string;
   language: string;
+}
+
+export interface BookState {
+  data: SingleBookState;
+  count: number;
   bookLibraries: BookLibrariesState[];
 }
 
-export interface BooksListProps {
-  books: CountPaginatedBooks;
-  onSearchChange: (value: string) => void;
+export interface BookDetailsProps {
+  book: BookState;
   onPageChange: (page: number) => void;
+  onLibraryChange: (value: AutocompleteOptions | null) => void;
+  onCityChange: (value: AutocompleteOptions | null) => void;
+  libraries: AutocompleteOptions[];
+  cities: AutocompleteOptions[];
   page: number;
-  filter: FilterState;
+  filter: BookFilterState;
 }

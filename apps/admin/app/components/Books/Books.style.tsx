@@ -1,6 +1,6 @@
 import Flex, { ColumnFlex, SpaceBetweenFlex } from "@/components/Flex";
 import styled from "styled-components";
-import collorPalette from "@/theme/colorPalette";
+import colorPalette from "@/theme/colorPalette";
 import { styled as MuiStyled } from "@mui/material/styles";
 import Fab, { FabProps } from "@mui/material/Fab";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -28,7 +28,7 @@ export const StyleFlex = styled(Flex)`
 
 export const UnitsFlex = styled(Flex)`
   gap: 20px;
-  background-color: ${collorPalette.grey.lightest};
+  background-color: ${colorPalette.grey.lightest};
   padding: 20px;
   border-radius: 10px;
   position: relative;

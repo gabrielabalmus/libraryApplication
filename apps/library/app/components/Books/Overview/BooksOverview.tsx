@@ -16,10 +16,13 @@ const BooksOverview: React.FC<BooksOverviewProps> = ({
   onLibraryChange,
   onLanguageChange,
   onPublishHouseChange,
+  onCityChange,
+  onBookSelect,
   categories,
   libraries,
   publishHouses,
   languages,
+  cities,
 }) => {
   return (
     <Paper className="overview-paper">
@@ -31,10 +34,12 @@ const BooksOverview: React.FC<BooksOverviewProps> = ({
           onLibraryChange={onLibraryChange}
           onPublishHouseChange={onPublishHouseChange}
           onLanguageChange={onLanguageChange}
+          onCityChange={onCityChange}
           categories={categories}
           libraries={libraries}
           publishHouses={publishHouses}
           languages={languages}
+          cities={cities}
         />
         <BooksList
           books={books}
@@ -42,6 +47,7 @@ const BooksOverview: React.FC<BooksOverviewProps> = ({
           filter={filter}
           onPageChange={onPageChange}
           onSearchChange={onSearchChange}
+          onBookSelect={onBookSelect}
         />
       </StyledWrapper>
     </Paper>

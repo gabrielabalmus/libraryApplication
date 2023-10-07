@@ -1,5 +1,6 @@
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
 import { Dispatch, SetStateAction } from "react";
+import { Status, Penalty } from "@prisma/client";
 
 export interface ReaderIdProps {
   readerId: string;
@@ -92,4 +93,57 @@ export interface SendEmailProps {
 export interface AlertDataState {
   message: string;
   success: boolean;
+}
+
+export interface PaginatedLoansProps {
+  readerId: string;
+  page: number;
+}
+
+export interface BookLibraryResponse {
+  SKU: string;
+  book: { name: string; author: string; category: { name: string } };
+}
+
+export interface LoansResponse {
+  id: string;
+  number: string;
+  books: { bookLibrary: BookLibraryResponse }[];
+  status: Status;
+  library: { name: string };
+  createdAt: Date;
+  borrowedAt: Date | null;
+  returnedAt: Date | null;
+  penalty: Penalty | null;
+}
+
+export interface LoanBooks {
+  sku: string;
+  name: string;
+  author: string;
+  category: string;
+}
+
+export interface PaginatedLoans {
+  id: string;
+  number: string;
+  books: LoanBooks[];
+  status: Status;
+  library: string;
+  createdAt: string;
+  borrowedAt?: string;
+  returnedAt?: string;
+  penalty?: Penalty;
+}
+
+export interface LoansProps {
+  loans: { count: number; data: PaginatedLoans[] };
+  page: number;
+  onPageChange: (page: number) => void;
+  onCancelLoan: (loanId: string) => void;
+}
+
+export interface CancelLoanProps {
+  readerId: string;
+  loanId: string;
 }

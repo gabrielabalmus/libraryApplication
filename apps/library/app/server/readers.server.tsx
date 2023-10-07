@@ -9,15 +9,23 @@ import {
   ErrorGetSingle,
   ErrorUpdate,
   NewReaderSubject,
+  ErrorGetPaginated,
+  ErrorCancelLoan,
 } from "~/components/Readers/Readers.const";
 import {
   ReaderState,
   ReaderIdProps,
   PasswordState,
+  PaginatedLoansProps,
+  CancelLoanProps,
 } from "~/types/Readers.type";
-import { fromSingleReaderResponse } from "~/transformers/readers.transformer";
+import {
+  fromSingleReaderResponse,
+  fromPaginatedLoansResponse,
+} from "~/transformers/readers.transformer";
 import { sendEmail } from "./mail.server";
 import { NewReader2Email } from "@/templates/NewReader2.email";
+import { Status } from "@prisma/client";
 
 export const getReaderSession = (request: Request) => {
   return getSession(request.headers.get("Cookie"));
@@ -221,5 +229,87 @@ export const changePassword = async ({
     return updatedReader;
   } catch (err) {
     throw new Error(ErrorChangePassword);
+  }
+};
+
+export const getPaginatedLoans = async ({
+  page,
+  readerId,
+}: PaginatedLoansProps) => {
+  try {
+    const skip = (page && page > 1 && (page - 1) * 5) || undefined;
+
+    const loans = await prisma.$transaction(async (db) => {
+      const count = await db.loans.count({
+        where: {
+          readerId,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      const data = await db.loans.findMany({
+        skip,
+        take: 5,
+        where: {
+          readerId,
+        },
+        select: {
+          id: true,
+          number: true,
+          books: {
+            select: {
+              bookLibrary: {
+                select: {
+                  SKU: true,
+                  book: {
+                    select: {
+                      name: true,
+                      author: true,
+                      category: { select: { name: true } },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          library: { select: { name: true } },
+          status: true,
+          createdAt: true,
+          borrowedAt: true,
+          returnedAt: true,
+          penalty: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      if (!data) throw new Error(ErrorGetPaginated);
+
+      return { count, data: fromPaginatedLoansResponse(data) };
+    });
+
+    return loans;
+  } catch (err) {
+    throw new Error(ErrorGetPaginated);
+  }
+};
+
+export const cancelLoan = async ({ readerId, loanId }: CancelLoanProps) => {
+  try {
+    const loan = await prisma.loans.updateMany({
+      where: { readerId, id: loanId, status: Status.RESERVED },
+      data: {
+        status: Status.CANCELLED,
+      },
+    });
+
+    if (!loan) throw new Error(ErrorCancelLoan);
+
+    return loan;
+  } catch (err) {
+    throw new Error(ErrorCancelLoan);
   }
 };

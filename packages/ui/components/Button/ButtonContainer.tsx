@@ -7,17 +7,28 @@ const ButtonContainer: React.FC<ButtonProps> = ({
   onClick,
   type,
   disabled,
+  width,
 }) => {
   if (variant === ButtonVariant.contained) {
     return (
-      <ContainedButton onClick={onClick} type={type} disabled={disabled}>
+      <ContainedButton
+        onClick={onClick}
+        type={type}
+        disabled={disabled}
+        style={{ minWidth: width || "120px" }}
+      >
         {title}
       </ContainedButton>
     );
   }
 
   return (
-    <OutlinedButton onClick={onClick} type={type} disabled={disabled}>
+    <OutlinedButton
+      onClick={onClick}
+      type={type}
+      disabled={disabled}
+      style={{ minWidth: width || "120px" }}
+    >
       {title}
     </OutlinedButton>
   );

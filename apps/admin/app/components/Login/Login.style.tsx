@@ -1,13 +1,13 @@
 import Paper, { PaperProps } from "@mui/material/Paper";
 import { styled as MuiStyled } from "@mui/material/styles";
 import Typography, { TypographyProps } from "@mui/material/Typography";
-import collorPalette from "@/theme/colorPalette";
+import colorPalette from "@/theme/colorPalette";
 import Alert, { AlertProps } from "@mui/material/Alert";
 
 export const StyledPaper = MuiStyled(Paper)<PaperProps>(({ theme }) =>
   theme.unstable_sx({
     width: { sm: "260px" },
-    border: `10px solid ${collorPalette.primary.lighter}`,
+    border: `10px solid ${colorPalette.primary.lighter}`,
     padding: { xs: 4, sm: 6 },
     flexDirection: "column",
     textAlign: "center",
@@ -15,7 +15,7 @@ export const StyledPaper = MuiStyled(Paper)<PaperProps>(({ theme }) =>
     margin: "0 auto",
     marginTop: { xs: "50px", md: "100px" },
     marginBottom: { xs: "50px", md: "100px" },
-    backgroundColor: collorPalette.white,
+    backgroundColor: colorPalette.white,
     boxShadow: "none",
   })
 );
@@ -23,7 +23,7 @@ export const StyledPaper = MuiStyled(Paper)<PaperProps>(({ theme }) =>
 export const StyledParagraph = MuiStyled(Typography)<TypographyProps>(
   ({ theme }) =>
     theme.unstable_sx({
-      color: collorPalette.grey.darker,
+      color: colorPalette.grey.darker,
     })
 );
 

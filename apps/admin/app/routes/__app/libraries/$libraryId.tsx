@@ -43,10 +43,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     const libraryId = url.pathname.split("/").pop();
 
     if (!isString(libraryId)) {
-      return badRequest({
-        message: ErrorGetSingle,
-        success: false,
-      });
+      throw new Error(ErrorGetSingle);
     }
 
     const [library, cities] = await Promise.all([

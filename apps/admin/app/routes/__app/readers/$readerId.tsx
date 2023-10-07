@@ -43,10 +43,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     const readerId = url.pathname.split("/").pop();
 
     if (!isString(readerId)) {
-      return badRequest({
-        message: ErrorGetSingle,
-        success: false,
-      });
+      throw new Error(ErrorGetSingle);
     }
 
     const [reader, cities] = await Promise.all([

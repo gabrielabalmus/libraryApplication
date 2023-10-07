@@ -11,6 +11,7 @@ import {
 import GlobalStyle from "@/theme/globalStyle.css";
 import { theme } from "@/theme/theme";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import ReservedBooksProvider from "./context/reservedBooks.context";
 
 export const links: LinksFunction = () => {
   return [
@@ -43,7 +44,9 @@ const App: React.FC = () => {
       </head>
       <body>
         <MuiThemeProvider theme={theme}>
-          <Outlet />
+          <ReservedBooksProvider>
+            <Outlet />
+          </ReservedBooksProvider>
         </MuiThemeProvider>
         <ScrollRestoration />
         <Scripts />

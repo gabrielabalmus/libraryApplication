@@ -1,4 +1,4 @@
-import collorPalette from "@/theme/colorPalette";
+import colorPalette from "@/theme/colorPalette";
 import { createTheme } from "@mui/material/styles";
 import { createBreakpoints } from "@mui/system";
 
@@ -13,7 +13,7 @@ export const theme = createTheme({
             textAlign: "left",
             lineHeight: "20px",
             fontSize: { xs: 12, sm: 14 },
-            color: collorPalette.black,
+            color: colorPalette.black,
           }),
       },
     },
@@ -69,7 +69,7 @@ export const theme = createTheme({
   typography: {
     fontFamily: ["Georama"].join(","),
     h1: {
-      color: collorPalette.black,
+      color: colorPalette.black,
       [breakpoints.up("xs")]: {
         fontSize: 13,
       },
@@ -78,7 +78,7 @@ export const theme = createTheme({
       },
     },
     h2: {
-      color: collorPalette.black,
+      color: colorPalette.black,
       [breakpoints.up("xs")]: {
         fontSize: 15,
       },
@@ -87,7 +87,7 @@ export const theme = createTheme({
       },
     },
     h6: {
-      color: collorPalette.black,
+      color: colorPalette.black,
       fontWeight: 600,
       [breakpoints.up("xs")]: {
         fontSize: 28,
@@ -97,7 +97,7 @@ export const theme = createTheme({
       },
     },
     h5: {
-      color: collorPalette.black,
+      color: colorPalette.black,
       fontWeight: 600,
       [breakpoints.up("xs")]: {
         fontSize: 22,
@@ -107,7 +107,7 @@ export const theme = createTheme({
       },
     },
     h4: {
-      color: collorPalette.black,
+      color: colorPalette.black,
       fontWeight: 600,
       [breakpoints.up("xs")]: {
         fontSize: 20,
@@ -117,7 +117,7 @@ export const theme = createTheme({
       },
     },
     h3: {
-      color: collorPalette.black,
+      color: colorPalette.black,
       fontWeight: 600,
       [breakpoints.up("xs")]: {
         fontSize: 16,
@@ -129,10 +129,10 @@ export const theme = createTheme({
   },
   palette: {
     primary: {
-      main: collorPalette.primary.base,
+      main: colorPalette.primary.base,
     },
     secondary: {
-      main: collorPalette.primary.lighter,
+      main: colorPalette.primary.lighter,
     },
   },
 });

@@ -3,37 +3,54 @@ import { ErrorGetLibraries } from "~/components/Contact/Contact.const";
 import { ErrorMessage } from "~/const";
 import { fromLibrariesResponse } from "~/transformers/libraries.transformer";
 
-export const getAllLibraries = async () => {
+export const getAllLibraries = async ({ page }: { page: number }) => {
   try {
-    const libraries = await prisma.libraries.findMany({
-      where: {
-        deleted: false,
-      },
-      select: {
-        name: true,
-        city: {
-          select: {
-            name: true,
-          },
+    const skip = (page && page > 1 && (page - 1) * 6) || undefined;
+
+    const libraries = await prisma.$transaction(async (db) => {
+      const count = await db.libraries.count({
+        where: {
+          deleted: false,
         },
-        address: true,
-        phone: true,
-        schedule: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      const data = await prisma.libraries.findMany({
+        skip,
+        take: 6,
+        where: {
+          deleted: false,
+        },
+        select: {
+          name: true,
+          city: {
+            select: {
+              name: true,
+            },
+          },
+          address: true,
+          phone: true,
+          schedule: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      if (!data) throw new Error(ErrorGetLibraries);
+
+      return { count, data: fromLibrariesResponse(data) };
     });
 
-    if (!libraries) throw new Error(ErrorGetLibraries);
-
-    return fromLibrariesResponse(libraries);
+    return libraries;
   } catch (err) {
     throw new Error(ErrorGetLibraries);
   }
 };
 
-export const getLibraries = async (city?: string) => {
+export const getLibraries = async (city: string) => {
   try {
     const libraries = await prisma.libraries.findMany({
       select: {
@@ -41,7 +58,11 @@ export const getLibraries = async (city?: string) => {
         name: true,
       },
       where: {
-        cityId: city || undefined,
+        city:
+          (city && {
+            name: city,
+          }) ||
+          undefined,
         deleted: false,
       },
     });

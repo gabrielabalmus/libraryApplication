@@ -5,7 +5,7 @@ import {
   redirect,
 } from "@remix-run/node";
 import { useActionData, useSubmit } from "@remix-run/react";
-import { isString } from "lodash";
+import { isBoolean, isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import ReadersChangePassword from "~/components/Readers/ChangePassword";
@@ -101,7 +101,7 @@ const ChangePassword: React.FC = () => {
   const [messageData, setMessageData] = useState<AlertDataState>();
 
   useEffect(() => {
-    if (actionData && actionData.message && actionData.success === false)
+    if (actionData && actionData.message && isBoolean(actionData.success))
       setMessageData(actionData);
   }, [actionData]);
 

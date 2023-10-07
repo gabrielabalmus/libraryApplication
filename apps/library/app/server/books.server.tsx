@@ -1,13 +1,21 @@
-import { ErrorGetPaginated } from "~/components/Books/Books.const";
-import { PaginatedBooksProps } from "~/types/Books.type";
+import {
+  ErrorGetPaginated,
+  ErrorGetSingle,
+} from "~/components/Books/Books.const";
+import { PaginatedBooksProps, SingleBookProps } from "~/types/Books.type";
 import prisma from "prisma";
-import { fromPaginatedBooksResponse } from "~/transformers/books.transformer";
+import {
+  fromPaginatedBooksResponse,
+  fromSingleBookResponse,
+} from "~/transformers/books.transformer";
+import { Status } from "@prisma/client";
 
 export const getPaginatedBooks = async ({
   page,
   search,
   category,
   library,
+  city,
   publishHouse,
   language,
 }: PaginatedBooksProps) => {
@@ -43,11 +51,11 @@ export const getPaginatedBooks = async ({
             }) ||
             undefined,
           bookLibraries:
-            (library && {
+            ((library || city) && {
               some: {
                 deleted: false,
                 library: {
-                  name: library,
+                  OR: [{ name: library }, { city: { name: city } }],
                 },
               },
             }) ||
@@ -88,11 +96,11 @@ export const getPaginatedBooks = async ({
             }) ||
             undefined,
           bookLibraries:
-            (library && {
+            ((library || city) && {
               some: {
                 deleted: false,
                 library: {
-                  name: library,
+                  OR: [{ name: library }, { city: { name: city } }],
                 },
               },
             }) ||
@@ -117,5 +125,114 @@ export const getPaginatedBooks = async ({
     return books;
   } catch (err) {
     throw new Error(ErrorGetPaginated);
+  }
+};
+
+export const getSingleBook = async ({
+  bookId,
+  page,
+  library,
+  city,
+}: SingleBookProps) => {
+  try {
+    const skip = (page > 1 && (page - 1) * 5) || undefined;
+
+    const book = await prisma.$transaction(async (db) => {
+      const book = await db.books.findFirst({
+        where: {
+          id: bookId,
+          deleted: false,
+        },
+        select: {
+          name: true,
+          author: true,
+          description: true,
+          image: true,
+          category: {
+            select: {
+              name: true,
+            },
+          },
+          publishHouse: {
+            select: {
+              name: true,
+            },
+          },
+          releaseYear: true,
+          pagesNumber: true,
+          language: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      if (!book) throw new Error(ErrorGetSingle);
+
+      const bookLibrariesCount = await db.bookLibraries.count({
+        where: {
+          deleted: false,
+          bookId,
+          OR: [
+            { loanBooks: { none: {} } },
+            {
+              loanBooks: {
+                some: {
+                  loan: {
+                    status: { notIn: [Status.RESERVED, Status.BORROWED] },
+                  },
+                },
+              },
+            },
+          ],
+          library:
+            ((library || city) && {
+              OR: [{ name: library }, { city: { name: city } }],
+            }) ||
+            undefined,
+        },
+      });
+
+      const bookLibraries = await db.bookLibraries.findMany({
+        skip,
+        take: 5,
+        where: {
+          deleted: false,
+          bookId,
+          OR: [
+            { loanBooks: { none: {} } },
+            {
+              loanBooks: {
+                some: {
+                  loan: {
+                    status: { notIn: [Status.RESERVED, Status.BORROWED] },
+                  },
+                },
+              },
+            },
+          ],
+          library:
+            ((library || city) && {
+              OR: [{ name: library }, { city: { name: city } }],
+            }) ||
+            undefined,
+        },
+        select: {
+          id: true,
+          library: { select: { name: true, id: true } },
+          SKU: true,
+          place: true,
+        },
+      });
+
+      if (!bookLibraries) throw new Error(ErrorGetSingle);
+
+      return { data: book, count: bookLibrariesCount, bookLibraries };
+    });
+
+    return fromSingleBookResponse(book);
+  } catch (err) {
+    throw new Error(ErrorGetSingle);
   }
 };

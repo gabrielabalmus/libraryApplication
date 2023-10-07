@@ -13,10 +13,14 @@ import { appBarTitle } from "./AppBar.const";
 import Flex from "@/components/Flex";
 import { AppBarContainerProps } from "./AppBar.type";
 import { appBarItems } from "./AppBar.helper";
+import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
+import Badge from "@mui/material/Badge";
 
 const AppBarContainer: React.FC<AppBarContainerProps> = ({
   onLogoutClick,
   isAuthenticated,
+  booksLength,
+  openBooksModal,
   children,
 }) => {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
@@ -36,6 +40,12 @@ const AppBarContainer: React.FC<AppBarContainerProps> = ({
           <StyledLink to="/">
             <StyledTitle variant="h4">{appBarTitle}</StyledTitle>
           </StyledLink>
+
+          <StyledIconButton onClick={openBooksModal}>
+            <Badge badgeContent={booksLength} color="primary">
+              <CollectionsBookmarkIcon />
+            </Badge>
+          </StyledIconButton>
         </Toolbar>
       </StyledAppBar>
 

@@ -1,11 +1,13 @@
 import { BooksListProps } from "~/types/Books.type";
 import Input from "@/components/Input";
 import { SearchPlaceholder } from "../Books.const";
-import { StyledColumnFlex, StyledImage } from "../Books.style";
+import { StyledBookBox, StyledColumnFlex, StyledImage, StyledImageFlex } from "../Books.style";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TablePagination from "@mui/material/TablePagination";
-import collorPalette from "@/theme/colorPalette";
+import colorPalette from "@/theme/colorPalette";
+import { ColumnFlex } from "@/components/Flex";
+import { Divider } from "@mui/material";
 
 const BooksList: React.FC<BooksListProps> = ({
   books,
@@ -13,6 +15,7 @@ const BooksList: React.FC<BooksListProps> = ({
   filter,
   onPageChange,
   onSearchChange,
+  onBookSelect,
 }) => {
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -30,14 +33,23 @@ const BooksList: React.FC<BooksListProps> = ({
         value={filter.search}
       />
 
-      <Grid container spacing={4}>
+      <Grid container spacing={2}>
         {books.data.map((book) => (
           <Grid item xs={6} md={4}>
-            <StyledImage src={book.image} />
-            <Typography>{book.name}</Typography>
-            <Typography variant="h1" color={collorPalette.grey.base}>
-              by {book.author}
-            </Typography>
+            <StyledBookBox onClick={() => onBookSelect(book.id)}>
+              <StyledImageFlex>
+                <StyledImage src={book.image} />
+              </StyledImageFlex>
+
+              <Divider style={{ borderColor: colorPalette.grey.light }} />
+
+              <ColumnFlex>
+                <Typography>{book.name}</Typography>
+                <Typography variant="h1" color={colorPalette.grey.base}>
+                  by {book.author}
+                </Typography>
+              </ColumnFlex>
+            </StyledBookBox>
           </Grid>
         ))}
       </Grid>
@@ -55,6 +67,7 @@ const BooksList: React.FC<BooksListProps> = ({
 
       <TablePagination
         component="div"
+        rowsPerPageOptions={[]}
         count={books.count}
         rowsPerPage={6}
         page={page - 1}

@@ -1,4 +1,4 @@
-const collorPalette = {
+const colorPalette = {
   white: "#FFFFFF",
   black: "#000000",
   transparent: "transparent",
@@ -50,4 +50,4 @@ const collorPalette = {
   shadow: "2px 2px 10px 1px #DDDDDD",
 };
 
-export default collorPalette;
+export default colorPalette;

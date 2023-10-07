@@ -48,10 +48,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     const bookId = url.pathname.split("/").pop();
 
     if (!isString(bookId)) {
-      return badRequest({
-        message: ErrorGetSingle,
-        success: false,
-      });
+      throw new Error(ErrorGetSingle);
     }
 
     const [book, categories, publishHouses, libraries, languages] =

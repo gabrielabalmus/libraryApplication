@@ -84,6 +84,7 @@ const PaginatedTableContainer: React.FC<TableProps> = ({
 
       <TablePagination
         component="div"
+        rowsPerPageOptions={[]}
         count={count}
         rowsPerPage={5}
         page={page - 1}

@@ -1,45 +1,46 @@
 import Button, { ButtonProps } from "@mui/material/Button";
 import { styled as MuiStyled } from "@mui/material/styles";
-import collorPalette from "@/theme/colorPalette";
+import colorPalette from "@/theme/colorPalette";
 
 const commonStyle = {
   height: "38px",
   padding: "6px 20px",
   letterSpacing: "0.5px",
   fontSize: "15px",
-  minWidth: "120px",
 };
 
 export const ContainedButton = MuiStyled(Button)<ButtonProps>(({ theme }) =>
   theme.unstable_sx({
     ...commonStyle,
-    backgroundColor: collorPalette.primary.base,
-    color: collorPalette.white,
-    border: `2px solid ${collorPalette.primary.base}`,
+
+    backgroundColor: colorPalette.primary.base,
+    color: colorPalette.white,
+    border: `2px solid ${colorPalette.primary.base}`,
     "&:hover": {
-      backgroundColor: collorPalette.primary.base,
+      backgroundColor: colorPalette.primary.base,
     },
     "&:disabled": {
-      backgroundColor: collorPalette.grey.lighter,
-      color: collorPalette.grey.base,
-      border: `2px solid ${collorPalette.grey.lighter}`,
+      backgroundColor: colorPalette.grey.lighter,
+      color: colorPalette.grey.base,
+      border: `2px solid ${colorPalette.grey.lighter}`,
     },
   })
 ) as typeof Button;
 
-export const OutlinedButton = MuiStyled(Button)<ButtonProps>(({ theme }) =>
-  theme.unstable_sx({
-    ...commonStyle,
-    backgroundColor: collorPalette.white,
-    color: collorPalette.black,
-    border: `2px solid ${collorPalette.primary.base}`,
-    "&:hover": {
-      backgroundColor: collorPalette.white,
-    },
-    "&:disabled": {
-      backgroundColor: collorPalette.grey.lighter,
-      color: collorPalette.grey.base,
-      border: `2px solid ${collorPalette.grey.lighter}`,
-    },
-  })
+export const OutlinedButton = MuiStyled(Button)<ButtonProps>(
+  ({ theme }) =>
+    theme.unstable_sx({
+      ...commonStyle,
+      backgroundColor: colorPalette.white,
+      color: colorPalette.black,
+      border: `2px solid ${colorPalette.primary.base}`,
+      "&:hover": {
+        backgroundColor: colorPalette.white,
+      },
+      "&:disabled": {
+        backgroundColor: colorPalette.grey.lighter,
+        color: colorPalette.grey.base,
+        border: `2px solid ${colorPalette.grey.lighter}`,
+      },
+    })
 ) as typeof Button;

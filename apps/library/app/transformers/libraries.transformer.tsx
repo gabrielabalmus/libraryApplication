@@ -1,8 +1,8 @@
-import { Libraries, LibrariesResponse } from "~/types/Contact.type";
+import { PaginatedLibraries, LibrariesResponse } from "~/types/Contact.type";
 
 export const fromLibrariesResponse = (
   libraries: LibrariesResponse[]
-): Libraries[] =>
+): PaginatedLibraries[] =>
   libraries.map((item) => ({
     ...item,
     city: item.city.name,

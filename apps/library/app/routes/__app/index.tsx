@@ -1,15 +1,20 @@
-import Modal from "@mui/material/Modal";
-import Typography from "@mui/material/Typography";
-import { ActionArgs, ActionFunction, json } from "@remix-run/node";
+import { ActionArgs, ActionFunction, json, redirect } from "@remix-run/node";
 import { useActionData } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import MainOverview from "~/components/Main";
-import { StyledBox } from "~/components/Main/Main.style";
 import { ErrorMessage } from "~/const";
+import { useReservedBooksContext } from "~/context/reservedBooks.context";
+import { getReaderId } from "~/server/readers.server";
 import { badRequest } from "~/server/request.server";
 import { removeReaderSession } from "~/server/session.server";
 
 export const action: ActionFunction = async ({ request }: ActionArgs) => {
+  const readerId = await getReaderId(request);
+
+  if (!readerId) {
+    return redirect("/login");
+  }
+
   try {
     const formData = await request.formData();
     const intent = formData.get("intent");
@@ -32,28 +37,14 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
 
 const Main: React.FC = () => {
   const actionData = useActionData();
-
-  const [modalError, setModalError] = useState<string>("");
+  const { setModalError } = useReservedBooksContext();
 
   useEffect(() => {
     if (actionData && actionData.message && actionData.success === false)
       setModalError(actionData.message);
   }, [actionData]);
 
-  const handleModalClose = () => {
-    setModalError("");
-  };
-
-  return (
-    <>
-      <MainOverview />
-      <Modal open={!!modalError} onClose={handleModalClose}>
-        <StyledBox>
-          <Typography>{modalError}</Typography>
-        </StyledBox>
-      </Modal>
-    </>
-  );
+  return <MainOverview />;
 };
 
 export default Main;

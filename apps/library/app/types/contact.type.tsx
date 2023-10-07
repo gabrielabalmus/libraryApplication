@@ -10,7 +10,7 @@ export interface LibrariesResponse {
   schedule: LibrarySchedule;
 }
 
-export interface Libraries {
+export interface PaginatedLibraries {
   name: string;
   city: string;
   address: string;
@@ -19,5 +19,7 @@ export interface Libraries {
 }
 
 export interface ContactOverviewProps {
-  libraries: Libraries[];
+  libraries: { count: number; data: PaginatedLibraries[] };
+  page: number;
+  onPageChange: (page: number) => void;
 }

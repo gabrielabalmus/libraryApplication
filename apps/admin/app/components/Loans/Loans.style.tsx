@@ -1,5 +1,5 @@
 import Flex, { ColumnFlex, SpaceBetweenFlex } from "@/components/Flex";
-import collorPalette from "@/theme/colorPalette";
+import colorPalette from "@/theme/colorPalette";
 import styled from "styled-components";
 import { styled as MuiStyled } from "@mui/material/styles";
 import FormHelperText, {
@@ -15,7 +15,7 @@ export const StyledAutocomplete = styled(Flex)`
 `;
 
 export const StyledTableColumn = styled(ColumnFlex)`
-  border: 1px solid ${collorPalette.grey.base};
+  border: 1px solid ${colorPalette.grey.base};
   padding: 15px;
   border-radius: 5px;
   overflow-x: auto;
@@ -35,7 +35,7 @@ export const StyledTable = styled.table`
 `;
 
 export const StyledRow = styled.tr`
-  background-color: ${collorPalette.grey.lighter};
+  background-color: ${colorPalette.grey.lighter};
   h2 {
     min-height: 20px;
   }
@@ -67,7 +67,7 @@ export const StyledIconButton = MuiStyled(IconButton)<IconButtonProps>(
 export const EndFlex = styled(Flex)`
   gap: 15px;
   align-items: baseline;
-  background-color: ${collorPalette.grey.lighter};
+  background-color: ${colorPalette.grey.lighter};
   padding: 10px 20px;
 `;
 
@@ -88,7 +88,7 @@ export const StyleColumnFlex = styled(Flex)`
 
 export const DateColumnFlex = styled(ColumnFlex)`
   gap: 10px;
-  background-color: ${collorPalette.grey.lighter};
+  background-color: ${colorPalette.grey.lighter};
   padding: 10px 20px;
 `;
 

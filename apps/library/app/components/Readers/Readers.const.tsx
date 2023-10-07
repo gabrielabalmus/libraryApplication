@@ -1,4 +1,5 @@
 import { PasswordState, ReaderState } from "~/types/Readers.type";
+import { TableColumns } from "@/components/Table/Table.type";
 
 export const ErrorCreate = "There was a problem in creating the reader";
 export const SuccessCreate = "Reader created successfully";
@@ -9,8 +10,11 @@ export const SuccessUpdate = "Reader updated successfully";
 export const ErrorChangePassword =
   "There was a problem in changing the password";
 export const SuccessChangePassword = "Password changed successfully";
+export const ErrorCancelLoan = "There was a problem in changing loan status";
+export const SuccessCancelLoan = "Status changed successfuly";
 
 export const ErrorGetSingle = "There was a problem in receiving reader";
+export const ErrorGetPaginated = "There was a problem in receiving loans";
 
 export const NewReaderSubject = "New reader account";
 
@@ -28,3 +32,10 @@ export const initialPassword: PasswordState = {
   oldPassword: "",
   newPassword: "",
 };
+
+export const booksColumns: TableColumns[] = [
+  { name: "name", value: "Name" },
+  { name: "sku", value: "Sku" },
+  { name: "category", value: "Category" },
+  { name: "author", value: "Author" },
+];

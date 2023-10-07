@@ -11,10 +11,12 @@ const BooksFilter: React.FC<BooksFilterProps> = ({
   onLibraryChange,
   onLanguageChange,
   onPublishHouseChange,
+  onCityChange,
   categories,
   libraries,
   publishHouses,
   languages,
+  cities,
 }) => {
   return (
     <StyledFilter>
@@ -26,10 +28,17 @@ const BooksFilter: React.FC<BooksFilterProps> = ({
       </ColumnFlex>
 
       <Autocomplete
+        label="City"
+        onChange={onCityChange}
+        options={cities}
+        value={filter.city}
+      />
+      <Autocomplete
         label="Library"
         onChange={onLibraryChange}
         options={libraries}
         value={filter.library}
+        disabled={!filter.city}
       />
       <Autocomplete
         label="Category"

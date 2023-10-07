@@ -8,6 +8,8 @@ export interface AppBarListType {
 
 export interface AppBarContainerProps {
   onLogoutClick: () => void;
+  openBooksModal: () => void;
   isAuthenticated: boolean;
+  booksLength: number;
   children: ReactNode;
 }

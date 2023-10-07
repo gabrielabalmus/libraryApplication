@@ -1,5 +1,5 @@
 import { styled as MuiStyled } from "@mui/material/styles";
-import collorPalette from "@/theme/colorPalette";
+import colorPalette from "@/theme/colorPalette";
 import ListItemButton, {
   ListItemButtonProps,
 } from "@mui/material/ListItemButton";
@@ -18,8 +18,8 @@ export const StyledAppBar = MuiStyled(AppBar)<AppBarProps>(({ theme }) =>
   theme.unstable_sx({
     width: { sm: `calc(100% - ${menuWidth}px)` },
     boxShadow: "none",
-    backgroundColor: collorPalette.white,
-    borderBottom: `3px solid ${collorPalette.grey.lighter}`,
+    backgroundColor: colorPalette.white,
+    borderBottom: `3px solid ${colorPalette.grey.lighter}`,
     ml: { sm: `${menuWidth}px` },
   })
 );
@@ -28,7 +28,7 @@ export const StyledIconButton = MuiStyled(IconButton)<IconButtonProps>(
   ({ theme }) =>
     theme.unstable_sx({
       mr: 2,
-      color: collorPalette.black,
+      color: colorPalette.black,
       display: { sm: "none" },
     })
 );
@@ -43,18 +43,18 @@ export const StyledItemButton = MuiStyled(ListItemButton)<ListItemButtonProps>(
   ({ theme }) =>
     theme.unstable_sx({
       "& .MuiListItemIcon-root": {
-        color: collorPalette.white,
+        color: colorPalette.white,
         paddingLeft: "10px",
       },
       "& .MuiListItemText-root .MuiTypography-root": {
-        color: collorPalette.white,
+        color: colorPalette.white,
         fontSize: { xs: 16, sm: 17 },
       },
       "&.Mui-selected": {
-        backgroundColor: collorPalette.primary.light,
+        backgroundColor: colorPalette.primary.light,
       },
       "&.Mui-selected:hover": {
-        backgroundColor: collorPalette.primary.light,
+        backgroundColor: colorPalette.primary.light,
       },
       "&:hover": {
         backgroundColor: "transparent",
@@ -69,7 +69,7 @@ export const StyledDrawer = MuiStyled(Drawer)<DrawerType>(
       "& .MuiDrawer-paper": {
         boxSizing: "border-box",
         width: menuWidth,
-        backgroundColor: collorPalette.primary.base,
+        backgroundColor: colorPalette.primary.base,
         border: "none",
       },
     })
@@ -82,7 +82,7 @@ export const StyledMenuList = styled(ColumnFlex)`
 export const StyledDivider = MuiStyled(Divider)<DividerProps>(({ theme }) =>
   theme.unstable_sx({
     marginTop: "auto",
-    borderColor: collorPalette.white,
+    borderColor: colorPalette.white,
   })
 );
 

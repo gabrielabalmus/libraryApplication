@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import { AlignedFlex, ColumnFlex } from "@/components/Flex";
-import collorPalette from "@/theme/colorPalette";
+import colorPalette from "@/theme/colorPalette";
 import { ImagePaperProps } from "./ImageUploader.type";
 
 export const ImagePaper = styled(ColumnFlex)<ImagePaperProps>`
   gap: 10px;
   padding: 10px;
   border: ${(props) =>
-    `1px solid ${props.error ? `#d32f2f` : collorPalette.grey.base}`};
+    `1px solid ${props.error ? `#d32f2f` : colorPalette.grey.base}`};
   border-radius: 5px;
 `;
 

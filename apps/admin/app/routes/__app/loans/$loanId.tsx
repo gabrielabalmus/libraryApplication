@@ -66,10 +66,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     }
 
     if (!isString(loanId)) {
-      return badRequest({
-        message: ErrorGetSingle,
-        success: false,
-      });
+      throw new Error(ErrorGetSingle);
     }
 
     const [loan, cities] = await Promise.all([

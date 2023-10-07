@@ -20,7 +20,7 @@ import { Dayjs } from "dayjs";
 import { Months, getCorrectYear, getYearFromDate } from "@/utils/common";
 import DashboardRaport from "~/components/Dashboard/Raport/DashboardRaport";
 import { LoanStatuses } from "~/components/Loans/Loans.const";
-import collorPalette from "@/theme/colorPalette";
+import colorPalette from "@/theme/colorPalette";
 import LayoutTitle from "~/components/LayoutTitle";
 import { Dashboard as DashboardTitle } from "~/components/Dashboard/Dashboard.const";
 import Container from "@mui/material/Container";
@@ -122,7 +122,7 @@ const Dashboard: React.FC = () => {
     datasets: [
       {
         data: loansRaport.map((item) => item.total),
-        backgroundColor: collorPalette.secondary.lighter,
+        backgroundColor: colorPalette.secondary.lighter,
       },
     ],
   };
