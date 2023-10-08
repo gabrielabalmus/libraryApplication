@@ -4,7 +4,6 @@ import Typography from "@mui/material/Typography";
 import {
   StyledFlex,
   StyledImage,
-  StyledBookWrapper,
   StyledCenteredAlignedFlex,
 } from "../Books.style";
 import { BookDetailsProps } from "~/types/Books.type";
@@ -29,7 +28,7 @@ const BooksDetails: React.FC<BookDetailsProps> = ({
         Book
       </StyledMainTitle>
 
-      <StyledBookWrapper>
+      <ColumnFlex gap="30px">
         <StyledFlex>
           <StyledCenteredAlignedFlex>
             <StyledImage src={data.image} />
@@ -73,7 +72,7 @@ const BooksDetails: React.FC<BookDetailsProps> = ({
           libraries={libraries}
           cities={cities}
         />
-      </StyledBookWrapper>
+      </ColumnFlex>
     </Paper>
   );
 };

@@ -30,7 +30,6 @@ export const StyledIconButton = MuiStyled(IconButton)<IconButtonProps>(
 
 export const StyledLink = styled(Link)`
   text-decoration: none;
-  flex-grow: 1;
 `;
 
 export const StyledItemButton = MuiStyled(ListItemButton)<ListItemButtonProps>(

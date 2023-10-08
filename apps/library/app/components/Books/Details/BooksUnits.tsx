@@ -48,6 +48,7 @@ const BooksUnits: React.FC<BookDetailsProps> = ({
       libraryId: row.libraryId,
       name: data.name,
       author: data.author,
+      city: row.city,
       sku: row.sku,
     });
   };
@@ -57,8 +58,8 @@ const BooksUnits: React.FC<BookDetailsProps> = ({
       <ColumnFlex gap="10px">
         <Typography variant="h3">Units</Typography>
         <Typography variant="h1">
-          We will display available books that can be reserved depending on the
-          desired library.
+          We will display books that can be reserved depending on the desired
+          library.
         </Typography>
       </ColumnFlex>
       <StyledAutocomplete>
@@ -98,12 +99,14 @@ const BooksUnits: React.FC<BookDetailsProps> = ({
                   </TableCell>
                 ))}
                 <TableCell width="80px">
-                  <Button
-                    variant={ButtonVariant.outlined}
-                    title="Add"
-                    width="80px"
-                    onClick={() => handleAddBook(row)}
-                  />
+                  {row.available === "YES" && (
+                    <Button
+                      variant={ButtonVariant.outlined}
+                      title="Add"
+                      width="80px"
+                      onClick={() => handleAddBook(row)}
+                    />
+                  )}
                 </TableCell>
               </StyledBodyRow>
             ))}

@@ -11,6 +11,7 @@ import { createContext } from "react";
 interface ReservedBooksState {
   bookLibraryId: string;
   name: string;
+  city: string;
   library: string;
   libraryId: string;
   author: string;

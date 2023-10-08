@@ -1,3 +1,4 @@
+import { isEmpty } from "lodash";
 import { getImage } from "~/server/media.server";
 import {
   BookLibrariesResponse,
@@ -46,7 +47,9 @@ export const fromBookLibraries = (
   bookLibraries.map((item) => ({
     id: item.id,
     library: item.library.name,
+    city: item.library.city.name,
     libraryId: item.library.id,
+    available: isEmpty(item.loanBooks) ? "YES" : "NO",
     sku: item.SKU,
     place: item.place,
   }));

@@ -174,18 +174,6 @@ export const getSingleBook = async ({
         where: {
           deleted: false,
           bookId,
-          OR: [
-            { loanBooks: { none: {} } },
-            {
-              loanBooks: {
-                some: {
-                  loan: {
-                    status: { notIn: [Status.RESERVED, Status.BORROWED] },
-                  },
-                },
-              },
-            },
-          ],
           library:
             ((library || city) && {
               OR: [{ name: library }, { city: { name: city } }],
@@ -200,18 +188,6 @@ export const getSingleBook = async ({
         where: {
           deleted: false,
           bookId,
-          OR: [
-            { loanBooks: { none: {} } },
-            {
-              loanBooks: {
-                some: {
-                  loan: {
-                    status: { notIn: [Status.RESERVED, Status.BORROWED] },
-                  },
-                },
-              },
-            },
-          ],
           library:
             ((library || city) && {
               OR: [{ name: library }, { city: { name: city } }],
@@ -220,7 +196,21 @@ export const getSingleBook = async ({
         },
         select: {
           id: true,
-          library: { select: { name: true, id: true } },
+          library: {
+            select: { name: true, id: true, city: { select: { name: true } } },
+          },
+          loanBooks: {
+            where: {
+              loan: { status: { in: [Status.RESERVED, Status.BORROWED] } },
+            },
+            select: {
+              loan: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+          },
           SKU: true,
           place: true,
         },

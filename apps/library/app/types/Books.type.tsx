@@ -64,9 +64,14 @@ export interface FilterState {
   city: string;
 }
 
+export interface LoanBooksResponse {
+  loan: { id: string };
+}
+
 export interface BookLibrariesResponse {
   id: string;
-  library: { name: string; id: string };
+  library: { name: string; id: string; city: { name: string } };
+  loanBooks: LoanBooksResponse[];
   SKU: string;
   place: string;
 }
@@ -74,7 +79,9 @@ export interface BookLibrariesResponse {
 export interface BookLibrariesState {
   id: string;
   library: string;
+  city: string;
   libraryId: string;
+  available: "YES" | "NO";
   sku: string;
   place: string;
 }

@@ -41,11 +41,13 @@ const AppBarContainer: React.FC<AppBarContainerProps> = ({
             <StyledTitle variant="h4">{appBarTitle}</StyledTitle>
           </StyledLink>
 
-          <StyledIconButton onClick={openBooksModal}>
-            <Badge badgeContent={booksLength} color="primary">
-              <CollectionsBookmarkIcon />
-            </Badge>
-          </StyledIconButton>
+          <div style={{ flexGrow: 1, textAlign: "end" }}>
+            <StyledIconButton onClick={openBooksModal}>
+              <Badge badgeContent={booksLength} color="primary">
+                <CollectionsBookmarkIcon />
+              </Badge>
+            </StyledIconButton>
+          </div>
         </Toolbar>
       </StyledAppBar>
 

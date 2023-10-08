@@ -45,12 +45,6 @@ export const StyledImage = styled.img`
   object-fit: contain;
 `;
 
-export const StyledBookWrapper = styled(ColumnFlex)`
-  gap: 30px;
-  max-width: 800px;
-  margin: 0 auto;
-`;
-
 export const StyledCenteredAlignedFlex = styled(CenteredAlignedFlex)`
   height: 230px;
   width: 220px;
@@ -69,6 +63,9 @@ export const StyledAutocomplete = styled(Flex)`
 export const StyledImageFlex = styled(Flex)`
   height: 200px;
   margin: 0 auto;
+  @media (max-width: 600px) {
+    height: 130px;
+  }
 `;
 
 export const StyledBookBox = styled(ColumnFlex)`
@@ -77,4 +74,15 @@ export const StyledBookBox = styled(ColumnFlex)`
   border: 1px solid ${colorPalette.grey.light};
   border-radius: 5px;
   padding: 15px;
+`;
+
+export const StyledBooksList = styled(Flex)`
+  background-color: ${colorPalette.primary.lightest};
+  padding: 15px;
+  justify-content: space-between;
+`;
+
+export const ColumnFlexOverflow = styled(ColumnFlex)`
+  overflow: auto;
+  max-height: 40vh;
 `;
