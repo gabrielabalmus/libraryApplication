@@ -94,8 +94,6 @@ export const getPaginatedReaders = async ({
         },
       });
 
-      if (!data) throw new Error(ErrorGetPaginated);
-
       return { count, data: fromPaginatedReadersResponse(data) };
     });
 
@@ -174,8 +172,6 @@ export const createReader = async ({
       },
     });
 
-    if (!reader) throw new Error(ErrorCreate);
-
     const data = { password: generatePass, reader: name };
 
     await sendEmail({
@@ -228,8 +224,6 @@ export const updateReader = async ({
       },
     });
 
-    if (!reader) throw new Error(ErrorUpdate);
-
     return reader;
   } catch (err) {
     throw new Error(ErrorUpdate);
@@ -246,8 +240,6 @@ export const deleteReader = async ({ readerId }: ReaderIdProps) => {
         deleted: true,
       },
     });
-
-    if (!reader) throw new Error(ErrorDelete);
 
     return reader;
   } catch (err) {

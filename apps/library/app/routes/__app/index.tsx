@@ -1,9 +1,10 @@
 import { ActionArgs, ActionFunction, json, redirect } from "@remix-run/node";
 import { useActionData } from "@remix-run/react";
 import { useEffect } from "react";
+import ErrorInterface from "~/components/ErrorInterface";
 import MainOverview from "~/components/Main";
 import { ErrorMessage } from "~/const";
-import { useReservedBooksContext } from "~/context/reservedBooks.context";
+import { useBooksToReserveContext } from "~/context/booksToReserve.context";
 import { getReaderId } from "~/server/readers.server";
 import { badRequest } from "~/server/request.server";
 import { removeReaderSession } from "~/server/session.server";
@@ -35,13 +36,17 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
   }
 };
 
+export const ErrorBoundary = () => {
+  return <ErrorInterface />;
+};
+
 const Main: React.FC = () => {
   const actionData = useActionData();
-  const { setModalError } = useReservedBooksContext();
+  const { setModalContent } = useBooksToReserveContext();
 
   useEffect(() => {
     if (actionData && actionData.message && actionData.success === false)
-      setModalError(actionData.message);
+      setModalContent(actionData.message);
   }, [actionData]);
 
   return <MainOverview />;

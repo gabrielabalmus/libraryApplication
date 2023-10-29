@@ -9,7 +9,11 @@ import { round } from "lodash";
 
 export const fromSingleReaderResponse = (
   reader: ReaderResponse
-): ReaderState => ({ ...reader, city: reader.city.id });
+): ReaderState => ({
+  ...reader,
+  city: reader.city.id,
+  cityName: reader.city.name,
+});
 
 export const fromPaginatedLoansResponse = (
   loans: LoansResponse[]
@@ -19,6 +23,7 @@ export const fromPaginatedLoansResponse = (
       sku: book.bookLibrary.SKU,
       name: book.bookLibrary.book.name,
       author: book.bookLibrary.book.author,
+      place: book.bookLibrary.place,
       category: book.bookLibrary.book.category.name,
     }));
 

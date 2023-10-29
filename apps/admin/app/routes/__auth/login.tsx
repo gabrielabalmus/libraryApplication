@@ -15,6 +15,7 @@ import { useActionData, useSubmit } from "@remix-run/react";
 import { LoginState, LoginSubmitProps } from "~/types/Login.type";
 import { useEffect, useState } from "react";
 import { ErrorSubmit, initialLogin } from "~/components/Login/Login.const";
+import ErrorInterface from "~/components/ErrorInterface";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await getUserId(request);
@@ -69,6 +70,10 @@ export const action: ActionFunction = async ({ request }: ActionArgs) => {
       success: false,
     });
   }
+};
+
+export const ErrorBoundary = () => {
+  return <ErrorInterface />;
 };
 
 const Login: React.FC = () => {

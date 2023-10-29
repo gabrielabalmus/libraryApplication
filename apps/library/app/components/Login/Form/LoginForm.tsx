@@ -7,6 +7,8 @@ import { ErrorState, LoginFormProps, LoginValue } from "~/types/Login.type";
 import { InputType } from "@/components/Input/Input.type";
 import { ColumnFlex } from "@/components/Flex";
 import { LoginDescription } from "../Login.const";
+import { Typography } from "@mui/material";
+import { Link } from "@remix-run/react";
 
 const LoginForm: React.FC<LoginFormProps> = ({
   onSubmit,
@@ -69,6 +71,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
           variant={ButtonVariant.contained}
           onClick={handleOnSubmit}
         />
+
+        <Typography variant="h1">
+          You don't have an account? Press <Link to="/signup">here</Link> to
+          create one.
+        </Typography>
       </ColumnFlex>
     </StyledPaper>
   );

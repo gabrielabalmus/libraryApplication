@@ -125,8 +125,6 @@ export const getPaginatedBooks = async ({
         },
       });
 
-      if (!data) throw new Error(ErrorGetPaginated);
-
       return { count, data: fromPaginatedBooksResponse(data) };
     });
 
@@ -155,8 +153,6 @@ export const deleteBook = async ({ bookId }: BookIdProps) => {
       },
     });
 
-    if (!book) throw new Error(ErrorDelete);
-
     return book;
   } catch (err) {
     throw new Error(ErrorDelete);
@@ -179,8 +175,6 @@ const forEachBookLibrary = async ({
       SKU: true,
     },
   });
-
-  if (!skuList) throw new Error(ErrorMessage);
 
   const filterBookLibraries = bookLibraries.reduce(
     (previousValue: BookLibrariesState[], currentValue: BookLibrariesState) => {
@@ -205,7 +199,7 @@ const forEachBookLibrary = async ({
 
   if (filterBookLibraries.length !== bookLibraries.length) error = true;
 
-  const deleteBookLibraries = await prisma.bookLibraries.updateMany({
+  await prisma.bookLibraries.updateMany({
     where: {
       id: {
         notIn: idList,
@@ -218,11 +212,9 @@ const forEachBookLibrary = async ({
     },
   });
 
-  if (!deleteBookLibraries) throw new Error(ErrorMessage);
-
   for (const item of filterBookLibraries) {
     if (item.id) {
-      const updatedBookLibrary = await prisma.bookLibraries.updateMany({
+      await prisma.bookLibraries.updateMany({
         where: {
           id: item.id,
           deleted: false,
@@ -235,14 +227,10 @@ const forEachBookLibrary = async ({
         },
       });
 
-      if (!updatedBookLibrary) {
-        error = true;
-      }
-
       continue;
     }
 
-    const createdBookLibrary = await prisma.bookLibraries.create({
+    await prisma.bookLibraries.create({
       data: {
         bookId,
         libraryId: item.library,
@@ -250,10 +238,6 @@ const forEachBookLibrary = async ({
         place: item.place,
       },
     });
-
-    if (!createdBookLibrary) {
-      error = true;
-    }
   }
 
   if (error) throw new Error(ErrorMessage);
@@ -298,9 +282,61 @@ export const createBook = async ({
       },
     });
 
-    if (!book) throw new Error(ErrorCreate);
+    const idList: string[] = [];
 
-    await forEachBookLibrary({ bookLibraries, bookId: book.id });
+    const skuList = await prisma.bookLibraries.findMany({
+      where: {
+        bookId: { not: book.id },
+        SKU: { in: bookLibraries.map((item) => item.sku) },
+        deleted: false,
+      },
+      select: {
+        SKU: true,
+      },
+    });
+
+    const filterBookLibraries = bookLibraries.reduce(
+      (
+        previousValue: BookLibrariesState[],
+        currentValue: BookLibrariesState
+      ) => {
+        const duplicateSku = previousValue.find(
+          (item) => item.sku === currentValue.sku
+        );
+
+        const skuAlreadyExists = skuList.find(
+          (item) => item.SKU === currentValue.sku
+        );
+
+        if (duplicateSku || skuAlreadyExists) return previousValue;
+
+        if (currentValue.id) idList.push(currentValue.id);
+
+        return [...previousValue, currentValue];
+      },
+      []
+    );
+
+    if (filterBookLibraries.length !== bookLibraries.length) {
+      await prisma.books.deleteMany({
+        where: {
+          id: book.id,
+        },
+      });
+
+      throw new Error(ErrorCreate);
+    }
+
+    for (const item of filterBookLibraries) {
+      await prisma.bookLibraries.create({
+        data: {
+          bookId: book.id,
+          libraryId: item.library,
+          SKU: item.sku,
+          place: item.place,
+        },
+      });
+    }
 
     return book;
   } catch (err) {
@@ -406,8 +442,6 @@ export const updateBook = async ({
       },
     });
 
-    if (!book) throw new Error(ErrorUpdate);
-
     await forEachBookLibrary({ bookLibraries, bookId });
 
     return book;
@@ -441,6 +475,7 @@ export const getBookBySku = async ({ sku }: BookBySkuProps) => {
         book: {
           select: {
             name: true,
+            author: true,
             category: {
               select: {
                 name: true,

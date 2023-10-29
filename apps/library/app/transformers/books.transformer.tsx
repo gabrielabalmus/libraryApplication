@@ -48,6 +48,7 @@ export const fromBookLibraries = (
     id: item.id,
     library: item.library.name,
     city: item.library.city.name,
+    cityId: item.library.city.id,
     libraryId: item.library.id,
     available: isEmpty(item.loanBooks) ? "YES" : "NO",
     sku: item.SKU,

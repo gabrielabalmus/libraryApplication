@@ -1,4 +1,5 @@
 import { AutocompleteOptions } from "@/components/Autocomplete/Autocomplete.type";
+import { ReaderState } from "./Readers.type";
 
 export interface PaginatedBooks {
   id: string;
@@ -70,7 +71,7 @@ export interface LoanBooksResponse {
 
 export interface BookLibrariesResponse {
   id: string;
-  library: { name: string; id: string; city: { name: string } };
+  library: { name: string; id: string; city: { name: string; id: string } };
   loanBooks: LoanBooksResponse[];
   SKU: string;
   place: string;
@@ -80,6 +81,7 @@ export interface BookLibrariesState {
   id: string;
   library: string;
   city: string;
+  cityId: string;
   libraryId: string;
   available: "YES" | "NO";
   sku: string;
@@ -152,4 +154,16 @@ export interface BookDetailsProps {
   cities: AutocompleteOptions[];
   page: number;
   filter: BookFilterState;
+}
+
+export interface ReserveBooksProps {
+  reader: ReaderState;
+  onBooksReserve: () => void;
+}
+
+export interface LoanState {
+  books: string[];
+  reader: { id: string; name: string; email: string };
+  city: string;
+  library: string;
 }

@@ -9,7 +9,7 @@ import Spinner from "@/components/Spinner";
 import AppBar from "@/components/AppBar";
 import { getReaderId } from "~/server/readers.server";
 import { goodRequest } from "~/server/request.server";
-import { useReservedBooksContext } from "~/context/reservedBooks.context";
+import { useBooksToReserveContext } from "~/context/booksToReserve.context";
 import Modal from "@mui/material/Modal";
 import { StyledModalBox } from "~/components/Main/Main.style";
 import Typography from "@mui/material/Typography";
@@ -30,9 +30,13 @@ const AppLayout: React.FC = () => {
   const navigation = useNavigation();
   const submit = useSubmit();
   const loaderData = useLoaderData();
-  const { reservedBooks } = useReservedBooksContext();
-  const { modalError, setModalError, openReservedBooks, setOpenReservedBooks } =
-    useReservedBooksContext();
+  const {
+    modalContent,
+    setModalContent,
+    openBooksToReserve,
+    setOpenBooksToReserve,
+    booksToReserve,
+  } = useBooksToReserveContext();
 
   const handleLogout = () => {
     submit(
@@ -45,15 +49,15 @@ const AppLayout: React.FC = () => {
   };
 
   const handleModalClose = () => {
-    setModalError("");
+    setModalContent("");
   };
 
   const handleBooksModalClose = () => {
-    setOpenReservedBooks(false);
+    setOpenBooksToReserve(false);
   };
 
   const handleBooksModalOpen = () => {
-    setOpenReservedBooks(true);
+    setOpenBooksToReserve(true);
   };
 
   return (
@@ -61,7 +65,7 @@ const AppLayout: React.FC = () => {
       <AppBar
         onLogoutClick={handleLogout}
         isAuthenticated={loaderData?.isAuthenticated || false}
-        booksLength={reservedBooks.length}
+        booksLength={booksToReserve.length}
         openBooksModal={handleBooksModalOpen}
       >
         <Outlet />
@@ -70,9 +74,9 @@ const AppLayout: React.FC = () => {
           navigation.state === "loading") && <Spinner />}
       </AppBar>
 
-      <Modal open={!!modalError} onClose={handleModalClose}>
+      <Modal open={!!modalContent} onClose={handleModalClose}>
         <StyledModalBox>
-          <Typography>{modalError}</Typography>
+          <Typography>{modalContent}</Typography>
           <Flex marginTop="30px" justifyContent="end">
             <Button
               title="Cancel"
@@ -83,7 +87,7 @@ const AppLayout: React.FC = () => {
         </StyledModalBox>
       </Modal>
 
-      <Modal open={openReservedBooks} onClose={handleBooksModalClose}>
+      <Modal open={openBooksToReserve} onClose={handleBooksModalClose}>
         <StyledModalBox>
           <BooksModal />
         </StyledModalBox>

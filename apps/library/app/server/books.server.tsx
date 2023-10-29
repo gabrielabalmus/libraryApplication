@@ -1,14 +1,27 @@
 import {
   ErrorGetPaginated,
   ErrorGetSingle,
+  ErrorReserveBooks,
+  ReservedLoanSubject,
 } from "~/components/Books/Books.const";
-import { PaginatedBooksProps, SingleBookProps } from "~/types/Books.type";
+import {
+  LoanState,
+  PaginatedBooksProps,
+  SingleBookProps,
+} from "~/types/Books.type";
 import prisma from "prisma";
 import {
   fromPaginatedBooksResponse,
   fromSingleBookResponse,
 } from "~/transformers/books.transformer";
 import { Status } from "@prisma/client";
+import {
+  addDateDays,
+  checkArraysAreEqual,
+  formatShortDate,
+} from "@/utils/common";
+import { sendEmail } from "./mail.server";
+import { ReservedLoanEmail } from "@/templates/ReservedLoan.email";
 
 export const getPaginatedBooks = async ({
   page,
@@ -117,8 +130,6 @@ export const getPaginatedBooks = async ({
         },
       });
 
-      if (!data) throw new Error(ErrorGetPaginated);
-
       return { count, data: await fromPaginatedBooksResponse(data) };
     });
 
@@ -197,7 +208,11 @@ export const getSingleBook = async ({
         select: {
           id: true,
           library: {
-            select: { name: true, id: true, city: { select: { name: true } } },
+            select: {
+              name: true,
+              id: true,
+              city: { select: { name: true, id: true } },
+            },
           },
           loanBooks: {
             where: {
@@ -216,13 +231,102 @@ export const getSingleBook = async ({
         },
       });
 
-      if (!bookLibraries) throw new Error(ErrorGetSingle);
-
       return { data: book, count: bookLibrariesCount, bookLibraries };
     });
 
     return fromSingleBookResponse(book);
   } catch (err) {
     throw new Error(ErrorGetSingle);
+  }
+};
+
+export const reserveBooks = async ({
+  reader,
+  city,
+  library,
+  books,
+}: LoanState) => {
+  try {
+    const lastLoan = await prisma.loans.findFirst({
+      take: 1,
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        number: true,
+      },
+    });
+
+    const number =
+      (lastLoan && (parseInt(lastLoan.number) + 1).toString()) || "1";
+
+    const loan = await prisma.loans.create({
+      data: {
+        number,
+        status: Status.RESERVED,
+        cityId: city,
+        libraryId: library,
+        readerId: reader.id,
+      },
+    });
+
+    const bookLibraries = await prisma.bookLibraries.findMany({
+      where: {
+        id: { in: books },
+        libraryId: loan.libraryId,
+        deleted: false,
+        NOT: [
+          {
+            loanBooks: {
+              some: {
+                loan: { status: { in: [Status.BORROWED, Status.RESERVED] } },
+              },
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    // check if new added books are same as conditioned books from query
+    const bookLibrariesList = bookLibraries.map((item) => item.id);
+
+    if (!checkArraysAreEqual(bookLibrariesList, books)) {
+      await prisma.loanBooks.deleteMany({
+        where: {
+          loanId: loan.id,
+        },
+      });
+
+      throw new Error(ErrorReserveBooks);
+    }
+
+    const newLoanBooks = bookLibraries.map((item) => ({
+      bookLibraryId: item.id,
+      loanId: loan.id,
+    }));
+
+    await prisma.loanBooks.createMany({
+      data: newLoanBooks,
+    });
+
+    const byDate = addDateDays(2);
+    const data = {
+      reader: reader.name,
+      byDate: formatShortDate(byDate),
+      number: loan.number,
+    };
+
+    await sendEmail({
+      to: reader.email,
+      subject: ReservedLoanSubject,
+      template: ReservedLoanEmail(data),
+    });
+
+    return loan;
+  } catch (err) {
+    throw new Error(ErrorReserveBooks);
   }
 };

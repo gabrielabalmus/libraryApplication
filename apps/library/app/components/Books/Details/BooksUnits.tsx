@@ -19,7 +19,7 @@ import Button from "@/components/Button";
 import { ButtonVariant } from "@/components/Button/Button.type";
 import Autocomplete from "@/components/Autocomplete";
 import { StyledAutocomplete } from "../Books.style";
-import { useReservedBooksContext } from "~/context/reservedBooks.context";
+import { useBooksToReserveContext } from "~/context/booksToReserve.context";
 
 const BooksUnits: React.FC<BookDetailsProps> = ({
   book,
@@ -32,7 +32,7 @@ const BooksUnits: React.FC<BookDetailsProps> = ({
   cities,
 }) => {
   const { data, count, bookLibraries } = book;
-  const { addReservedBook } = useReservedBooksContext();
+  const { addBookToReserve, booksToReserve } = useBooksToReserveContext();
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -42,13 +42,16 @@ const BooksUnits: React.FC<BookDetailsProps> = ({
   };
 
   const handleAddBook = (row: any) => {
-    addReservedBook({
+    addBookToReserve({
       bookLibraryId: row.id,
       library: row.library,
       libraryId: row.libraryId,
       name: data.name,
       author: data.author,
+      category: data.category,
       city: row.city,
+      place: row.place,
+      cityId: row.cityId,
       sku: row.sku,
     });
   };
@@ -104,6 +107,9 @@ const BooksUnits: React.FC<BookDetailsProps> = ({
                       variant={ButtonVariant.outlined}
                       title="Add"
                       width="80px"
+                      disabled={booksToReserve.some(
+                        (item) => item.bookLibraryId === row.id
+                      )}
                       onClick={() => handleAddBook(row)}
                     />
                   )}

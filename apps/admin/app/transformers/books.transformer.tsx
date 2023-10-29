@@ -54,6 +54,7 @@ export const fromBookBySku = (bookBySku: BookBySkuResponse): BookBySkuState => {
     id,
     name: book.name,
     category: book.category.name,
+    author: book.author,
     library: libraryId,
     sku: SKU,
     place,

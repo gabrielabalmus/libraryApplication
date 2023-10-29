@@ -184,18 +184,27 @@ const UpdateLoan: React.FC = () => {
       return;
     }
 
-    const stringReader = JSON.stringify(loan.reader);
-    const stringBooks = JSON.stringify(loan.books);
-    const stringPenalty = JSON.stringify(loan.penalty);
+    const stringReader = JSON.stringify(
+      loan.reader
+        ? {
+            id: loan.reader.id,
+            name: loan.reader.name,
+            email: loan.reader.email,
+          }
+        : {}
+    );
 
-    const { libraryInfo, ...rest } = loan;
+    const stringBooks = JSON.stringify(loan.books.map((item) => item.id));
+
+    const { status, library, city } = loan;
 
     submit(
       {
-        ...rest,
+        status,
+        library,
+        city,
         reader: stringReader,
         books: stringBooks,
-        penalty: stringPenalty,
         intent: "update",
       },
       {

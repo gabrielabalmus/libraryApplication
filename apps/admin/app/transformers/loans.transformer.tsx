@@ -28,6 +28,7 @@ export const fromSingleLoanResponse = (loan: LoanResponse): LoanState => {
     return {
       id,
       name: book.name,
+      author: book.author,
       category: book.category.name,
       sku: SKU,
       library: libraryId,

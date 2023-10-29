@@ -72,6 +72,7 @@ export const getSingleReader = async ({ readerId }: ReaderIdProps) => {
         city: {
           select: {
             id: true,
+            name: true,
           },
         },
         address: true,
@@ -125,8 +126,6 @@ export const createReader = async ({
       },
     });
 
-    if (!reader) throw new Error(ErrorCreate);
-
     const data = { reader: name };
 
     await sendEmail({
@@ -179,8 +178,6 @@ export const updateReader = async ({
       },
     });
 
-    if (!reader) throw new Error(ErrorUpdate);
-
     return reader;
   } catch (err) {
     throw new Error(ErrorUpdate);
@@ -224,8 +221,6 @@ export const changePassword = async ({
       },
     });
 
-    if (!updatedReader) throw new Error(ErrorChangePassword);
-
     return updatedReader;
   } catch (err) {
     throw new Error(ErrorChangePassword);
@@ -263,6 +258,7 @@ export const getPaginatedLoans = async ({
               bookLibrary: {
                 select: {
                   SKU: true,
+                  place: true,
                   book: {
                     select: {
                       name: true,
@@ -286,8 +282,6 @@ export const getPaginatedLoans = async ({
         },
       });
 
-      if (!data) throw new Error(ErrorGetPaginated);
-
       return { count, data: fromPaginatedLoansResponse(data) };
     });
 
@@ -305,8 +299,6 @@ export const cancelLoan = async ({ readerId, loanId }: CancelLoanProps) => {
         status: Status.CANCELLED,
       },
     });
-
-    if (!loan) throw new Error(ErrorCancelLoan);
 
     return loan;
   } catch (err) {

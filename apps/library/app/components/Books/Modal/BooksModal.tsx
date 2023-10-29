@@ -2,25 +2,33 @@ import Button from "@/components/Button";
 import { ButtonVariant } from "@/components/Button/Button.type";
 import Flex, { ColumnFlex } from "@/components/Flex";
 import { IconButton, Typography } from "@mui/material";
-import { useReservedBooksContext } from "~/context/reservedBooks.context";
+import { useBooksToReserveContext } from "~/context/booksToReserve.context";
 import { ColumnFlexOverflow, StyledBooksList } from "../Books.style";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { useNavigate } from "@remix-run/react";
 
 const BooksModal: React.FC = () => {
-  const { reservedBooks, setOpenReservedBooks, removeReservedBook } =
-    useReservedBooksContext();
+  const navigate = useNavigate();
+
+  const { booksToReserve, setOpenBooksToReserve, removeBookToReserve } =
+    useBooksToReserveContext();
 
   const handleModalClose = () => {
-    setOpenReservedBooks(false);
+    setOpenBooksToReserve(false);
+  };
+
+  const handleReserveBooks = () => {
+    setOpenBooksToReserve(false);
+    navigate("/reserve-books");
   };
 
   return (
     <ColumnFlex>
       <Typography variant="h3" textAlign="center" marginBottom="30px">
-        Reserved books
+        Books to reserve
       </Typography>
 
-      {!reservedBooks.length ? (
+      {!booksToReserve.length ? (
         <Typography align="center" variant="h1" fontWeight="400">
           No data
         </Typography>
@@ -28,19 +36,19 @@ const BooksModal: React.FC = () => {
         <ColumnFlexOverflow gap="10px">
           <ColumnFlex>
             <Typography variant="h2">
-              City: <b>{reservedBooks[0].city}</b>
+              City: <b>{booksToReserve[0].city}</b>
             </Typography>
             <Typography variant="h2">
-              Library: <b>{reservedBooks[0].library}</b>
+              Library: <b>{booksToReserve[0].library}</b>
             </Typography>
           </ColumnFlex>
 
-          {reservedBooks.map((item, index) => {
+          {booksToReserve.map((item, index) => {
             return (
               <StyledBooksList>
                 <ColumnFlex>
                   <Typography variant="h2">
-                    {index + 1}. <b>{item.name}</b> by {item.author}
+                    <b>{item.name}</b> by {item.author}
                   </Typography>
                   <Typography variant="h2">
                     SKU: <b>{item.sku}</b>
@@ -48,7 +56,7 @@ const BooksModal: React.FC = () => {
                 </ColumnFlex>
 
                 <IconButton
-                  onClick={() => removeReservedBook(item.bookLibraryId)}
+                  onClick={() => removeBookToReserve(item.bookLibraryId)}
                 >
                   <DeleteOutlineIcon />
                 </IconButton>
@@ -57,12 +65,19 @@ const BooksModal: React.FC = () => {
           })}
         </ColumnFlexOverflow>
       )}
-      <Flex marginTop="30px" justifyContent="end">
+      <Flex marginTop="30px" justifyContent="end" gap="10px">
         <Button
           title="Cancel"
           variant={ButtonVariant.outlined}
           onClick={handleModalClose}
         />
+        {!!booksToReserve.length && (
+          <Button
+            title="Reserve"
+            variant={ButtonVariant.contained}
+            onClick={handleReserveBooks}
+          />
+        )}
       </Flex>
     </ColumnFlex>
   );

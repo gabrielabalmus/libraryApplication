@@ -8,7 +8,7 @@ export interface ReaderIdProps {
 
 export interface ReaderResponse {
   name: string;
-  city: { id: string };
+  city: { id: string; name: string };
   phone: string;
   address: string;
   email: string;
@@ -53,6 +53,7 @@ export interface PasswordErrorState {
 export interface ReaderState {
   name: string;
   city: string;
+  cityName?: string
   phone: string;
   address: string;
   email: string;
@@ -102,6 +103,7 @@ export interface PaginatedLoansProps {
 
 export interface BookLibraryResponse {
   SKU: string;
+  place: string;
   book: { name: string; author: string; category: { name: string } };
 }
 
@@ -121,6 +123,7 @@ export interface LoanBooks {
   sku: string;
   name: string;
   author: string;
+  place: string;
   category: string;
 }
 

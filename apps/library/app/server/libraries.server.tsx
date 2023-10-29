@@ -39,8 +39,6 @@ export const getAllLibraries = async ({ page }: { page: number }) => {
         },
       });
 
-      if (!data) throw new Error(ErrorGetLibraries);
-
       return { count, data: fromLibrariesResponse(data) };
     });
 
@@ -66,8 +64,6 @@ export const getLibraries = async (city: string) => {
         deleted: false,
       },
     });
-
-    if (!libraries) throw new Error(ErrorMessage);
 
     return libraries;
   } catch (err) {

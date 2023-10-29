@@ -13,7 +13,6 @@ import {
   LoanState,
   LoanIdProps,
   EachLoanBook,
-  ReaderState,
   LoansRaportProps,
 } from "~/types/Loans.type";
 import { ErrorMessage } from "~/const";
@@ -154,8 +153,6 @@ export const getPaginatedLoans = async ({
         },
       });
 
-      if (!data) throw new Error(ErrorGetPaginated);
-
       return { count, data: fromPaginatedLoansResponse(data) };
     });
 
@@ -199,6 +196,7 @@ export const getSingleLoan = async ({ loanId }: LoanIdProps) => {
                 book: {
                   select: {
                     name: true,
+                    author: true,
                     category: {
                       select: {
                         name: true,
@@ -235,14 +233,12 @@ const forEachLoanBook = async ({
   loanId,
   libraryId,
 }: EachLoanBook) => {
-  const deleteLoans = await prisma.loanBooks.deleteMany({
+  await prisma.loanBooks.deleteMany({
     where: {
       loanId,
-      bookLibraryId: { notIn: loanBooks.map((item) => item.id) },
+      bookLibraryId: { notIn: loanBooks },
     },
   });
-
-  if (!deleteLoans) throw new Error(ErrorMessage);
 
   const alreadyBooked = await prisma.loanBooks.findMany({
     where: {
@@ -253,16 +249,13 @@ const forEachLoanBook = async ({
     },
   });
 
-  if (!alreadyBooked) throw new Error(ErrorMessage);
-
   const alreadyBookedList = alreadyBooked.map((item) => item.bookLibraryId);
-  const loanBooksList = loanBooks.map((item) => item.id);
 
-  if (checkArraysAreEqual(alreadyBookedList, loanBooksList)) return;
+  if (checkArraysAreEqual(alreadyBookedList, loanBooks)) return;
 
   const bookLibraries = await prisma.bookLibraries.findMany({
     where: {
-      id: { in: loanBooks.map((item) => item.id) },
+      id: { in: loanBooks },
       libraryId,
       deleted: false,
       NOT: [
@@ -280,15 +273,13 @@ const forEachLoanBook = async ({
     },
   });
 
-  if (!bookLibraries) throw new Error(ErrorMessage);
-
   let error = false;
 
   // check if new added books are same as conditioned books from query
   const bookLibrariesList = bookLibraries.map((item) => item.id);
-  const newLoanBooksList = loanBooks
-    .filter((item) => !alreadyBookedList.includes(item.id))
-    .map((item) => item.id);
+  const newLoanBooksList = loanBooks.filter(
+    (item) => !alreadyBookedList.includes(item)
+  );
 
   if (!checkArraysAreEqual(bookLibrariesList, newLoanBooksList)) error = true;
 
@@ -297,11 +288,9 @@ const forEachLoanBook = async ({
     loanId,
   }));
 
-  const createdLoanBooks = await prisma.loanBooks.createMany({
+  await prisma.loanBooks.createMany({
     data: newLoanBooks,
   });
-
-  if (!createdLoanBooks) error = true;
 
   if (error) throw new Error(ErrorMessage);
 };
@@ -312,7 +301,10 @@ export const createLoan = async ({
   library,
   books,
   status,
-}: LoanState) => {
+}: Omit<LoanState, "books" & "reader"> & {
+  books: string[];
+  reader: { id: string; name: string; email: string };
+}) => {
   try {
     const statusesOrder = LoanFilteredStatuses();
 
@@ -338,29 +330,63 @@ export const createLoan = async ({
         status,
         cityId: city,
         libraryId: library,
-        readerId: (reader as ReaderState).id,
+        readerId: reader.id,
         borrowedAt: status === Status.BORROWED ? new Date() : undefined,
       },
     });
 
-    if (!loan) throw new Error(ErrorCreate);
+    const bookLibraries = await prisma.bookLibraries.findMany({
+      where: {
+        id: { in: books },
+        libraryId: loan.libraryId,
+        deleted: false,
+        NOT: [
+          {
+            loanBooks: {
+              some: {
+                loan: { status: { in: [Status.BORROWED, Status.RESERVED] } },
+              },
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+      },
+    });
 
-    await forEachLoanBook({
-      loanBooks: books,
+    // check if new added books are same as conditioned books from query
+    const bookLibrariesList = bookLibraries.map((item) => item.id);
+
+    if (!checkArraysAreEqual(bookLibrariesList, books)) {
+      await prisma.loans.deleteMany({
+        where: {
+          id: loan.id,
+        },
+      });
+
+      throw new Error(ErrorCreate);
+    }
+
+    const newLoanBooks = bookLibraries.map((item) => ({
+      bookLibraryId: item.id,
       loanId: loan.id,
-      libraryId: loan.libraryId,
+    }));
+
+    await prisma.loanBooks.createMany({
+      data: newLoanBooks,
     });
 
     if (status === Status.RESERVED) {
       const byDate = addDateDays(2);
       const data = {
-        reader: (reader as ReaderState).name,
+        reader: reader.name,
         byDate: formatShortDate(byDate),
         number: loan.number,
       };
 
       await sendEmail({
-        to: (reader as ReaderState).email,
+        to: reader.email,
         subject: ReservedLoanSubject,
         template: ReservedLoanEmail(data),
       });
@@ -369,13 +395,13 @@ export const createLoan = async ({
     if (status === Status.BORROWED) {
       const byDate = addDateDays(30);
       const data = {
-        reader: (reader as ReaderState).name,
+        reader: reader.name,
         byDate: formatShortDate(byDate),
         number: loan.number,
       };
 
       await sendEmail({
-        to: (reader as ReaderState).email,
+        to: reader.email,
         subject: BorrowedLoanSubject,
         template: BorrowedLoanEmail(data),
       });
@@ -394,7 +420,11 @@ export const updateLoan = async ({
   library,
   books,
   status,
-}: LoanState & { loanId: string }) => {
+}: Omit<LoanState, "books" & "reader"> & {
+  loanId: string;
+  books: string[];
+  reader: { id: string; name: string; email: string };
+}) => {
   try {
     const currentLoan = await prisma.loans.findFirst({
       where: {
@@ -427,13 +457,13 @@ export const updateLoan = async ({
 
     const loan = await prisma.loans.update({
       where: {
-        id: loanId,
+        id: "fgvdgfg",
       },
       data: {
         status,
         cityId: city,
         libraryId: library,
-        readerId: (reader as ReaderState).id,
+        readerId: reader.id,
         borrowedAt:
           status === Status.BORROWED && status !== currentLoan.status
             ? new Date()
@@ -446,21 +476,19 @@ export const updateLoan = async ({
       },
     });
 
-    if (!loan) throw new Error(ErrorUpdate);
-
     await forEachLoanBook({ loanBooks: books, loanId, libraryId: library });
 
     if (status === Status.BORROWED && status !== currentLoan.status) {
       const byDate = addDateDays(30);
 
       const data = {
-        reader: (reader as ReaderState).name,
+        reader: reader.name,
         byDate: formatShortDate(byDate),
         number: loan.number,
       };
 
       await sendEmail({
-        to: (reader as ReaderState).email,
+        to: reader.email,
         subject: BorrowedLoanSubject,
         template: BorrowedLoanEmail(data),
       });
@@ -468,12 +496,12 @@ export const updateLoan = async ({
 
     if (status === Status.CANCELLED && status !== currentLoan.status) {
       const data = {
-        reader: (reader as ReaderState).name,
+        reader: reader.name,
         number: loan.number,
       };
 
       await sendEmail({
-        to: (reader as ReaderState).email,
+        to: reader.email,
         subject: CancelledLoanSubject,
         template: CancelledLoanEmail(data),
       });
@@ -487,21 +515,17 @@ export const updateLoan = async ({
 
 export const deleteLoan = async ({ loanId }: LoanIdProps) => {
   try {
-    const loanBooks = await prisma.loanBooks.deleteMany({
+    await prisma.loanBooks.deleteMany({
       where: {
         loanId,
       },
     });
-
-    if (!loanBooks) throw new Error(ErrorDelete);
 
     const loan = await prisma.loans.deleteMany({
       where: {
         id: loanId,
       },
     });
-
-    if (!loan) throw new Error(ErrorDelete);
 
     return loan;
   } catch (err) {
@@ -599,8 +623,6 @@ export const groupLoansRaport = async ({
         },
       ],
     });
-
-    if (!loansRaport) throw new Error(ErrorMessage);
 
     return loansRaport;
   } catch (err) {

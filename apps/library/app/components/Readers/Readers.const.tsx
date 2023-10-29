@@ -35,7 +35,8 @@ export const initialPassword: PasswordState = {
 
 export const booksColumns: TableColumns[] = [
   { name: "name", value: "Name" },
-  { name: "sku", value: "Sku" },
-  { name: "category", value: "Category" },
   { name: "author", value: "Author" },
+  { name: "sku", value: "Sku" },
+  { name: "place", value: "Place" },
+  { name: "category", value: "Category" },
 ];

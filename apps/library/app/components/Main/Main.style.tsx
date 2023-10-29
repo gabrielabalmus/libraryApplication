@@ -62,10 +62,10 @@ export const StyledModalBox = MuiStyled(Box)<BoxProps>(({ theme }) =>
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: { xs: "200px", sm: "400px" },
+    width: { xs: "250px", sm: "400px" },
     bgcolor: colorPalette.white,
     border: `2px solid ${colorPalette.white}`,
     boxShadow: 24,
-    p: 4,
+    padding: "25px",
   })
 );

@@ -13,14 +13,14 @@ import { useSearchParams } from "react-router-dom";
 import ErrorInterface from "~/components/ErrorInterface";
 import Container from "@mui/material/Container";
 import { getReaderId } from "~/server/readers.server";
-import ReadersLoans from "~/components/Readers/Loans";
+import LoansOverview from "~/components/Readers/Loans";
 import { isString } from "lodash";
 import {
   ErrorCancelLoan,
   SuccessCancelLoan,
 } from "~/components/Readers/Readers.const";
 import { useEffect } from "react";
-import { useReservedBooksContext } from "~/context/reservedBooks.context";
+import { useBooksToReserveContext } from "~/context/booksToReserve.context";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const readerId = await getReaderId(request);
@@ -109,11 +109,11 @@ const PaginatedLoans: React.FC = () => {
 
   const loans = data.loans;
 
-  const { setModalError } = useReservedBooksContext();
+  const { setModalContent } = useBooksToReserveContext();
 
   useEffect(() => {
     if (actionData && actionData.message && actionData.success === false)
-      setModalError(actionData.message);
+      setModalContent(actionData.message);
   }, [actionData]);
 
   const handleChangePage = (pageNumber: number) => {
@@ -135,7 +135,7 @@ const PaginatedLoans: React.FC = () => {
 
   return (
     <Container>
-      <ReadersLoans
+      <LoansOverview
         loans={loans}
         page={pageNumber}
         onPageChange={handleChangePage}

@@ -10,8 +10,6 @@ export const getCategories = async () => {
       },
     });
 
-    if (!categories) throw new Error(ErrorMessage);
-
     return categories;
   } catch (err) {
     throw new Error(ErrorMessage);

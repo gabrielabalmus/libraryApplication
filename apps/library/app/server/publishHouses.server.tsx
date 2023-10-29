@@ -10,8 +10,6 @@ export const getPublishHouses = async () => {
       },
     });
 
-    if (!publishHouses) throw new Error(ErrorMessage);
-
     return publishHouses;
   } catch (err) {
     throw new Error(ErrorMessage);

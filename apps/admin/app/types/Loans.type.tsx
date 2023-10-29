@@ -12,6 +12,7 @@ export interface LoansResponse {
 
 export interface BookResponse {
   name: string;
+  author: string;
   category: CategoryResponse;
 }
 
@@ -73,6 +74,7 @@ export interface BookLibraryState {
   id: string;
   name: string;
   sku: string;
+  author: string;
   category: string;
   library: string;
   place: string;
@@ -180,7 +182,7 @@ export interface FilterState {
 }
 
 export interface EachLoanBook {
-  loanBooks: BookLibraryState[];
+  loanBooks: string[];
   loanId: string;
   libraryId: string;
 }

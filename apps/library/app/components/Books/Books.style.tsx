@@ -23,6 +23,7 @@ export const StyledFilter = styled(ColumnFlex)`
 
 export const StyledColumnFlex = styled(ColumnFlex)`
   gap: 30px;
+  flex: 1;
   @media (min-width: 900px) {
     margin-top: 20px;
   }
@@ -77,7 +78,7 @@ export const StyledBookBox = styled(ColumnFlex)`
 `;
 
 export const StyledBooksList = styled(Flex)`
-  background-color: ${colorPalette.primary.lightest};
+  background-color: ${colorPalette.grey.lightest};
   padding: 15px;
   justify-content: space-between;
 `;
@@ -85,4 +86,41 @@ export const StyledBooksList = styled(Flex)`
 export const ColumnFlexOverflow = styled(ColumnFlex)`
   overflow: auto;
   max-height: 40vh;
+`;
+
+export const StyledBook = styled(Flex)`
+  gap: 20px;
+  background-color: ${colorPalette.grey.lighter};
+  border-radius: 5px;
+  padding: 25px;
+`;
+
+export const StyledRowFlex = styled(Flex)`
+  gap: 10px;
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+`;
+
+export const CardFlex = styled(Flex)`
+  gap: 10px;
+  background-color: ${colorPalette.grey.lightest};
+  padding: 10px 20px;
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+`;
+
+export const StyledFlexButton = styled(Flex)`
+  justify-content: right;
+  margin-top: 20px;
+  gap: 10px;
+  @media (max-width: 900px) {
+    justify-content: center;
+  }
+
+  @media (max-width: 650px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;

@@ -67,9 +67,10 @@ export const readerColumns = [
 
 export const bookColumns = [
   { name: "name", value: "Name" },
+  { name: "author", value: "Author" },
   { name: "sku", value: "Sku" },
-  { name: "category", value: "Category" },
   { name: "place", value: "Place" },
+  { name: "category", value: "Category" },
 ];
 
 export const initialLoan: LoanState = {

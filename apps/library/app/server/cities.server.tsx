@@ -10,8 +10,6 @@ export const getCities = async () => {
       },
     });
 
-    if (!cities) throw new Error(ErrorMessage);
-
     return cities;
   } catch (err) {
     throw new Error(ErrorMessage);

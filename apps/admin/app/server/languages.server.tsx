@@ -10,8 +10,6 @@ export const getLanguages = async () => {
       },
     });
 
-    if (!languages) throw new Error(ErrorMessage);
-
     return languages;
   } catch (err) {
     throw new Error(ErrorMessage);

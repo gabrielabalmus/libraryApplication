@@ -85,8 +85,6 @@ export const getPaginatedLibraries = async ({
         },
       });
 
-      if (!data) throw new Error(ErrorGetPaginated);
-
       return { count, data: fromPaginatedLibrariesResponse(data) };
     });
 
@@ -154,8 +152,6 @@ export const createLibrary = async ({
       },
     });
 
-    if (!library) throw new Error(ErrorCreate);
-
     return library;
   } catch (err) {
     throw new Error(ErrorCreate);
@@ -198,8 +194,6 @@ export const updateLibrary = async ({
       },
     });
 
-    if (!library) throw new Error(ErrorUpdate);
-
     return library;
   } catch (err) {
     throw new Error(ErrorUpdate);
@@ -233,8 +227,6 @@ export const deleteLibrary = async ({ libraryId }: LibraryIdProps) => {
       },
     });
 
-    if (!library) throw new Error(ErrorDelete);
-
     return library;
   } catch (err) {
     throw new Error(ErrorDelete);
@@ -253,8 +245,6 @@ export const getLibraries = async (city?: string) => {
         deleted: false,
       },
     });
-
-    if (!libraries) throw new Error(ErrorMessage);
 
     return libraries;
   } catch (err) {
