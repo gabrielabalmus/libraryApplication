@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot tests for Button renders correctly 1`] = `
+<div>
+  <button
+    class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-gx99rr-MuiButtonBase-root-MuiButton-root"
+    style="min-width: 100px;"
+    tabindex="0"
+    type="button"
+  >
+    Test button1
+    <span
+      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+    />
+  </button>
+</div>
+`;
+
+exports[`snapshot tests for Button renders correctly 2`] = `
+<div>
+  <button
+    class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium Mui-disabled MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1k3xh08-MuiButtonBase-root-MuiButton-root"
+    disabled=""
+    style="min-width: 150px;"
+    tabindex="-1"
+    type="submit"
+  >
+    Test button2
+  </button>
+</div>
+`;
+
+exports[`snapshot tests for Button renders correctly 3`] = `
+<div>
+  <button
+    class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1k3xh08-MuiButtonBase-root-MuiButton-root"
+    style="min-width: 250px;"
+    tabindex="0"
+    type="reset"
+  >
+    Test button3
+    <span
+      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+    />
+  </button>
+</div>
+`;

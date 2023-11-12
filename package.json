@@ -11,6 +11,7 @@
     "dev:admin": "turbo run dev --scope=admin",
     "dev:library": "turbo run dev --scope=library",
     "dev": "turbo run dev --parallel",
+    "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:generate": "prisma generate",
     "db:push": "prisma db push --skip-generate",

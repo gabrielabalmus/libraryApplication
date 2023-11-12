@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot tests for Input renders correctly 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root MuiTextField-root css-1m4ah66-MuiFormControl-root-MuiTextField-root"
+    width="120px"
+  >
+    <label
+      class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for=":r0:"
+      id=":r0:-label"
+    >
+      Test1
+    </label>
+    <div
+      class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-multiline css-1rb63tl-MuiInputBase-root-MuiInput-root"
+    >
+      <textarea
+        aria-invalid="false"
+        class="MuiInputBase-input MuiInput-input MuiInputBase-inputMultiline css-66dh3a-MuiInputBase-input-MuiInput-input"
+        id=":r0:"
+        min="0"
+        placeholder=""
+        style="height: 0px; overflow: hidden;"
+      >
+        Test input value
+      </textarea>
+      <textarea
+        aria-hidden="true"
+        class="MuiInputBase-input MuiInput-input MuiInputBase-inputMultiline css-66dh3a-MuiInputBase-input-MuiInput-input"
+        readonly=""
+        style="visibility: hidden; position: absolute; overflow: hidden; height: 0px; top: 0px; left: 0px; transform: translateZ(0); padding: 0px; width: 100%;"
+        tabindex="-1"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`snapshot tests for Input renders correctly with error message 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root MuiTextField-root css-p6zlu0-MuiFormControl-root-MuiTextField-root"
+    width="inherit"
+  >
+    <label
+      class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary Mui-error MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for=":r1:"
+      id=":r1:-label"
+    >
+      Test1
+    </label>
+    <div
+      class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary Mui-error MuiInputBase-formControl css-v4u5dn-MuiInputBase-root-MuiInput-root"
+    >
+      <input
+        aria-describedby=":r1:-helper-text"
+        aria-invalid="true"
+        class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
+        id=":r1:"
+        min="0"
+        placeholder=""
+        type="text"
+        value="Test input value"
+      />
+    </div>
+    <p
+      class="MuiFormHelperText-root Mui-error MuiFormHelperText-sizeMedium MuiFormHelperText-filled css-1d1r5q-MuiFormHelperText-root"
+      id=":r1:-helper-text"
+    >
+      Test error message
+    </p>
+  </div>
+</div>
+`;
+
+exports[`snapshot tests for Input renders correctly with placeholder 1`] = `
+<div>
+  <div
+    class="MuiFormControl-root MuiTextField-root css-p6zlu0-MuiFormControl-root-MuiTextField-root"
+    width="inherit"
+  >
+    <label
+      class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
+      data-shrink="true"
+      for=":r2:"
+      id=":r2:-label"
+    >
+      Test1
+    </label>
+    <div
+      class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl css-v4u5dn-MuiInputBase-root-MuiInput-root"
+    >
+      <input
+        aria-invalid="false"
+        class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
+        id=":r2:"
+        min="0"
+        placeholder="Test placeholder"
+        type="text"
+        value="Test input value"
+      />
+    </div>
+  </div>
+</div>
+`;

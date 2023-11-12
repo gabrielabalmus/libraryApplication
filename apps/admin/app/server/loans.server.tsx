@@ -301,7 +301,7 @@ export const createLoan = async ({
   library,
   books,
   status,
-}: Omit<LoanState, "books" & "reader"> & {
+}: Omit<LoanState, "books" | "reader"> & {
   books: string[];
   reader: { id: string; name: string; email: string };
 }) => {
@@ -420,7 +420,7 @@ export const updateLoan = async ({
   library,
   books,
   status,
-}: Omit<LoanState, "books" & "reader"> & {
+}: Omit<LoanState, "books" | "reader"> & {
   loanId: string;
   books: string[];
   reader: { id: string; name: string; email: string };
