@@ -20,6 +20,7 @@ import {
 } from "~/transformers/books.transformer";
 import prisma from "prisma";
 import { ErrorMessage } from "~/const";
+import { removeImage } from "./media.server";
 
 export const getPaginatedBooks = async ({
   page,
@@ -323,6 +324,8 @@ export const createBook = async ({
           id: book.id,
         },
       });
+
+      await removeImage(book.image);
 
       throw new Error(ErrorCreate);
     }

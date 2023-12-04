@@ -457,7 +457,7 @@ export const updateLoan = async ({
 
     const loan = await prisma.loans.update({
       where: {
-        id: "fgvdgfg",
+        id: loanId,
       },
       data: {
         status,

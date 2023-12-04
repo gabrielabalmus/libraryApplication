@@ -59,7 +59,9 @@ const BooksDetails: React.FC<BookDetailsProps> = ({
 
         <ColumnFlex gap="10px">
           <Typography variant="h3">Description</Typography>
-          <Typography variant="h2">{data.description}</Typography>
+          <Typography variant="h2" whiteSpace="pre-wrap">
+            {data.description}
+          </Typography>
         </ColumnFlex>
 
         <BooksUnits

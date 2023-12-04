@@ -20,6 +20,16 @@ export const uploadImage = async (image: string) => {
   }
 };
 
+export const removeImage = async (imageName: string) => {
+  try {
+    const { public_id } = await cloudinary.v2.uploader.destroy(imageName);
+
+    return public_id;
+  } catch (err) {
+    throw new Error(ErrorMessage);
+  }
+};
+
 export const getImage = async (imageName: string): Promise<string> => {
   try {
     const { secure_url } = await cloudinary.v2.api.resource(imageName);

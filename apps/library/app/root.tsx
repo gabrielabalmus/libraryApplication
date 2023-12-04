@@ -39,6 +39,7 @@ const App: React.FC = () => {
     <html>
       <head>
         <Meta />
+        <meta key="robots" name="robots" content="noindex,follow" />
         <Links />
         {typeof document === "undefined" ? "__STYLES__" : null}
       </head>

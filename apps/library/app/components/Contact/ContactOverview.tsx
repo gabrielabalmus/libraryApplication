@@ -32,7 +32,7 @@ const ContactOverview: React.FC<ContactOverviewProps> = ({
               <StyledTitle variant="h3">{item.name}</StyledTitle>
 
               <StyledBox>
-                <Typography>
+                <Typography whiteSpace="pre-wrap">
                   <b>Address:</b> {item.address}
                 </Typography>
 

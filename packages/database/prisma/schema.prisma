@@ -124,7 +124,6 @@ model Readers {
   deleted     Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  languagesId String?  @db.ObjectId
 }
 
 model LoanBooks {
