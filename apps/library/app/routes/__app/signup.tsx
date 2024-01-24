@@ -5,7 +5,7 @@ import {
   redirect,
 } from "@remix-run/node";
 import { useActionData, useLoaderData, useSubmit } from "@remix-run/react";
-import { isString } from "lodash";
+import { isBoolean, isString } from "lodash";
 import { useEffect, useState } from "react";
 import ErrorInterface from "~/components/ErrorInterface";
 import ReadersForm from "~/components/Readers/Form";
@@ -124,7 +124,7 @@ const Signup: React.FC = () => {
   const cities = data.cities;
 
   useEffect(() => {
-    if (actionData && actionData.message && actionData.success === false)
+    if (actionData && actionData.message && isBoolean(actionData.success))
       setMessageData(actionData);
   }, [actionData]);
 

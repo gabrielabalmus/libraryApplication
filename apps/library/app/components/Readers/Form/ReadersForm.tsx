@@ -18,6 +18,7 @@ import { StyledMainTitle } from "~/components/Contact/Contact.style";
 import Flex from "@/components/Flex";
 import { StyledAlert } from "~/components/Login/Login.style";
 import { InputType } from "@/components/Input/Input.type";
+import { Link } from "@remix-run/react";
 
 const ReadersForm: React.FC<ReadersFormProps> = ({
   onSubmit,
@@ -133,7 +134,7 @@ const ReadersForm: React.FC<ReadersFormProps> = ({
         {messageData?.success === true && (
           <StyledAlert severity="success">
             {messageData.message}.{" "}
-            {!readerId && <a href="/login">Press here to login.</a>}
+            {!readerId && <Link to="/login">Press here to login.</Link>}
           </StyledAlert>
         )}
 

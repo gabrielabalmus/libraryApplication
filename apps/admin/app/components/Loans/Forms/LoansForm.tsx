@@ -130,7 +130,7 @@ const LoansForm: React.FC<LoansFormProps> = ({ onSubmit, setLoan, loan }) => {
         <Button
           title="Cancel"
           variant={ButtonVariant.outlined}
-          onClick={() => navigate("/books")}
+          onClick={() => navigate("/loans")}
         />
         <Button
           type={ButtonType.submit}
