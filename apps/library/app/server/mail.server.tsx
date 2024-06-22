@@ -20,6 +20,7 @@ export const sendEmail = async ({ to, subject, template }: SendEmailProps) => {
       html: template,
     };
 
-    await transporter.sendMail(message);
+    // Do not send mails
+    // await transporter.sendMail(message);
   } catch (e) {}
 };

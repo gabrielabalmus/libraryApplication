@@ -5,7 +5,7 @@ export const sendEmail = async ({ to, subject, template }: SendEmailProps) => {
   try {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: 587,  
+      port: 587,
       auth: {
         user: process.env.FROM_EMAIL,
         pass: process.env.EMAIL_PASSWORD,
@@ -20,6 +20,7 @@ export const sendEmail = async ({ to, subject, template }: SendEmailProps) => {
       html: template,
     };
 
-    await transporter.sendMail(message);
+    // Do not send mails
+    // await transporter.sendMail(message);
   } catch (e) {}
 };
