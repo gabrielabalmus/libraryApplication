@@ -20,7 +20,7 @@ export const links: LinksFunction = () => {
       href: "/favicon.ico",
       type: "image/x-icon",
     },
-
+    { rel: "stylesheet", href: GlobalStyle },
     {
       rel: "stylesheet",
       href: "https://fonts.googleapis.com/css2?family=Georama:wght@200;300;400;600",
