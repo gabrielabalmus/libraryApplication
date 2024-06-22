@@ -5,5 +5,4 @@ module.exports = {
     ["@babel/preset-react", { runtime: "automatic" }],
     "@babel/preset-flow",
   ],
-  plugins: ["babel-plugin-styled-components"],
 };
